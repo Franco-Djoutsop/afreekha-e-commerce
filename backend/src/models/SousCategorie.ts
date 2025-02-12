@@ -3,7 +3,7 @@ import { sequelize } from "../config/database";
 import Categorie from "./categorie";
 
 const SousCategorie = sequelize.define(
-  "sous_categorie",
+  "sous_categories",
   {
     idSousCategorie: {
       type: DataTypes.INTEGER,

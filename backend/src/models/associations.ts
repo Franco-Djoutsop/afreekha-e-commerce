@@ -8,6 +8,7 @@ import Message from "./Message";
 import Article from "./Article";
 import Image from "./image";
 import CommandArticle from "./CommandArticle";
+import Paiement from "./Paiment";
 
 // One-to-Many Relationship
 User.hasMany(Message, { foreignKey: "idUser", onDelete: "CASCADE" }); //a user can have many Message
@@ -21,20 +22,21 @@ Commande.belongsTo(User, { foreignKey: "idUser" });
 User.hasMany(Categorie, { foreignKey: "idUser", onDelete: "CASCADE" });
 Categorie.belongsTo(User, { foreignKey: "idUser" });
 
-// One User has Many Categories
-Categorie.hasMany(Article, { foreignKey: "idArticle", onDelete: "CASCADE" });
-Article.belongsTo(Categorie, { foreignKey: "idArticle" });
+// One User has Many Paiement
+User.hasMany(Paiement,{foreignKey: "idUser", onDelete: "CASCADE", onUpdate:"CASCADE"});
+Paiement.belongsTo(User,{foreignKey:"idUser"});
 
 // One User has Many Categories
-Article.hasMany(Image, { foreignKey: "idImage", onDelete: "CASCADE" });
-Image.belongsTo(Article, { foreignKey: "idImage" });
+Categorie.hasMany(Article, { foreignKey: "idCategorie" });
+Article.belongsTo(Categorie, { foreignKey: "idCategorie",onDelete: "CASCADE",onUpdate:"CASCADE" });
 
 // One User has Many Categories
-Categorie.hasMany(SousCategorie, {
-  foreignKey: "idSousCategorie",
-  onDelete: "CASCADE",
-});
-SousCategorie.belongsTo(Categorie, { foreignKey: "idSousCategorie" });
+Article.hasMany(Image, { foreignKey: "idArticle" });
+Image.belongsTo(Article, { foreignKey: "idArticle", onDelete: "CASCADE",onUpdate:"CASCADE" });
+
+// One User has Many Categories
+Categorie.hasMany(SousCategorie, {foreignKey: "idCategorie"});
+SousCategorie.belongsTo(Categorie, { foreignKey: "idCategorie",onDelete: "CASCADE",onUpdate:"CASCADE"});
 
 // Many-to-Many: A Command has many Articles and an Article can be in many Commands
 Commande.belongsToMany(Article, {
