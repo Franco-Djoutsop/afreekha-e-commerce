@@ -13,5 +13,6 @@ router.route("/").get((req, res) => {
 router.post("/article", crypt.decode, createArticleValidation, ArticleController.create);
 router.put('/article', crypt.decode, updateArticleValidation, ArticleController.update)
 router.delete('/article/:id', ArticleController.destroy);
+router.put('/article-changes-categorie', crypt.decode, ArticleController.updateCategories)
 
 export default router;

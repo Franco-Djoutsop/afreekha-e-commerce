@@ -9,5 +9,7 @@ const router = express.Router();
 //client route
 router.route("/users").post(createUser);
 router.get('/article-categorie/:id', ArticleController.getByCategorie);
-
+router.get('/article-promo/:offset', ArticleController.getByCategorie);
+router.get('/article-details/:id', ArticleController.getOne);
+router.get('/article/:offset', ArticleController.getAll);
 export default router;
