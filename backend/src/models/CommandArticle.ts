@@ -1,11 +1,18 @@
-import { DataTypes } from "sequelize";
+import { DataTypes, Model } from "sequelize";
 import { sequelize } from "../config/database";
 import Commande from "./Commande";
 import Article from "./Article";
-import { table } from "console";
 
-const CommandArticle = sequelize.define(
-  "commande_articles",
+class CommandArticle extends Model {
+  public idCommandArticle!: number;
+  public idCommande!: number;
+  public idArticle!: number;
+  public statut!: string;
+  public date!: Date;
+}
+
+// Initialisation du modèle
+CommandArticle.init(
   {
     idCommandArticle: {
       type: DataTypes.INTEGER,
@@ -31,15 +38,24 @@ const CommandArticle = sequelize.define(
     statut: {
       type: DataTypes.STRING,
       allowNull: false,
-      defaultValue: "Encours", // Example: Encours, paye
+      defaultValue: "Encours", // Exemple : "Encours", "Paye"
     },
-
     date: {
       type: DataTypes.DATE,
       defaultValue: DataTypes.NOW,
     },
   },
-  { tableName: "commandes_articles" }
+  {
+    sequelize,
+    modelName: "CommandArticle",
+    tableName: "commandes_articles",
+  }
 );
+
+// // Déclaration des associations (facultatif mais recommandé)
+// Commande.hasMany(CommandArticle, { foreignKey: "idCommande" });
+// Article.hasMany(CommandArticle, { foreignKey: "idArticle" });
+// CommandArticle.belongsTo(Commande, { foreignKey: "idCommande" });
+// CommandArticle.belongsTo(Article, { foreignKey: "idArticle" });
 
 export default CommandArticle;

@@ -1,9 +1,16 @@
-import { DataTypes } from "sequelize";
+import { DataTypes, Model } from "sequelize";
 import { sequelize } from "../config/database";
 import User from "./User";
 
-const Commande = sequelize.define(
-  "commandes",
+class Commande extends Model {
+  public idCommande!: number;
+  public Montant_total!: number;
+  public quantite_articles!: number;
+  public idUser!: number;
+}
+
+// Initialisation du modèle
+Commande.init(
   {
     idCommande: {
       type: DataTypes.INTEGER,
@@ -18,7 +25,6 @@ const Commande = sequelize.define(
       type: DataTypes.FLOAT,
       allowNull: false,
     },
-
     idUser: {
       type: DataTypes.INTEGER,
       allowNull: false,
@@ -28,7 +34,15 @@ const Commande = sequelize.define(
       },
     },
   },
-  { tableName: "commandes" }
+  {
+    sequelize,
+    modelName: "Commande",
+    tableName: "commandes",
+  }
 );
+
+// // Association avec l'utilisateur (Un utilisateur peut avoir plusieurs commandes)
+// User.hasMany(Commande, { foreignKey: "idUser" });
+// Commande.belongsTo(User, { foreignKey: "idUser" });
 
 export default Commande;
