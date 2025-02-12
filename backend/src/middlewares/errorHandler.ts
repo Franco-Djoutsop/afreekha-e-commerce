@@ -50,10 +50,6 @@ const errorHandler = (err: Error, req: Request, res: Response, next: any) => {
       console.log("no Error All good !!");
       break;
   }
-  res.json({
-    message: err.message,
-    starkTrace: err.stack,
-  });
 };
 
 export default errorHandler;

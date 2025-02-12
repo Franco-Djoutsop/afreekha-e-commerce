@@ -2,7 +2,6 @@ import express, { Express } from "express";
 import {
   allUSers,
   allUsersRoles,
-  createUser,
   deleteUsers,
   oneUsersRole,
   updateUsers,
@@ -16,19 +15,26 @@ import {
   roleUsers,
   updateRole,
 } from "../controllers/roleControler";
-
+import { login, register } from "../controllers/authUserControler";
+import { validateToken } from "../middlewares/validateTokenHandler";
 const router = express.Router();
 
 //users route
-router.route("/users").post(userValidationRules, validate, createUser);
-router.route("/users").get(allUSers);
-router.route("/usersRoles/:id").get(allUsersRoles);
-router.route("/usersRoles/:id").get(oneUsersRole);
-router.route("/users/:id").patch(updateUsers);
-router.route("/users/:id").delete(deleteUsers);
+router.route("/users").post(userValidationRules, validate, register);
+router.route("/users").get(validateToken, allUSers);
+router.route("/usersRoles/:id").get(validateToken, allUsersRoles);
+router.route("/usersRoles/:id").get(validateToken, oneUsersRole);
+router.route("/users/:id").patch(validateToken, updateUsers);
+router.route("/users/:id").delete(validateToken, deleteUsers);
 
 //role route
-router.route("/role").post(createRole).get(allRoles);
-router.route("/role/:id").patch(updateRole).delete(deleteRole);
+router.route("/role").post(createRole).get(validateToken, allRoles);
+router
+  .route("/role/:id")
+  .patch(validateToken, updateRole)
+  .delete(validateToken, deleteRole);
+
+//authentification
+router.route("/auth").post(login);
 
 export default router;
