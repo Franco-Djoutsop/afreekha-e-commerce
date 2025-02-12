@@ -22,7 +22,7 @@ app.use("/api/admin", routerAdmin);
 app.use(errorHandler);
 
 //connect to bd
-connectDB();
+// connectDB();
 //start server
 app.listen(port, () => {
   console.log(`server running on http://localhost:${port}`);
