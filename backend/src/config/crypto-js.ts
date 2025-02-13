@@ -18,11 +18,8 @@ const crypt = {
         const bytes = CryptoJS.AES.decrypt(encryptedData, key);
         
         const decryptedData = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
-        req.body = decryptedData; 
+        req.body = decryptedData; //afin de ne plus avoir à redecoder les données dans les controllers qui sont deja decryptées ici
         next();
-
-        
-        //return decryptedData;
     },
 
     idOnUrlDecoder(idCrypted: string){

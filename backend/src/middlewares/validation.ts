@@ -35,9 +35,20 @@ const updateArticleValidation = [
           }
     ]
 
+const createImgValidation = [
+    body("idArticle").notEmpty().withMessage("ID article pas fourni !"),
+    body('base64Encryption').notEmpty().withMessage("Données de l'image non défini")
+]
+
+const updateArticleImg = [
+      ...createImgValidation,
+      body("idImage").notEmpty().withMessage("ID non fourni !"),
+]
 
 export { 
         createArticleValidation, 
-        updateArticleValidation 
+        updateArticleValidation,
+        updateArticleImg,
+        createImgValidation
     
     }

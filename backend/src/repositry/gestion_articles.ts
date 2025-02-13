@@ -1,4 +1,3 @@
-import { where } from "sequelize";
 import Article from "../models/Article"
 import { Articles } from "./objets/article";
 import Image from "../models/image";
