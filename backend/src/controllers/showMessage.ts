@@ -1,6 +1,13 @@
 import { Request, Response } from "express";
 import messages from "../models/Message";
 import User from "../models/User";
+import { crypt } from "../config/crypto-js";
+
+//@route /message/userMessage
+//@method get
+//@response true ? false
+
+//liste des message d'un utilisateur
 
 const getMessage = async(req:Request, res:Response) =>{
     try{
@@ -20,6 +27,7 @@ const getMessage = async(req:Request, res:Response) =>{
                 attributes:['contenus'],
             }
         )
+        
         if(information[0]==null){
             return res.status(404).json({
                 'data':[],
@@ -27,7 +35,7 @@ const getMessage = async(req:Request, res:Response) =>{
             });
         }
             return res.status(200).json({
-                'data': information
+                'data': crypt.encode(information)
              })
        
     }catch(error){

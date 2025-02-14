@@ -1,6 +1,12 @@
 import { Request , Response } from "express";
 import messages from "../models/Message";
 
+//@route /message/deleteMessage
+//@method delete
+//@response true ? false
+
+//suppression dun message
+
 const deleteMessage =  async (req:Request,res:Response) =>{
     try{
        let id = req.params.id
