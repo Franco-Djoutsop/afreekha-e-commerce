@@ -1,6 +1,12 @@
 import { Request,Response } from "express";
 import Categorie from "../models/categorie";
 
+//@route /categorie/deleteCategorie
+//@method delete
+//@response true ? false
+
+//suppression d'une categorie
+
 const deleteCategorie = async(req:Request,res:Response) =>{
     try{
          let id = req.params.id;

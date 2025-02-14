@@ -1,28 +1,35 @@
 import { Request,Response } from "express";
 import Categorie from "../models/categorie";
 import SousCategorie from "../models/SousCategorie";
+import { crypt } from "../config/crypto-js";
 
+//@route /sousCategorie/sousCategorieOfCategorie
+//@method get
+//@response true ? false
+
+//liste des sous categorie de chaqur categorie
 const sousCategorie = async(req:Request,res:Response) =>{
     try{
          let id = req.params.id;
          const schearCategorie = await SousCategorie.findAll({
             where:{
                 idCategorie:id
-            },/*
-            include:[
-                {
+            },
+               include:[
+                  {
                     model:Categorie, attributes:['nom']
-                }
-            ],*/
+                  }
+               ],
            attributes:['nom']
          });
+
          if(schearCategorie[0]==null){
             return res.status(404).json({
                 'message':'cette categorie na pas de sous categorie ','data':[]})
          }
          return res.status(200).json({
             'isHere':true,
-            'data': schearCategorie
+            'data': crypt.encode(schearCategorie)
          })
     }catch(error){
         console.log(error);
