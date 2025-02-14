@@ -3,7 +3,6 @@ import Image from "../models/image";
 import Article from "../models/Article";
 import Categorie from "../models/categorie";
 import SousCategorie from "../models/SousCategorie";
-import sousCategorie from "./sousCategorieOfCategorie";
 
 const articleOfSousCategorie = async(req:Request,res:Response) =>{
     try{
