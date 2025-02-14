@@ -1,6 +1,12 @@
 import { Request,response,Response } from "express";
 import SousCategorie from "../models/SousCategorie";
 
+//@route /sousCategorie/deleteSousCategorie
+//@method delete
+//@response true ? false
+
+//suppression d'une sous-categorie
+
 const deleteSousCategorie = async(req:Request,res:Response) =>{
     try{
         let id = req.params.id;

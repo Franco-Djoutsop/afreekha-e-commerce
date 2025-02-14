@@ -3,31 +3,40 @@ import Image from "../models/image";
 import Article from "../models/Article";
 import Categorie from "../models/categorie";
 import SousCategorie from "../models/SousCategorie";
+import { crypt } from "../config/crypto-js";
+
+//@route/sousCategorie/articleOfSousCategorie
+//@mathod get
+//@id of a categorie
+//@response true data:result? false data = []; result = objet
+
+//liste des articles de chaque sous categorie des categories;
 
 const articleOfSousCategorie = async(req:Request,res:Response) =>{
     try{
         let id = req.params.id;
         const result = await Article.findAll({
            attributes:['nom_article','prix','quantite','promo','caracteristiques','pourcentage_promo','marque','garantie'],
-           include:[{
-            model:Image,
-            attributes:['lien'],
-           },{
-            model:Categorie,
-            attributes:['nom'],
-            include:[
-                {
-                    model:SousCategorie,
-                    attributes:['nom']
+              include:[{
+                model:Image,
+                attributes:['lien'],
+              },{
+                model:Categorie,
+              attributes:['nom'],
+                 include:[
+                   {
+                       model:SousCategorie,
+                       attributes:['nom']
                    }
-            ]
-           }],where:{idCategorie:id}
+               ]
+            }],
+           where:{idCategorie:id}
         });
 
         if(result[0]== null){
           return  res.status(404).json({'message':'aucun article trouve','data':[]});
         }
-        return res.status(200).json({'data':result,'isDone':true});
+        return res.status(200).json({'data':crypt.encode(result),'isDone':true});
 
     }catch(error){
         console.log(error);

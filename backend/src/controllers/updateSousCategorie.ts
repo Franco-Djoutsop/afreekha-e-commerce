@@ -1,6 +1,11 @@
 import { Request,Response } from "express";
 import updatesouscategorie from "../models/SousCategorie";
 
+//@route /sousCategorie/updateSousCategorie
+//@method put
+//@response true ? false
+
+//mise a jour des information des sous categorie
 const updateSousCategorie = async(req:Request,res:Response) =>{
     try{
         let id = req.params.id;
