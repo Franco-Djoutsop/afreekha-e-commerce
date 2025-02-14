@@ -1,6 +1,13 @@
 import { Request, Response } from "express";
 import Paiement from "../models/Paiment";
+import { crypt } from "../config/crypto-js";
 
+
+//@route/paiement/showallaiement
+//@mathod get
+//@response true data:allPaiement? false data = []; allPaiement = objet
+
+//liste des paiements;
 const showpaiement = async(req:Request,res:Response) =>{
     try{
         const allPaiement = await Paiement.findAll({
@@ -14,7 +21,7 @@ const showpaiement = async(req:Request,res:Response) =>{
             });
          }
          return res.status(202).json({
-            'data': allPaiement
+            'data': crypt.encode(allPaiement)
          });
     }catch(error){
          console.log(error);
