@@ -24,7 +24,7 @@ const MoveImg = async (image: ImageData, dossier: string) => {
     // Enregistrer l'image dans le dossier avec gestion asynchrone des erreur
     await fs.writeFile(cheminFichier, imgBuffer);
 
-    const lienBaseDeDonnees = `/public/imgs/${nomFichier}`; 
+    const lienBaseDeDonnees = `imgs/${nomFichier}`; 
 
     return lienBaseDeDonnees;
 

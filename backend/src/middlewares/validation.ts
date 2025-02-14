@@ -45,10 +45,17 @@ const updateArticleImg = [
       body("idImage").notEmpty().withMessage("ID non fourni !"),
 ]
 
+const createCommandeValidation = [
+  body("Montant_total").notEmpty().withMessage("Montant total pas fourni !"),
+  body("quantite_articles").notEmpty().withMessage("Quantite d'article necessaire !"),
+  body('idUser').notEmpty().withMessage("Id user non défini")
+]
+
 export { 
         createArticleValidation, 
         updateArticleValidation,
         updateArticleImg,
-        createImgValidation
+        createImgValidation,
+        createCommandeValidation
     
     }

@@ -1,15 +1,25 @@
 import Image from "../models/image";
 import { MoveImg, DeleteImg } from "../config/img_file";
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const GestionImage = {  
     async createImg(base64: string, idArticle: number, dossier: string, contentType: string){
             const result = await this.execCreationImg(base64, dossier, contentType);
+            
             if(result.creationDone){
                 //const img = await Image.cr
-                
+                const url = ""+process.env.HTTPS+process.env.DB_HOST+process.env.HTPP+result.link;
+                const queryRslt = await Image.create({
+                    lien: url,
+                    idArticle: idArticle
+                });
+
+                return queryRslt;
             }
             
-            return result;
+            return "";
     },
 
     async destroy(id: number){
@@ -22,24 +32,35 @@ const GestionImage = {
     },
 
     async update(base64: string, idArticle: number, idImage: number, dossier: string, contentType: string, old_link?: string){
+            let old_linkDeleted = false;
+
             if(old_link){
                 //ancien lien de l'image à remplacer defini, alors supprimé son image dans le repertoire sur le serveur
                const del_result= await DeleteImg(old_link);
                 if(del_result){
-                    console.log("img supprome!")
-                }else{
-                    console.log("img pas supprome!")
-                    
+                    old_linkDeleted =true;                 
                 }
             }
 
             const creationResult = await this.execCreationImg(base64, dossier, contentType);
 
-            if(creationResult.creationDone){
 
+            if(creationResult.creationDone){
+                const url = ""+process.env.HTTPS+process.env.DB_HOST+process.env.HTPP+creationResult.link;
+                const queryRslt = await Image.update(
+                    {lien : url},
+                    {
+                        where:{
+                            idImage: idImage
+                        }
+                    }
+                   
+                );
+
+                return queryRslt;
             }
 
-            return creationResult;
+            return "";
     },
 
    async execCreationImg(base64: string, dossier: string, contentType: string): Promise<any>{
