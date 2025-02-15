@@ -3,6 +3,7 @@ import  {ArticleController}  from "../controllers/articleController";
 import { ImageController } from "../controllers/imageContoller";
 import { crypt } from "../config/crypto-js";
 import { createArticleValidation, updateArticleValidation, createImgValidation, updateArticleImg } from "../middlewares/validation";
+import { FactureController } from "../controllers/factureController";
 
 const router = express.Router();
 
@@ -18,5 +19,9 @@ router.put('/article-changes-categorie', crypt.decode, ArticleController.updateC
 router.post('/image', createArticleValidation, ImageController.create);
 router.put('/image', updateArticleImg, ImageController.update);
 router.delete('/image/:id', ImageController.destroy);
+
+router.put("/facture", crypt.decode, FactureController.changeStatus);
+router.get("/facture/:offset", FactureController.getFactureWithArticleUser);
+router.post("/facture", crypt.decode, FactureController.create);
 
 export default router;

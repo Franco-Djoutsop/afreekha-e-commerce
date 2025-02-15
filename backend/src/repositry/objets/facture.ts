@@ -1,7 +1,9 @@
 type Facture = {
-        idCommandArticle: number,
+        idCommandArticle?: number,
         idCommande: number,
-        idArtice: number,
+        idArtice: number[],
         statut: string,
         date: any
 }
+
+export {Facture};
