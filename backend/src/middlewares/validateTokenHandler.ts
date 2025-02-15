@@ -7,6 +7,7 @@ interface DecodedUser {
   id: number;
   email: string;
   tel: string;
+  role: string[];
 }
 
 // Étendre Request pour inclure `user`

@@ -38,7 +38,7 @@ const updateRole = asyncHandler(async (req: Request, res: Response) => {
 
 //@desc delete a role
 //@route DEL /api/roles/:id
-//@access public
+//@access private
 const deleteRole = asyncHandler(async (req: Request, res: Response) => {
   const { id } = req.params;
   const role = await Role.findByPk(id);
@@ -47,7 +47,7 @@ const deleteRole = asyncHandler(async (req: Request, res: Response) => {
     throw new Error("aucun role trouve");
   }
   await role.destroy();
-  res.status(204).json({ actionDone: true });
+  res.status(204).json({ actionDone: "hello" });
 });
 
 //@desc read a role with all users

@@ -1,8 +1,12 @@
 import { Request, Response } from "express";
 import bcrypt from "bcrypt";
+import crypto from "crypto";
+import nodemailer from "nodemailer";
 import asyncHandler from "express-async-handler";
 import User from "../models/User";
 import jwt from "jsonwebtoken";
+import Role from "../models/Role";
+import { Op } from "sequelize";
 
 //@desc register a user
 //@route POST /api/users
@@ -34,7 +38,17 @@ const login = asyncHandler(async (req: Request, res: Response) => {
   }
 
   const user = await User.findOne({
-    where: tel ? { tel } : { email },
+    where: {
+      ...(email ? { email } : {}),
+      ...(tel ? { tel } : {}),
+    },
+    include: [
+      {
+        model: Role,
+        attributes: ["idRole", "nom"],
+        through: { attributes: [] },
+      },
+    ],
   });
   if (!user) {
     res.status(400);
@@ -62,13 +76,102 @@ const login = asyncHandler(async (req: Request, res: Response) => {
         id: user.idUser,
         email: user.email,
         tel: user.tel,
+        roles: user.Role?.map((role: any) => role.nom),
       },
     },
     secretToken,
     { expiresIn: "10m" }
   );
 
-  res.status(200).json({ accestoken: accessToken });
+  res.status(200).json({
+    user: {
+      accessToken,
+      id: user.idUser,
+      nom: user.nom,
+      prenom: user.prenom,
+      email: user.email,
+      tel: user.tel,
+      roles: user.Role?.map((role) => ({
+        idRole: role.idRole,
+        nomRole: role.nom,
+      })),
+    },
+  });
 });
 
-export { register, login };
+//@desc recovery password
+//@route POST /users/recovery-password
+//access public
+const sendEmail = asyncHandler(async (req: Request, res: Response) => {
+  const { email } = req.body;
+  const existUser = await User.findOne({ where: { email } });
+  if (!existUser) {
+    res.status(404).json({ message: "cette utilisateur n'existe pas !!" });
+    return;
+  }
+
+  //generer un token aleatoire
+  const resetToken = crypto.randomBytes(32).toString("hex");
+  const resetTokenExpires = new Date(Date.now() + 3600000); //1heure
+
+  //souvegarder le token dans la BD
+  await existUser?.update({ resetToken, resetTokenExpires });
+
+  //envoyer l'email avec nodemailer
+  const transporter = nodemailer.createTransport({
+    service: "gmail",
+    secure: false,
+    auth: {
+      user: process.env.EMAIL,
+      pass: process.env.MAIL_PASSWORD,
+    },
+  });
+
+  const resetLink = `http://localhost:3000/reset-password/${resetToken}`;
+  try {
+    await transporter.sendMail({
+      from: process.env.EMAIL,
+      to: existUser?.email,
+      subject: "Renitialisation du mot de passe",
+      text: `Cliquez sur ce lien pour réinitialiser votre mot de passe : ${resetLink}`,
+    });
+  } catch (error) {
+    res.status(500).json({ message: `une erreur s'est produite: \n ${error}` });
+  }
+  console.log("hello");
+
+  res.status(200).json({ message: "Email de réinitialisation envoyé !" });
+});
+
+//@desc reset password
+//@route POST /users/reset-password/:token
+//access public
+const resetPassword = asyncHandler(async (req: Request, res: Response) => {
+  const { token } = req.params;
+  const { newPassword } = req.body;
+
+  //verifier si le password est encore valide
+  const user = await User.findOne({
+    where: { resetToken: token, resetTokenExpires: { [Op.gt]: new Date() } },
+  });
+  if (!user) {
+    res.status(400).json({ message: "Token invalide ou expiré" });
+    return;
+  }
+
+  // Hasher le nouveau mot de passe
+  const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+  // Mettre à jour le mot de passe et supprimer le token
+  try {
+    await user.update({
+      mot_de_passe: hashedPassword,
+      resetToken: null,
+      resetTokenExpires: null,
+    });
+    res.json({ message: "Mot de passe réinitialisé avec succès" });
+  } catch (error) {
+    res.status(400).json({ message: `Une Erreur s'est produite : ${error}` });
+  }
+});
+export { register, login, sendEmail, resetPassword };

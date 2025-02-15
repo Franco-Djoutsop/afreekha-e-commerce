@@ -23,7 +23,6 @@ const sequelize = new Sequelize(
 
 // Import des modèles pour que Sequelize puisse les enregistrer avant de synchroniser
 import "../models/Article";
-import "../models/associations";
 import "../models/categorie";
 import "../models/CommandArticle";
 import "../models/Commande";
@@ -34,13 +33,14 @@ import "../models/Role";
 import "../models/SousCategorie";
 import "../models/User";
 import "../models/userRoles";
+import "../models/associations";
 
 //test the connection
 const connectDB = async () => {
   try {
     await sequelize.authenticate();
     console.log("All models were synchronized successfully!");
-    await sequelize.sync({ force: true, alter: false }); //sync models
+    await sequelize.sync({ force: false, alter: false }); //sync models
     console.log("database connected succesfully !!");
   } catch (error) {
     console.log("unable to connect to the db", error);

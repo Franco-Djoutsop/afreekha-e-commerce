@@ -1,6 +1,6 @@
 import { DataTypes, Model } from "sequelize";
 import { sequelize } from "../config/database";
-import messages from "./Message";
+import Role from "./Role";
 
 class User extends Model {
   public idUser!: number;
@@ -10,6 +10,9 @@ class User extends Model {
   public email!: string;
   public tel!: string;
   public mot_de_passe!: string;
+  public Role?: Role[];
+  public resetToken?: string | null;
+  public resetTokenExpires?: Date | null;
 }
 User.init(
   {
@@ -43,6 +46,14 @@ User.init(
     mot_de_passe: {
       type: DataTypes.STRING,
       allowNull: false,
+    },
+    resetToken: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    resetTokenExpires: {
+      type: DataTypes.DATE,
+      allowNull: true,
     },
   },
   {

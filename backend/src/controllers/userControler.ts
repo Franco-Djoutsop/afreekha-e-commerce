@@ -1,15 +1,21 @@
 import { Request, Response } from "express";
 import asyncHandler from "express-async-handler"; //equivalent au try-catch
 import User from "../models/User";
-import bcrypt from "bcrypt";
-import { Model } from "sequelize";
 import Role from "../models/Role";
+import UserRole from "../models/userRoles";
 
 //@desc read all users
 //@route GET /api/users
-//@access public
+//@access private
 const allUSers = asyncHandler(async (req: Request, res: Response) => {
-  const users = await User.findAll();
+  const users = await User.findAll({
+    include: [
+      {
+        model: Role,
+        through: { attributes: [] },
+      },
+    ],
+  });
   res.status(200).json(users);
 });
 
@@ -24,15 +30,19 @@ const updateUsers = asyncHandler(async (req: Request, res: Response) => {
     res.status(400);
     throw new Error("aucun utilisateur trouve");
   }
-  //update section
-  user.nom = nom || user.nom;
-  user.prenom = prenom || user.prenom;
-  user.date_naissance = date_naissance || user.date_naissance;
-  user.email = email || user.email;
-  user.tel = tel || user.tel;
-  user.mot_de_passe = mot_de_passe || user.mot_de_passe;
-  await user.save();
-  res.status(200).json(user);
+  try {
+    //update section
+    user.nom = nom || user.nom;
+    user.prenom = prenom || user.prenom;
+    user.date_naissance = date_naissance || user.date_naissance;
+    user.email = email || user.email;
+    user.tel = tel || user.tel;
+    user.mot_de_passe = mot_de_passe || user.mot_de_passe;
+    await user.save();
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(400).json(`Une erreur s'est produite : \n ${error}`);
+  }
 });
 
 //@desc delete a user
@@ -46,30 +56,21 @@ const deleteUsers = asyncHandler(async (req: Request, res: Response) => {
     throw new Error("Aucun utilisateur trouve");
   }
   await user.destroy();
-  res.status(204).send().json({ actionDone: true });
+  res.status(204).json({ actionDone: true });
 });
 
-//@desc All users with roles
-//@route /api/usersRoles/
-//@access public
-const allUsersRoles = asyncHandler(async (req: Request, res: Response) => {
-  const usersRoles = User.findAll({
-    include: [
-      {
-        model: Role,
-        through: { attributes: [] },
-      },
-    ],
-  });
-  res.status(200).json(usersRoles);
-});
-
-//@desc All users with roles
-//@route /api/usersRoles/
-//@access public
+//@desc a user with all roles
+//@route GET/api/usersRoles/:id
+//@access private
 const oneUsersRole = asyncHandler(async (req: Request, res: Response) => {
-  const { id } = req.params;
-  const usersRole = User.findByPk(id, {
+  const idUser = req.params.id;
+  const existUser = await User.findByPk(idUser);
+
+  if (!existUser) {
+    res.status(404).json({ errorMessage: "Cet utilisateur n'existe pas!" });
+  }
+  const usersRole = await User.findOne({
+    where: { idUser },
     include: [
       {
         model: Role,
@@ -77,6 +78,86 @@ const oneUsersRole = asyncHandler(async (req: Request, res: Response) => {
       },
     ],
   });
+
   res.status(200).json(usersRole);
 });
-export { allUSers, updateUsers, deleteUsers, allUsersRoles, oneUsersRole };
+
+//@desc assign a role to user
+//@route POST /api/users/:iduser/roles
+//@access private
+const asignRoleToUser = asyncHandler(async (req: Request, res: Response) => {
+  const idUser = req.params.id;
+  const { idRole } = req.body;
+
+  //verifier si le user existe
+  const existUser = await User.findByPk(idUser);
+  if (!existUser) {
+    res.status(404).json({ errorMessage: "Utilisateur non trouvé" });
+    return;
+  }
+
+  //verifier si le role existe
+  const existRole = await Role.findByPk(idRole);
+  if (!existRole) {
+    res.status(404).json({ errorMessage: "Rôle non trouvé" });
+    return;
+  }
+
+  //verifier si l'utilisateur a deja un role
+  const existUserRole = await UserRole.findOne({
+    where: { idUser: idUser, idRole: idRole },
+  });
+
+  if (existUserRole) {
+    res.status(400).json({ errorMessage: "L'utilisateur a déjà ce rôle." });
+    return;
+  }
+
+  //ajouter le role a un user
+  await UserRole.create({ idUser: idUser, idRole: idRole });
+  res.status(200).json({
+    message: "Rôle assigné avec succès à l'utilisateur",
+    nom: existUser.nom,
+    prenom: existUser.prenom,
+    tel: existUser.tel,
+    email: existUser.email,
+    role: existRole.nom,
+  });
+});
+
+//@desc remove a role to user
+//@route DELETE /api/users/:iduser/roles
+//@access private
+const removeRoleToUser = asyncHandler(async (req: Request, res: Response) => {
+  const { idUser, idRole } = req.params;
+
+  //verifier si le user existe
+  const existUser = await User.findByPk(idUser);
+  if (!existUser) {
+    res.status(404).json({ errorMessage: "Utilisateur non trouvé" });
+    return;
+  }
+
+  //verifier si le role existe
+  const existRole = await Role.findByPk(idRole);
+  if (!existRole) {
+    res.status(404).json({ errorMessage: "Rôle non trouvé" });
+    return;
+  }
+
+  //retirer le role a un user
+  await UserRole.destroy({ where: { idUser, idRole } });
+  res.status(200).json({
+    actionDone: true,
+    message: "Rôle retiré avec succès",
+  });
+});
+
+export {
+  allUSers,
+  updateUsers,
+  deleteUsers,
+  oneUsersRole,
+  asignRoleToUser,
+  removeRoleToUser,
+};
