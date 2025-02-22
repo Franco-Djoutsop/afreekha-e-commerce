@@ -3,6 +3,7 @@ import asyncHandler from "express-async-handler"; //equivalent au try-catch
 import User from "../models/User";
 import Role from "../models/Role";
 import UserRole from "../models/userRoles";
+import { crypt } from "../config/crypto-js";
 
 //@desc read all users
 //@route GET /api/users
@@ -16,11 +17,16 @@ const allUSers = asyncHandler(async (req: Request, res: Response) => {
       },
     ],
   });
-  res.status(200).json(users);
+  try {
+    res.status(200).json({ reps: crypt.encode(users), done: true });
+    console.log("first");
+  } catch (error: any) {
+    res.status(404).json({ messageError: error.message });
+  }
 });
 
 //@desc Update a user
-//@route PATCH /api/users/:id
+//@route PATCH /api/admin/users/:id
 //@access public
 const updateUsers = asyncHandler(async (req: Request, res: Response) => {
   const id = req.params.id;
@@ -39,7 +45,7 @@ const updateUsers = asyncHandler(async (req: Request, res: Response) => {
     user.tel = tel || user.tel;
     user.mot_de_passe = mot_de_passe || user.mot_de_passe;
     await user.save();
-    res.status(200).json(user);
+    res.status(200).json({ reps: user, done: true });
   } catch (error) {
     res.status(400).json(`Une erreur s'est produite : \n ${error}`);
   }
@@ -79,11 +85,11 @@ const oneUsersRole = asyncHandler(async (req: Request, res: Response) => {
     ],
   });
 
-  res.status(200).json(usersRole);
+  res.status(200).json({ reps: usersRole, done: true });
 });
 
 //@desc assign a role to user
-//@route POST /api/users/:iduser/roles
+//@route POST /api/users/roles/:iduser
 //@access private
 const asignRoleToUser = asyncHandler(async (req: Request, res: Response) => {
   const idUser = req.params.id;
@@ -115,13 +121,17 @@ const asignRoleToUser = asyncHandler(async (req: Request, res: Response) => {
 
   //ajouter le role a un user
   await UserRole.create({ idUser: idUser, idRole: idRole });
-  res.status(200).json({
+  const datas = {
     message: "Rôle assigné avec succès à l'utilisateur",
     nom: existUser.nom,
     prenom: existUser.prenom,
     tel: existUser.tel,
     email: existUser.email,
     role: existRole.nom,
+  };
+  res.status(200).json({
+    reps: datas,
+    done: true,
   });
 });
 

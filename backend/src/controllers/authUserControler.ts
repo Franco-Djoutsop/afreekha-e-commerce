@@ -7,6 +7,7 @@ import User from "../models/User";
 import jwt from "jsonwebtoken";
 import Role from "../models/Role";
 import { Op } from "sequelize";
+import { crypt } from "../config/crypto-js";
 
 //@desc register a user
 //@route POST /api/users
@@ -22,7 +23,7 @@ const register = asyncHandler(async (req: Request, res: Response) => {
     tel,
     mot_de_passe: hashpassword,
   });
-  res.status(201).json(user);
+  res.status(201).json({ reps: crypt.encode(user), done: true });
 });
 
 //@desc login a user
@@ -82,10 +83,8 @@ const login = asyncHandler(async (req: Request, res: Response) => {
     secretToken,
     { expiresIn: "10m" }
   );
-
-  res.status(200).json({
+  const reps = {
     user: {
-      accessToken,
       id: user.idUser,
       nom: user.nom,
       prenom: user.prenom,
@@ -96,6 +95,11 @@ const login = asyncHandler(async (req: Request, res: Response) => {
         nomRole: role.nom,
       })),
     },
+  };
+  res.status(200).json({
+    accessToken: accessToken,
+    reps: crypt.encode(reps),
+    done: true,
   });
 });
 
@@ -140,7 +144,9 @@ const sendEmail = asyncHandler(async (req: Request, res: Response) => {
   }
   console.log("hello");
 
-  res.status(200).json({ message: "Email de réinitialisation envoyé !" });
+  res
+    .status(200)
+    .json({ message: "Email de réinitialisation envoyé !", done: true });
 });
 
 //@desc reset password
@@ -169,9 +175,13 @@ const resetPassword = asyncHandler(async (req: Request, res: Response) => {
       resetToken: null,
       resetTokenExpires: null,
     });
-    res.json({ message: "Mot de passe réinitialisé avec succès" });
+    res.json({ message: "Mot de passe réinitialisé avec succès", done: true });
   } catch (error) {
     res.status(400).json({ message: `Une Erreur s'est produite : ${error}` });
   }
 });
+
+//@desc disconnect
+//@route POST /users/reset-password/:token
+//access public
 export { register, login, sendEmail, resetPassword };

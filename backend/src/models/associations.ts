@@ -9,9 +9,7 @@ import Article from "./Article";
 import Image from "./image";
 import CommandArticle from "./CommandArticle";
 
-// One-to-Many Relationship
-User.hasMany(Message, { foreignKey: "idUser", onDelete: "CASCADE" }); //a user can have many Message
-Message.belongsTo(User, { foreignKey: "idUser" }); //each message beyongs to one user
+// One-to-Many Rel0-89+ (User, { foreignKey: "idUser" }); //each message beyongs to one user
 
 // One User has Many Commands
 User.hasMany(Commande, { foreignKey: "idUser", onDelete: "CASCADE" });
