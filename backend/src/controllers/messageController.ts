@@ -10,7 +10,7 @@ const gest_message ={
 //@data = objet, response true ? false
     
 //envoi d'un message    
-async  createMessage(req: Request,res:Response){
+async  createMessage(req: Request,res:any){
         try{
             const data = req.body;
     
@@ -40,7 +40,7 @@ async  createMessage(req: Request,res:Response){
 
 //suppression dun message
 
-async deleteMessage(req:Request,res:Response){
+async deleteMessage(req:Request,res:any){
     try{
        let id = req.params.id
        const checkid = await message.findByPk(id);
@@ -73,7 +73,7 @@ async deleteMessage(req:Request,res:Response){
 
 //liste des message d'un utilisateur
 
-async getMessage(req:Request, res:Response){
+async getMessage(req:Request, res:any){
     try{
         const id = req.params.id;
         const information = await message.findAll(

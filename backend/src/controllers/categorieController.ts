@@ -12,10 +12,12 @@ const gest_categorie = {
 //@data = objet, response true ? false
 
 //creation d'une categorie
-   async addCategorie(req:Request, res:Response){
+   async addCategorie(req:Request, res:any){
     try{
       const data = req.body;
       console.log(data);
+      //const dataDecode = crypt.decode(req,res,data)
+     // console.log(dataDecode);
       if(data != null)
       {
         await Categorie.create({
@@ -29,11 +31,12 @@ const gest_categorie = {
       }
       return res.status(404).json({messages:'veilez fournir les donnees'});
        
-    }catch(error){
+    }catch(error: any){
       console.log(error);
       return res.status(500).json({
           'create':false,
-          'message':'echec de la creation'
+          'message':'echec de la creation',
+          error:error.message
       })
     }
 },
@@ -43,7 +46,7 @@ const gest_categorie = {
 //@response true ? false
 
 //mise a jour des information des  categorie
-async updateCategorie(req:Request,res:Response){
+async updateCategorie(req:Request,res:any){
     try{
         let id = req.params.id;
         const data = req.body;
@@ -77,7 +80,7 @@ async updateCategorie(req:Request,res:Response){
 //@response true ? false
 
 //suppression d'une categorie
-async deleteCategorie(req:Request,res:Response){
+async deleteCategorie(req:Request,res:any){
     try{
          let id = req.params.id;
          const deleteC = await Categorie.findByPk(id);
@@ -113,7 +116,7 @@ async deleteCategorie(req:Request,res:Response){
 
 //liste des articles de chaque des categories;
 
-async ArticleOfCategorie(req:Request,res:Response){
+async ArticleOfCategorie(req:Request,res:any){
     try{
         let id = req.params.id;
         const result = await Article.findAll({
@@ -148,7 +151,7 @@ async ArticleOfCategorie(req:Request,res:Response){
 //@response true ? false
 
 //liste des categorie
- async getCategorie(req:Request,res:Response){
+ async getCategorie(req:Request,res:any){
     try{
         const allCategorie = await Categorie.findAll({
             attributes:['nom']
@@ -175,7 +178,7 @@ async ArticleOfCategorie(req:Request,res:Response){
 //@response true ? false
 
 //liste des sous categorie de chaqur categorie
-async sousCategorie(req:Request,res:Response){
+async sousCategorie(req:Request,res:any){
     try{
          let id = req.params.id;
          const result = await SousCategorie.findAll({

@@ -12,7 +12,7 @@ const gest_sous_categorie = {
 //@data = objet, response true ? false
 
 //creation d'une sous categorie
- async addsousCategorie(req:Request,res:Response){
+ async addsousCategorie(req:Request,res:any){
     try{
         const data = req.body;
 
@@ -41,7 +41,7 @@ const gest_sous_categorie = {
 //@response true ? false
 
 //mise a jour des information des sous categorie
-async updateSousCategorie (req:Request,res:Response){
+async updateSousCategorie (req:Request,res:any){
     try{
         let id = req.params.id;
         const data = req.body;
@@ -67,7 +67,7 @@ async updateSousCategorie (req:Request,res:Response){
 
 //suppression d'une sous-categorie
 
-async deleteSousCategorie (req:Request,res:Response){
+async deleteSousCategorie (req:Request,res:any){
     try{
         let id = req.params.id;
         const checkid = await SousCategorie.findByPk(id);
@@ -96,7 +96,7 @@ async deleteSousCategorie (req:Request,res:Response){
 
 //liste des articles de chaque sous categorie des categories;
 
-async articleOfSousCategorie(req:Request,res:Response){
+async articleOfSousCategorie(req:Request,res:any){
     try{
         let id = req.params.id;
         const result = await Article.findAll({
@@ -134,7 +134,7 @@ async articleOfSousCategorie(req:Request,res:Response){
 //@response true ? false
 
 //liste des sous categorie et categorie
-async categorieAndSousCategorie(req:Request,res:Response){
+async categorieAndSousCategorie(req:Request,res:any){
     try{
        let id = req.params.id;
        const result = await SousCategorie.findAll({
@@ -163,7 +163,7 @@ async categorieAndSousCategorie(req:Request,res:Response){
 //@response true ? false
 
 //liste des toutes les sous categorie
-async allSousCategorie (req:Request,res:Response){
+async allSousCategorie (req:Request,res:any){
     try{
         const result = await SousCategorie.findAll({
             attributes:['nom']

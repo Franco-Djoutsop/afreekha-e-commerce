@@ -11,6 +11,55 @@ function handleValidationErrors(req: Request, res: Response, next: NextFunction)
   }
 
 
+  //middleware pour les categorie, sous-categorie paiement et message
+const addcategorie = [
+  body('nom').notEmpty().withMessage('nom de la categorie non definie'),
+  body('idUser').notEmpty().withMessage('fournir un identifiant'),
+  (req:Request,res:Response, next: NextFunction ) =>{
+    handleValidationErrors(req, res, next);
+  }
+]
+
+const updatecategorie = [
+      body('nom').notEmpty().withMessage('nom de la categorie non definie'),
+      (req:Request,res:Response, next: NextFunction ) =>{
+         handleValidationErrors(req, res, next);
+}
+]
+
+const createSousCategorie = [
+      body('nom').notEmpty().withMessage('nom de la sous categorie non definie'),
+      body('idCategorie').notEmpty().withMessage('fournir un identifiant'),
+         (req:Request,res:Response, next: NextFunction ) =>{
+           handleValidationErrors(req, res, next);
+}
+]
+
+const updatesousCategorie = [
+  body('nom').notEmpty().withMessage('nom de la sous categorie non definie'),
+     (req:Request,res:Response, next: NextFunction ) =>{
+       handleValidationErrors(req, res, next);
+}
+]
+
+const addMessage = [
+       body('contenus').notEmpty().withMessage('veillez entrer un message'),
+       body('idUser').notEmpty().withMessage('fournir un identifiant'),
+        (req:Request,res:Response, next: NextFunction ) =>{
+          handleValidationErrors(req, res, next);
+}
+]
+
+const addpaiement = [
+  body('montant').notEmpty().withMessage('nom de la sous categorie non definie'),
+  body('methodePaiement').notEmpty().withMessage('entrer la methode de paiment '),
+  body('idUser').notEmpty().withMessage('fournir un identifiant'),
+        (req:Request,res:Response, next: NextFunction ) =>{
+          handleValidationErrors(req, res, next);
+}
+]
+
+//midleware pour les articles , les image, les commnde
 const createArticleValidation = 
     [
         body('nom_article').notEmpty().withMessage("Nom de l'article non défini !"),
@@ -56,6 +105,12 @@ export {
         updateArticleValidation,
         updateArticleImg,
         createImgValidation,
-        createCommandeValidation
+        createCommandeValidation,
+        addcategorie,
+        updatecategorie,
+        createSousCategorie,
+        updatesousCategorie,
+        addMessage,
+        addpaiement
     
     }
