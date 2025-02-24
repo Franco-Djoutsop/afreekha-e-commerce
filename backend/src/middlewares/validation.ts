@@ -100,17 +100,34 @@ const createCommandeValidation = [
   body('idUser').notEmpty().withMessage("Id user non défini")
 ]
 
+const createInvoiceValidation = [
+  body("idCommande").notEmpty().withMessage("ID de la commande est obligatoire !"),
+  body('idArticles').notEmpty().withMessage("tableau d'id d'article est obligatoire"),
+  body('statut').notEmpty().withMessage("statut de la facture non fourni !")
+]
+
+const changeInvoiceStatus = [
+  body("status").notEmpty().withMessage("Nouveau status non fourni !"),
+  body("commandeId").notEmpty().withMessage("ID de la facture introuvable !")
+]
+
+
 export { 
         createArticleValidation, 
         updateArticleValidation,
         updateArticleImg,
         createImgValidation,
         createCommandeValidation,
+//<<<<<<< HEAD
         addcategorie,
         updatecategorie,
         createSousCategorie,
         updatesousCategorie,
         addMessage,
-        addpaiement
+        addpaiement,
+//=======
+        changeInvoiceStatus,
+        createInvoiceValidation
+//>>>>>>> vf1/vf1
     
     }

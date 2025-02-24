@@ -1,9 +1,17 @@
-import { DataTypes } from "sequelize";
+import { DataTypes, Model } from "sequelize";
 import { sequelize } from "../config/database";
 import User from "./User";
 
-const Paiement = sequelize.define(
-  "Paiement",
+class Paiement extends Model {
+  public idPaiement!: number;
+  public idUser!: number;
+  public montant!: number;
+  public methodePaiement!: string;
+  public date!: Date;
+}
+
+// Initialisation du modèle
+Paiement.init(
   {
     idPaiement: {
       type: DataTypes.INTEGER,
@@ -22,18 +30,25 @@ const Paiement = sequelize.define(
       type: DataTypes.FLOAT,
       allowNull: false,
     },
-
     methodePaiement: {
       type: DataTypes.STRING,
-      allowNull: false, // Example: "MOMO", "OM"
+      allowNull: false, // Ex: "MOMO", "OM", "Carte Bancaire"
     },
-
     date: {
       type: DataTypes.DATE,
       defaultValue: DataTypes.NOW,
     },
   },
-  { tableName: "paiements" }
+  {
+    sequelize,
+    modelName: "Paiement",
+    tableName: "paiements",
+    timestamps: false, // Désactive `updatedAt` si tu ne veux pas de mise à jour automatique
+  }
 );
+
+// // Association avec `User` (Un utilisateur peut effectuer plusieurs paiements)
+// User.hasMany(Paiement, { foreignKey: "idUser", as: "paiements" });
+// Paiement.belongsTo(User, { foreignKey: "idUser", as: "user" });
 
 export default Paiement;

@@ -1,9 +1,22 @@
+import { DataTypes, Model } from "sequelize";
 import { sequelize } from "../config/database";
-import { DataTypes } from "sequelize";
-import Categorie from "./categorie";
+import Categorie from "./categorie"; // Import du modèle Categorie
 
-const Article = sequelize.define(
-  "article",
+class Article extends Model {
+  public idArticle!: number;
+  public nom_article!: string;
+  public prix!: number;
+  public promo!: boolean;
+  public quantite!: number;
+  public caracteristiques!: string;
+  public pourcentage_promo?: number;
+  public marque?: string;
+  public garantie?: string;
+  public idCategorie!: number;
+}
+
+// Initialisation du modèle
+Article.init(
   {
     idArticle: {
       type: DataTypes.INTEGER,
@@ -14,43 +27,35 @@ const Article = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
-
     prix: {
       type: DataTypes.FLOAT,
       allowNull: false,
     },
-
     promo: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
       defaultValue: false,
     },
-
     quantite: {
       type: DataTypes.FLOAT,
       allowNull: false,
     },
-
     caracteristiques: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-
     pourcentage_promo: {
       type: DataTypes.FLOAT,
       allowNull: true,
     },
-
     marque: {
       type: DataTypes.STRING,
       allowNull: true,
     },
-
     garantie: {
       type: DataTypes.STRING,
       allowNull: true,
     },
-
     idCategorie: {
       type: DataTypes.INTEGER,
       allowNull: false,
@@ -60,7 +65,11 @@ const Article = sequelize.define(
       },
     },
   },
-  { tableName: "articles" }
+  {
+    sequelize,
+    modelName: "Article",
+    tableName: "articles",
+  }
 );
 
 export default Article;

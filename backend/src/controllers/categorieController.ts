@@ -9,7 +9,7 @@ import SousCategorie from "../models/SousCategorie";
 const gest_categorie = {
 //@route/api/admin/categorie
 //@mathod post
-//@data = objet, response true ? false
+//@response true ? false
 
 //creation d'une categorie
    async addCategorie(req:Request, res:any){

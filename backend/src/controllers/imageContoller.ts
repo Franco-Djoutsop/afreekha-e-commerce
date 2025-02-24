@@ -12,14 +12,15 @@ const ImageController = {
     //@urlbody :true
     async create(req: Request, res: any){
         try {
-            if(req.body.errors){
+            if(!req.body.errors){
                 const dossier = process.env.IMG_URL as string;
                 const { idArticle, base64Encryption, contentType} = req.body;
 
                 const decryptedID = crypt.idOnUrlDecoder(idArticle);
 
                 const resp = await GestionImage.createImg(base64Encryption, decryptedID, dossier, contentType);
-                return res.status(200).json([{resp: resp}]);
+
+                return typeof resp != "string" ?  res.status(200).json([{data: crypt.encode(resp)}]): res.status(200).json([]);
             }else{
                 return res.status(400).json([{message: "Informations manquantes pour continuer l'opération !"}])
             }
@@ -42,7 +43,7 @@ const ImageController = {
                 const resp = await GestionImage.update(base64Encryption, crypt.idOnUrlDecoder(idArticle), crypt.idOnUrlDecoder(idImage), dossier, contentType, old_link);
                 console.log('controller verif if it work', resp);
 
-                return res.status(200).json([{resp: resp}]);
+                return typeof resp != "string" ?  res.status(200).json([{data: crypt.encode(resp)}]): res.status(200).json([]);
             }else{
                 return res.status(400).json([{message: "Informations manquantes pour continuer l'opération !"}]);   
             }

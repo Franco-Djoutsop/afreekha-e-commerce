@@ -22,7 +22,6 @@ const sequelize = new Sequelize(
 
 // Import des modèles pour que Sequelize puisse les enregistrer avant de synchroniser
 import "../models/Article";
-import "../models/associations";
 import "../models/categorie";
 import "../models/CommandArticle";
 import "../models/Commande";
@@ -33,6 +32,7 @@ import "../models/Role";
 import "../models/SousCategorie";
 import "../models/User";
 import "../models/userRoles";
+import "../models/associations";
 
 //test the connection
 const connectDB = async () => {

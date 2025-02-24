@@ -1,21 +1,29 @@
-import { DataTypes } from "sequelize";
+import { DataTypes, Model } from "sequelize";
 import { sequelize } from "../config/database";
 
-const Role = sequelize.define(
-  "roles",
+class Role extends Model {
+  public idRole!: number;
+  public nom!: string;
+}
+
+Role.init(
   {
     idRole: {
       type: DataTypes.INTEGER,
       autoIncrement: true,
       primaryKey: true,
     },
-    name: {
+    nom: {
       type: DataTypes.STRING,
       allowNull: false,
       unique: true,
     },
   },
-  { tableName: "roles" }
+  {
+    sequelize,
+    modelName: "Role",
+    tableName: "roles",
+  }
 );
 
 export default Role;

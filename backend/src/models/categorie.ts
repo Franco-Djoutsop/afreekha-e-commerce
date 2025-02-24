@@ -1,9 +1,15 @@
-import { DataTypes } from "sequelize";
+import { DataTypes, Model } from "sequelize";
 import { sequelize } from "../config/database";
-import User from "./User";
+import User from "./User"; // Import du modèle User
 
-const Categorie = sequelize.define(
-  "categories",
+class Categorie extends Model {
+  public idCategorie!: number;
+  public nom!: string;
+  public idUser!: number;
+}
+
+// Initialisation du modèle
+Categorie.init(
   {
     idCategorie: {
       type: DataTypes.INTEGER,
@@ -24,7 +30,11 @@ const Categorie = sequelize.define(
       },
     },
   },
-  { tableName: "categories" }
+  {
+    sequelize,
+    modelName: "Categorie",
+    tableName: "categories",
+  }
 );
 
 export default Categorie;

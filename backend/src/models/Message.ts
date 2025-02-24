@@ -1,16 +1,22 @@
-import { DataTypes } from "sequelize";
+import { DataTypes, Model } from "sequelize";
 import { sequelize } from "../config/database";
 import User from "./User";
 
-const messages = sequelize.define(
-  "messages",
+class Message extends Model {
+  public idMessage!: number;
+  public idUser!: number;
+  public contenus!: string;
+  public createdAt!: Date;
+}
+
+// Initialisation du modèle
+Message.init(
   {
     idMessage: {
       type: DataTypes.INTEGER,
       autoIncrement: true,
       primaryKey: true,
     },
-
     idUser: {
       type: DataTypes.INTEGER,
       allowNull: false,
@@ -28,7 +34,16 @@ const messages = sequelize.define(
       defaultValue: DataTypes.NOW,
     },
   },
-  { tableName: "messages" }
+  {
+    sequelize,
+    modelName: "Message",
+    tableName: "messages",
+    timestamps: false, // Désactive `updatedAt` si tu ne veux pas de mise à jour automatique
+  }
 );
 
-export default messages;
+// // Association avec `User` (Un utilisateur peut envoyer plusieurs messages)
+// User.hasMany(Message, { foreignKey: "idUser", as: "messages" });
+// Message.belongsTo(User, { foreignKey: "idUser", as: "user" });
+
+export default Message;
