@@ -8,6 +8,7 @@ import Message from "./Message";
 import Article from "./Article";
 import Image from "./image";
 import CommandArticle from "./CommandArticle";
+import Paiement from "./Paiment";
 
 // One-to-Many Rel0-89+ (User, { foreignKey: "idUser" }); //each message beyongs to one user
 
