@@ -52,10 +52,4 @@ CommandArticle.init(
   }
 );
 
-// // Déclaration des associations (facultatif mais recommandé)
-// Commande.hasMany(CommandArticle, { foreignKey: "idCommande" });
-// Article.hasMany(CommandArticle, { foreignKey: "idArticle" });
-// CommandArticle.belongsTo(Commande, { foreignKey: "idCommande" });
-// CommandArticle.belongsTo(Article, { foreignKey: "idArticle" });
-
 export default CommandArticle;
