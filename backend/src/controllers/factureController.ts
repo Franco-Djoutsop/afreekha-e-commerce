@@ -17,7 +17,6 @@ const FactureController = {
           statut: statut,
           date: null,
         });
-
         return res.status(200).json([{ data: resp }]);
       }
     } catch (error: any) {
@@ -38,7 +37,7 @@ const FactureController = {
         return resp[0] != 0
           ? res
               .status(200)
-              .json([{ message: "Statut de la facture changé en : ", status }])
+              .json([{ message: "Statut de la facture changé en : " + status }])
           : res.status(200).json([]);
       }
     } catch (error: any) {
@@ -52,14 +51,13 @@ const FactureController = {
   async getFactureWithArticleUser(req: Request, res: any) {
     try {
       if (req.params.offset) {
-        console.log("first");
         const data = await GestionFacture.getFactureCommandUser(
           Number.parseInt(req.params.offset)
         );
         console.log(data);
         return data.length != 0
           ? res.status(200).json([{ data: crypt.encode(data) }])
-          : res.status(200).json([{ odf: req.params.params }]);
+          : res.status(200).json([]);
       }
     } catch (error: any) {
       return res.status(400).json([{ message: error.message }]);

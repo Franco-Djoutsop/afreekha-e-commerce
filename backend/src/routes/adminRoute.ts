@@ -2,6 +2,8 @@ import express, { Express } from "express";
 import { ArticleController } from "../controllers/articleController";
 import { ImageController } from "../controllers/imageContoller";
 import { crypt } from "../config/crypto-js";
+import jwt from "jsonwebtoken";
+
 import {
   createArticleValidation,
   updateArticleValidation,
@@ -32,12 +34,14 @@ routerAdmin.route("/").get((req, res) => {
 
 routerAdmin.post(
   "/article",
-  crypt.decode,
+  // validateToken,
+  // crypt.decode,
   createArticleValidation,
   ArticleController.create
 );
 routerAdmin.put(
   "/article",
+  validateToken,
   crypt.decode,
   updateArticleValidation,
   ArticleController.update
@@ -45,19 +49,40 @@ routerAdmin.put(
 routerAdmin.delete("/article/:id", ArticleController.destroy);
 routerAdmin.put(
   "/article-changes-categorie",
+  validateToken,
   crypt.decode,
   ArticleController.updateCategories
 );
-routerAdmin.post("/image", createArticleValidation, ImageController.create);
-routerAdmin.put("/image", updateArticleImg, ImageController.update);
-routerAdmin.delete("/image/:id", ImageController.destroy);
+routerAdmin.post(
+  "/image",
+  validateToken,
+  createArticleValidation,
+  ImageController.create
+);
+routerAdmin.put(
+  "/image",
+  validateToken,
+  updateArticleImg,
+  ImageController.update
+);
+routerAdmin.delete("/image/:id", validateToken, ImageController.destroy);
 
-routerAdmin.put("/facture", crypt.decode, FactureController.changeStatus);
+routerAdmin.put(
+  "/facture",
+  validateToken,
+  crypt.decode,
+  FactureController.changeStatus
+);
 routerAdmin.get(
   "/facture/:offset",
   FactureController.getFactureWithArticleUser
 );
-routerAdmin.post("/facture", crypt.decode, FactureController.create);
+routerAdmin.post(
+  "/facture",
+  validateToken,
+  crypt.decode,
+  FactureController.create
+);
 
 //users route
 routerAdmin.route("/users/:id").patch(crypt.decode, validateToken, updateUsers);

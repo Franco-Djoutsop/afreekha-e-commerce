@@ -18,7 +18,11 @@ const ArticleController = {
         article = req.body as Articles;
         const resp = await GestionArticle.save(article);
 
-        return res.status(200).json({ reps: crypt.encode(resp), done: true });
+        return res.status(200).json({
+          // reps: crypt.encode(resp),
+          reps: resp,
+          done: true,
+        });
       } else {
         // La validation a échoué, les erreurs sont dans req.body.errors
         return res.status(400).json({ message: req.body.errors[0].msg });
@@ -41,15 +45,13 @@ const ArticleController = {
         const resp = await GestionArticle.update(article);
 
         return resp
-          ? res
-              .status(200)
-              .json([
-                {
-                  isDone: true,
-                  data: resp,
-                  message: "Mise à jour effectué avec succés",
-                },
-              ])
+          ? res.status(200).json([
+              {
+                isDone: true,
+                data: resp,
+                message: "Mise à jour effectué avec succés",
+              },
+            ])
           : res.status(200).json([]);
       } else {
         return res.status(400).json({ message: req.body.errors[0].msg });

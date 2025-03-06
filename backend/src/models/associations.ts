@@ -80,8 +80,10 @@ Role.belongsToMany(User, { through: UserRole, foreignKey: "idRole" });
 Commande.belongsToMany(Article, {
   through: CommandArticle,
   foreignKey: "idCommande",
+  otherKey: "idArticle"
 });
 Article.belongsToMany(Commande, {
   through: CommandArticle,
   foreignKey: "idArticle",
+  otherKey:"idCommande"
 });
