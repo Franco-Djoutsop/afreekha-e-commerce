@@ -212,12 +212,130 @@ router.route("/users/reset-password/:token").post(resetPassword);
 router.route("/users").post(userValidationRules, validate, register);
 
 //client route
+
+/**
+ * @openapi
+ * /article-categorie/{id}:
+ *  get:
+ *    summary: Récupérer tous les articles par sa categorie
+ *    tags:
+ *      - Article
+ *    security:
+ *      - bearerAuth: []
+ *    responses:
+ *      200:
+ *        description: requete executée
+ *      400:
+ *        description: id de la categorie indefini
+ */
 router.get("/article-categorie/:id", ArticleController.getByCategorie);
-router.get("/article-promo/:offset", ArticleController.getByCategorie);
+
+/**
+ * @openapi
+ * /article-promo/{offset}:
+ *  get:
+ *    summary: liste des articles en promo
+ *    tags:
+ *     - Article
+ *     - name: limite de sélection des articles
+ *        in: path
+ *        required: true
+ *        schema:
+ *          type: integer
+ *          description: limite de selection
+ *      required: true
+ *      content:
+ *        application/json:
+ *         schema:
+             type: object
+ *          schema:
+ *            $ref: '#/components/schemas/UsersInput'
+ *    responses:
+ *      200:
+ *        description: Requete executée et resultat renvoyé
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/UsersInputResponse'
+ *      400:
+ *        description: Données invalides
+ *  
+ *      500:
+ *        description: Erreur serveur
+ *
+ */
+router.get("/article-promo/:offset", ArticleController.getArticlesOnPromo);
+
+/**
+ * @openapi
+ * /article-details/{id}:
+ *  get:
+ *    summary: Information sur un article
+ *    tags:
+ *      - Article
+ *      - name: id de l'article
+ *        in: path
+ *        required: true
+ *        schema:
+ *          type: integer
+ *          description: id de l'article
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            $ref: '#/components/schemas/UsersInput'
+ *    responses:
+ *           [
+ *              {
+ *                "data": "ecryptedData with crypto-js",
+ *               }
+ *            ]
+ *      200:
+ *        description: Requete executée et resultat renvoyé
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/UsersInputResponse'
+ *      400:
+ *        description: Données invalides
+ *  
+ *      500:
+ *        description: Erreur serveur
+ *
+ */
 router.get("/article-details/:id", ArticleController.getOne);
+
+/**
+ * @openapi
+ * /article/{offset}:
+ *  get:
+ *    summary: liste des articles
+ *    tags:
+ *      - Article
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            $ref: '#/components/schemas/UsersInput'
+ *    responses:
+ *      200:
+ *        description: Requete executée et resultat renvoyé
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/UsersInputResponse'
+ *      400:
+ *        description: Données invalides
+ *  
+ *      500:
+ *        description: Erreur serveur
+ *
+ */
 router.get("/article/:offset", ArticleController.getAll);
-router.get("/commande/:idArticle/:idUser", CommandeController.getCommad);
-router.delete("/commande/:id", CommandeController.delete);
-router.post("/commande", createCommandeValidation, CommandeController.create);
+router.get("/commande/:idArticle/:idUser",validateToken, CommandeController.getCommad);
+router.delete("/commande/:id",validateToken, CommandeController.delete);
+router.post("/commande",validateToken, createCommandeValidation, CommandeController.create);
 router.get("/my-facture/:offset/:idUser", FactureController.getFactureOfUser);
 export default router;

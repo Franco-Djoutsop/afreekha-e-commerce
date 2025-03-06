@@ -35,15 +35,10 @@ CommandArticle.init(
         key: "idArticle",
       },
     },
-    statut: {
-      type: DataTypes.STRING,
+    quantite : {
+      type: DataTypes.INTEGER,
       allowNull: false,
-      defaultValue: "Encours", // Exemple : "Encours", "Paye"
-    },
-    date: {
-      type: DataTypes.DATE,
-      defaultValue: DataTypes.NOW,
-    },
+    }
   },
   {
     sequelize,

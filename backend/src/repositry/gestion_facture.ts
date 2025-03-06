@@ -35,52 +35,43 @@ const GestionFacture = {
     },
 
     async getFactureCommandUser(offset: number){
-        const articlesWithFacturesAndUsers = await CommandArticle.findAll({
+        const articlesWithFacturesAndUsers = await Commande.findAll({
             offset: offset,
             limit: 15,
             order: [
-                ['idCommandArticle', 'DESC']
+                ['idCommande', 'DESC']
             ],
             include: [
               {
+                model: User,
+                required: true,
+                attributes: ["idUser", "nom", "prenom", "email", "tel"], // Sélectionne uniquement ces colonnes
+              },
+              {
                 model: Article,
                 required: true,
-                include: [
-                  {
-                    model: Commande,
-                    required: true,
-                    include: [
-                      {
-                        model: User,
-                        required: true,
-                        attributes: ["idUser", "nom", "prenom", "email", "tel"], // Sélectionne uniquement ces colonnes
-                      },
-                    ],
-                  },
-                ],
-              },
-            ],
+                attributes: ["idArticle", "nom_article", "prix"],
+                through: {
+                  attributes: ['quantite'], // Récupérer la quantité de chaque article commandé
+                },
+              }
+            ] 
           });
+          
 
           return articlesWithFacturesAndUsers;
     },
 
     async getFactureOfUser(offset: number, idUser: number){
-        const facturesOfUser = await CommandArticle.findAll({
+        const facturesOfUser = await Commande.findAll({
             limit: 15,
             offset: offset,
+            where: {idUser: idUser},
             include: [
               {
-                model: Commande,
+                model: User,
                 required: true,
-                where: { idUser: idUser },
-                include: [
-                  {
-                    model: User,
-                    required: true,
-                    attributes: ["idUser", "nom", "prenom", "tel"], 
-                  },
-                ],
+                attributes: ["idUser", "nom", "prenom", "tel"], 
               },
               {
                 model: Article,

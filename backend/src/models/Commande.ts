@@ -25,6 +25,11 @@ Commande.init(
       type: DataTypes.FLOAT,
       allowNull: false,
     },
+    statut: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      defaultValue: "Encours", // Exemple : "Encours", "Paye"
+    },
     idUser: {
       type: DataTypes.INTEGER,
       allowNull: false,
