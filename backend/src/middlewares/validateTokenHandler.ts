@@ -41,6 +41,7 @@ const validateToken = asyncHandler(
 
     try {
       const decoded = jwt.verify(token, secretToken) as { user: DecodedUser };
+      console.log("Token décodé :", decoded);
 
       if (!decoded || !decoded.user) {
         res.status(403).json({ errorMessage: "Format du token invalide" });

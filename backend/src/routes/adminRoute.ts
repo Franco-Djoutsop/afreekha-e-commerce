@@ -60,10 +60,8 @@ routerAdmin.get(
 routerAdmin.post("/facture", crypt.decode, FactureController.create);
 
 //users route
-routerAdmin
-  .route("/users/roles/:id")
-  .post(crypt.decode, validateToken, asignRoleToUser);
 routerAdmin.route("/users/:id").patch(crypt.decode, validateToken, updateUsers);
+routerAdmin.route("/users/:id/roles").post(validateToken, asignRoleToUser);
 routerAdmin.route("/users/:id").delete(validateToken, deleteUsers);
 routerAdmin
   .route("/users/:idUser/:idRole")

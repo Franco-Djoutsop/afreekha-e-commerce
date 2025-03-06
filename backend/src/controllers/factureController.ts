@@ -38,7 +38,7 @@ const FactureController = {
         return resp[0] != 0
           ? res
               .status(200)
-              .json([{ message: "Statut de la facture changé en : " + status }])
+              .json([{ message: "Statut de la facture changé en : ", status }])
           : res.status(200).json([]);
       }
     } catch (error: any) {

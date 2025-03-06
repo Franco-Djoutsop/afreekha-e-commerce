@@ -1,5 +1,9 @@
 import express, { Express } from "express";
-import { allUSers, oneUsersRole } from "../controllers/userControler";
+import {
+  allUSers,
+  getUserRole,
+  oneUsersRole,
+} from "../controllers/userControler";
 import { userValidationRules } from "../middlewares/validationsRules";
 import { validate } from "../middlewares/validate";
 import { allRoles } from "../controllers/roleControler";
@@ -113,7 +117,7 @@ router.route("/roles").get(validateToken, allRoles);
  *        description: Erreur serveur
  *
  */
-router.route("/auth").post(login);
+router.route("/auth").post(login, crypt.decode);
 /**
  * @openapi
  * /api/users/recovery-password:
@@ -210,6 +214,7 @@ router.route("/users/reset-password/:token").post(resetPassword);
  *
  */
 router.route("/users").post(userValidationRules, validate, register);
+router.route("/users/me").get(validateToken, getUserRole);
 
 //client route
 router.get("/article-categorie/:id", ArticleController.getByCategorie);

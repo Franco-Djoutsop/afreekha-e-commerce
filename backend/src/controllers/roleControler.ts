@@ -18,7 +18,11 @@ const createRole = asyncHandler(async (req: Request, res: Response) => {
 //@access public
 const allRoles = asyncHandler(async (req: Request, res: Response) => {
   const roles = await Role.findAll();
-  res.status(200).json({ reps: crypt.encode(roles), done: true });
+  res.status(200).json({
+    // reps: crypt.encode(roles),
+    reps: roles,
+    done: true,
+  });
 });
 
 //@desc update a role
