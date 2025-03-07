@@ -5,9 +5,10 @@ import Image from "../models/image";
 const GestionArticle ={
 
      async save(artilce: Articles){
+    
            const dataRetrieves = await Article.create(artilce);
             
-           return dataRetrieves;
+           return dataRetrieves.dataValues;
         }, 
 
     async update(article: Articles){

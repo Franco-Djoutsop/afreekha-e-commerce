@@ -19,11 +19,11 @@ const ArticleController = {
              article =  req.body as Articles;
              const resp = await GestionArticle.save(article);
             
-           return res.status(200).json({reps: crypt.encode(resp), done: true});
+            return res.status(200).json([{data: resp, done: true }]);
     
         } else {
             // La validation a échoué, les erreurs sont dans req.body.errors
-            return res.status(400).json({ message: req.body.errors[0].msg });
+            return res.status(401).json({ message: req.body.errors[0].msg });
         }
         
         
