@@ -8,6 +8,7 @@ import { Articles } from "../repositry/objets/article";
 //@bodyparams :true
 const ArticleController = {
   async create(req: Request, res: any) {
+    console.log("before creation");
     try {
       // Vérification, si des erreurs de validation sont présentes
       if (!req.body.errors) {
@@ -17,7 +18,6 @@ const ArticleController = {
 
         article = req.body as Articles;
         const resp = await GestionArticle.save(article);
-
         return res.status(200).json({
           // reps: crypt.encode(resp),
           reps: resp,

@@ -1,4 +1,12 @@
 import express, { Express } from "express";
+//<<<<<<< HEAD
+import gest_message from "../controllers/messageController";
+import gest_paiement from "../controllers/paiementController";
+import gest_categorie from "../controllers/categorieController";
+import { addMessage, addpaiement } from "../middlewares/validation";
+import { createCommandeValidation } from "../middlewares/validation";
+import { ArticleController } from "../controllers/articleController";
+//=======
 import {
   allUSers,
   getUserRole,
@@ -14,11 +22,17 @@ import {
   sendEmail,
 } from "../controllers/authUserControler";
 import { validateToken } from "../middlewares/validateTokenHandler";
-import { ArticleController } from "../controllers/articleController";
+//import { ArticleController } from "../controllers/articleController";
+//>>>>>>> vf1/vf1
 import { CommandeController } from "../controllers/commandController";
+import gest_sous_categorie from "../controllers/sousCategorieController";
+
 import { crypt } from "../config/crypto-js";
-import { createCommandeValidation } from "../middlewares/validation";
+//<<<<<<< HEAD
+//=======
+//import { createCommandeValidation } from "../middlewares/validation";
 import { FactureController } from "../controllers/factureController";
+//>>>>>>> vf1/vf1
 
 const router = express.Router();
 
@@ -42,6 +56,29 @@ router.route("/").get((req, res) => {
  */
 router.route("/users").get(validateToken, allUSers);
 
+//<<<<<<< HEAD
+//categorie
+router.get("/allCategorie", gest_categorie.getCategorie);
+router.get("/sousCategorieOfCategorie/:id", gest_categorie.sousCategorie);
+router.get("/articleOfCategorie/:id", gest_categorie.ArticleOfCategorie);
+
+//sous categorie
+router.get("/allSousCategorie", gest_sous_categorie.allSousCategorie);
+router.get(
+  "/articleOfSousCategorie/:id",
+  gest_sous_categorie.articleOfSousCategorie
+);
+router.get(
+  "/categorieAndSousCategorie/:id",
+  gest_sous_categorie.categorieAndSousCategorie
+);
+
+//message
+router.post("/message", crypt.decode, addMessage, gest_message.createMessage);
+
+//paiement
+router.post("/paiement", crypt.decode, addpaiement, gest_paiement.addPaiement);
+//=======
 /**
  * @openapi
  * /api/usersRoles/{idUser}:
@@ -304,7 +341,7 @@ router.get("/article-promo/:offset", ArticleController.getArticlesOnPromo);
  *              $ref: '#/components/schemas/UsersInputResponse'
  *      400:
  *        description: Données invalides
- *  
+ *
  *      500:
  *        description: Erreur serveur
  *
@@ -333,14 +370,24 @@ router.get("/article-details/:id", ArticleController.getOne);
  *              $ref: '#/components/schemas/UsersInputResponse'
  *      400:
  *        description: Données invalides
- *  
+ *
  *      500:
  *        description: Erreur serveur
  *
  */
 router.get("/article/:offset", ArticleController.getAll);
-router.get("/commande/:idArticle/:idUser",validateToken, CommandeController.getCommad);
-router.delete("/commande/:id",validateToken, CommandeController.delete);
-router.post("/commande",validateToken, createCommandeValidation, CommandeController.create);
+router.get(
+  "/commande/:idArticle/:idUser",
+  validateToken,
+  CommandeController.getCommad
+);
+router.delete("/commande/:id", validateToken, CommandeController.delete);
+router.post(
+  "/commande",
+  // validateToken,
+  createCommandeValidation,
+  CommandeController.create
+);
 router.get("/my-facture/:offset/:idUser", FactureController.getFactureOfUser);
+//>>>>>>> vf1/vf1
 export default router;

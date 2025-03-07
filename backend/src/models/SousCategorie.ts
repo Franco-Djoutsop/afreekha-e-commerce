@@ -2,6 +2,9 @@ import { DataTypes, Model } from "sequelize";
 import { sequelize } from "../config/database";
 import Categorie from "./categorie";
 
+//<<<<<<< HEAD
+
+//=======
 class SousCategorie extends Model {
   public idSousCategorie!: number;
   public nom!: string;
@@ -10,6 +13,7 @@ class SousCategorie extends Model {
 
 // Initialisation du modèle
 SousCategorie.init(
+  //>>>>>>> vf1/vf1
   {
     idSousCategorie: {
       type: DataTypes.INTEGER,

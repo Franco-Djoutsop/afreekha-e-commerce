@@ -13,7 +13,7 @@ const gest_paiement = {
 
 //enregistrement d'un paiement
 
-async addPaiement(req:Request,res:Response){
+async addPaiement(req:Request,res:any){
     try{
         const data = req.body;
         
@@ -44,7 +44,7 @@ async addPaiement(req:Request,res:Response){
 //@response true data:allPaiement? false data = []; allPaiement = objet
 
 //liste des paiements;
-async showpaiement(req:Request,res:Response){
+async showpaiement(req:Request,res:any){
     try{
         const allPaiement = await Paiement.findAll({
             attributes:['montant','methodePaiement','date']
@@ -74,7 +74,7 @@ async showpaiement(req:Request,res:Response){
 //@response true ? false
 
 //liste des paiement d'un utilisateur
-async showDetailUserPaiement (req:Request,res:Response){
+async showDetailUserPaiement (req:Request,res:any){
     try{
         let id = req.params.id;
         

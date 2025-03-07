@@ -58,7 +58,7 @@ Image.belongsTo(Article, {
   onUpdate: "CASCADE",
 });
 
-// One User has Many Categories
+// One categorie has Many sub-Categories
 Categorie.hasMany(SousCategorie, {
   foreignKey: "idCategorie",
   onDelete: "CASCADE",
@@ -67,6 +67,16 @@ Categorie.hasMany(SousCategorie, {
 
 SousCategorie.belongsTo(Categorie, {
   foreignKey: "idCategorie",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
+SousCategorie.hasMany(Article, {
+  foreignKey: "idSousCategorie",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
+Article.belongsTo(SousCategorie, {
+  foreignKey: "idSousCategorie",
   onDelete: "CASCADE",
   onUpdate: "CASCADE",
 });
@@ -80,10 +90,10 @@ Role.belongsToMany(User, { through: UserRole, foreignKey: "idRole" });
 Commande.belongsToMany(Article, {
   through: CommandArticle,
   foreignKey: "idCommande",
-  otherKey: "idArticle"
+  otherKey: "idArticle",
 });
 Article.belongsToMany(Commande, {
   through: CommandArticle,
   foreignKey: "idArticle",
-  otherKey:"idCommande"
+  otherKey: "idCommande",
 });

@@ -3,10 +3,6 @@ import dotenv from "dotenv";
 import { connectDB } from "./config/database";
 import router from "./routes/clientRoute";
 import routerAdmin from "./routes/adminRoute";
-import routeMessage from "./routes/routeMessage";
-import routePaiement from "./routes/routePaiement";
-import routeCategorie from "./routes/routeCategorie";
-import routeSousCategorie from "./routes/routeSousCategorie";
 import cors from "cors";
 import bodyParser from "body-parser";
 import errorHandler from "./middlewares/errorHandler";
@@ -34,10 +30,6 @@ app.use(bodyParser.urlencoded());
 app.use(express.json());
 
 app.use("/api", router);
-app.use("/message", routeMessage);
-app.use("/paiement", routePaiement);
-app.use("/categorie",routeCategorie);
-app.use('/sousCategorie',routeSousCategorie);
 app.use("/api/admin", routerAdmin);
 
 app.use(errorHandler);

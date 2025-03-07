@@ -1,8 +1,10 @@
 import express, { Express } from "express";
-import { ArticleController } from "../controllers/articleController";
-import { ImageController } from "../controllers/imageContoller";
 import { crypt } from "../config/crypto-js";
-import jwt from "jsonwebtoken";
+import gest_message from "../controllers/messageController";
+import { ImageController } from "../controllers/imageContoller";
+import gest_categorie from "../controllers/categorieController";
+import { ArticleController } from "../controllers/articleController";
+import gest_sous_categorie from "../controllers/sousCategorieController";
 
 import {
   createArticleValidation,
@@ -10,6 +12,14 @@ import {
   createImgValidation,
   updateArticleImg,
 } from "../middlewares/validation";
+import {
+  addcategorie,
+  updatecategorie,
+  updatesousCategorie,
+  createSousCategorie,
+} from "../middlewares/validation";
+import gest_paiement from "../controllers/paiementController";
+
 import { FactureController } from "../controllers/factureController";
 import { validateToken } from "../middlewares/validateTokenHandler";
 import {
@@ -26,6 +36,77 @@ import {
 } from "../controllers/roleControler";
 
 const routerAdmin = express.Router();
+const router = express.Router();
+
+//<<<<<<< HEAD
+//Admin route
+routerAdmin.route("/").get((req, res) => {
+  res.status(200).json({ message: "displays lists of users" });
+});
+
+routerAdmin.post(
+  "/article",
+  crypt.decode,
+  createArticleValidation,
+  ArticleController.create
+);
+routerAdmin.put(
+  "/article",
+  crypt.decode,
+  updateArticleValidation,
+  ArticleController.update
+);
+routerAdmin.delete("/article/:id", ArticleController.destroy);
+routerAdmin.put(
+  "/article-changes-categorie",
+  crypt.decode,
+  ArticleController.updateCategories
+);
+routerAdmin.post("/image", createImgValidation, ImageController.create);
+routerAdmin.put("/image", updateArticleImg, ImageController.update);
+routerAdmin.delete("/image/:id", ImageController.destroy);
+
+//categorie
+routerAdmin.post(
+  "/categorie",
+  // crypt.decode,
+  addcategorie,
+  gest_categorie.addCategorie
+);
+routerAdmin.put(
+  "/categorie/:id",
+  crypt.decode,
+  updatecategorie,
+  gest_categorie.updateCategorie
+);
+routerAdmin.delete("/categorie/:id", gest_categorie.deleteCategorie);
+
+//sous categorie
+routerAdmin.post(
+  "/sousCategorie",
+  crypt.decode,
+  createSousCategorie,
+  gest_sous_categorie.addsousCategorie
+);
+routerAdmin.put(
+  "/sousCategorie/:id",
+  crypt.decode,
+  updatesousCategorie,
+  gest_sous_categorie.updateSousCategorie
+);
+routerAdmin.delete(
+  "/deleteSousCategorie/:id",
+  gest_sous_categorie.deleteSousCategorie
+);
+
+//message
+routerAdmin.get("/detail-message/:id", gest_message.getMessage);
+routerAdmin.delete("/message/:id", gest_message.deleteMessage);
+
+//paiement
+routerAdmin.get("/allpaiement", gest_paiement.showpaiement);
+routerAdmin.get("/detail-paiement/:id", gest_paiement.showDetailUserPaiement);
+//export default routerAdmin;
 
 //client route
 routerAdmin.route("/").get((req, res) => {
@@ -223,3 +304,4 @@ routerAdmin.route("/roleUsers/:id").get(validateToken, roleUsers);
  */
 routerAdmin.route("/roles/:id").delete(validateToken, deleteRole);
 export default routerAdmin;
+//>>>>>>> vf1/vf1

@@ -9,7 +9,7 @@ const gest_message = {
   //@data = objet, response true ? false
 
   //envoi d'un message
-  async createMessage(req: Request, res: Response) {
+  async createMessage(req: Request, res: any) {
     try {
       const data = req.body;
 
@@ -36,9 +36,7 @@ const gest_message = {
   //@method delete
   //@response true ? false
 
-  //suppression dun message
-
-  async deleteMessage(req: Request, res: Response) {
+  async deleteMessage(req: Request, res: any) {
     try {
       let id = req.params.id;
       const checkid = await message.findByPk(id);
@@ -46,30 +44,29 @@ const gest_message = {
         return res.status(404).json({
           message: "aucun message trouve",
         });
+        return res.status(201).json({
+          send: true,
+          message: "message envoyez avec sucess!!",
+        });
       }
-      await message.destroy({
-        where: {
-          idMessage: id,
-        },
-      });
-      return res.status(200).json({
-        message: "suppression reussi",
-      });
+      return res.status(404).json({ message: "veuillez fournir les donnees" });
     } catch (error) {
-      console.log(error);
-      res.status(500).json({
-        message: "erreur sur le serveur",
+      return res.status(500).json({
+        message: "echec de l'envoi",
+        erreur: console.log(error),
       });
     }
   },
 
-  //@route /api/admin/detail-message
-  //@method get
+  //@route /api/admin/message
+  //@method delete
   //@response true ? false
+
+  //suppression dun message
 
   //liste des message d'un utilisateur
 
-  async getMessage(req: Request, res: Response) {
+  async getMessage(req: Request, res: any) {
     try {
       const id = req.params.id;
       const information = await message.findAll({
@@ -102,5 +99,9 @@ const gest_message = {
       });
     }
   },
+
+  //@route /api/admin/detail-message
+  //@method get
+  //@response true ? false
 };
 export default gest_message;
