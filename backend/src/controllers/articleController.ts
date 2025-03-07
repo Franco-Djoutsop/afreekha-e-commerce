@@ -16,16 +16,20 @@ const ArticleController = {
         // Les données sont validées et disponibles dans req.body
         let article: any;
 
-        article = req.body as Articles;
-        const resp = await GestionArticle.save(article);
-        return res.status(200).json({
-          // reps: crypt.encode(resp),
-          reps: resp,
-          done: true,
-        });
-      } else {
-        // La validation a échoué, les erreurs sont dans req.body.errors
-        return res.status(400).json({ message: req.body.errors[0].msg });
+        // Vérification, si des erreurs de validation sont présentes
+        if (!req.body.errors) {
+          // Si req.body.errors n'existe pas, alor la validation a réussi
+          // Les données sont validées et disponibles dans req.body
+          let article: any;
+
+          article = req.body as Articles;
+          const resp = await GestionArticle.save(article);
+
+          return res.status(200).json([{ data: resp, done: true }]);
+        } else {
+          // La validation a échoué, les erreurs sont dans req.body.errors
+          return res.status(401).json({ message: req.body.errors[0].msg });
+        }
       }
     } catch (err: any) {
       return res.status(400).send([{ message: err.message }]);

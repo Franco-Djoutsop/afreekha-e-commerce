@@ -3,11 +3,10 @@ import { Articles } from "./objets/article";
 import Image from "../models/image";
 
 const GestionArticle = {
-  async save(article: Articles) {
-    console.log("first");
-    const dataRetrieves = await Article.create(article);
+  async save(artilce: Articles) {
+    const dataRetrieves = await Article.create(artilce);
 
-    return dataRetrieves;
+    return dataRetrieves.dataValues;
   },
 
   async update(article: Articles) {

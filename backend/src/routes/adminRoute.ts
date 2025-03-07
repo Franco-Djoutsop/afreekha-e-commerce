@@ -113,10 +113,9 @@ routerAdmin.route("/").get((req, res) => {
   res.status(200).json({ message: "displays lists of users" });
 });
 
-routerAdmin.post(
-  "/article",
+routerAdmin.route("/article").post(
   // validateToken,
-  // crypt.decode,
+  //crypt.decode,
   createArticleValidation,
   ArticleController.create
 );
