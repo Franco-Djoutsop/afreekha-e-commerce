@@ -14,7 +14,7 @@ const FactureController = {
 
                 const resp = await GestionFacture.create({idCommande: idCommande, idArtice: idArticles, statut: statut, date: null});
 
-                return res.status(200).json([{data: resp}]);
+                return res.status(200).json([{data: crypt.encode(resp)}]);
             }    
         } catch (error: any) {
             return res.status(400).json([{message: error.message}]);
@@ -45,7 +45,7 @@ const FactureController = {
         try {
             if(req.params.offset){
                 const data = await GestionFacture.getFactureCommandUser(Number.parseInt(req.params.offset));
-                console.log(data);
+                
                 return data.length != 0 ? res.status(200).json([{data: crypt.encode(data)}]):res.status(200).json([]);
             }
         } catch (error: any) {

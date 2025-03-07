@@ -1,3 +1,4 @@
+import { sequelize } from "../config/database";
 import Article from "../models/Article";
 import CommandArticle from "../models/CommandArticle";
 import Commande from "../models/Commande";
@@ -38,27 +39,25 @@ const GestionFacture = {
         const articlesWithFacturesAndUsers = await Commande.findAll({
             offset: offset,
             limit: 15,
+            
             order: [
                 ['idCommande', 'DESC']
             ],
             include: [
               {
                 model: User,
-                required: true,
                 attributes: ["idUser", "nom", "prenom", "email", "tel"], // Sélectionne uniquement ces colonnes
               },
               {
                 model: Article,
-                required: true,
                 attributes: ["idArticle", "nom_article", "prix"],
                 through: {
                   attributes: ['quantite'], // Récupérer la quantité de chaque article commandé
-                },
-              }
-            ] 
+                }
+              }      
+            ]
           });
-          
-
+        
           return articlesWithFacturesAndUsers;
     },
 
@@ -69,14 +68,18 @@ const GestionFacture = {
             where: {idUser: idUser},
             include: [
               {
-                model: User,
-                required: true,
-                attributes: ["idUser", "nom", "prenom", "tel"], 
+                model: Article,
+                 // INNER JOIN avec Article
+                through: {
+                  attributes: ['quantite']
+                }
               },
               {
-                model: Article,
-                required: true, // INNER JOIN avec Article
-              },
+                model: User,
+                //required: true,
+                attributes: ["idUser", "nom", "prenom", "tel"], 
+              }
+              
             ],
           });
 

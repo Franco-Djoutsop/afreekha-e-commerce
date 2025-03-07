@@ -1,7 +1,8 @@
 import { Request, Response } from "express";
 import { GestionArticle } from "../repositry/gestion_articles";
-import { crypt } from "../config/crypto-js";
+import  {crypt}  from "../config/crypto-js";
 import { Articles } from "../repositry/objets/article";
+import CryptoJS from "crypto-js";
 
 const ArticleController = {
     //@route /api/admin/article
@@ -19,7 +20,7 @@ const ArticleController = {
              article =  req.body as Articles;
              const resp = await GestionArticle.save(article);
             
-            return res.status(200).json([{data: resp, done: true }]);
+            return res.status(200).json([{data: crypt.encode(resp), done: true }]);
     
         } else {
             // La validation a échoué, les erreurs sont dans req.body.errors
@@ -45,7 +46,7 @@ const ArticleController = {
                 
                 const resp = await GestionArticle.update(article);
 
-                return resp ? res.status(200).json([{isDone: true, data: resp, message:"Mise à jour effectué avec succés"}]): res.status(200).json([]);
+                return resp ? res.status(200).json([{isDone: true, data: crypt.encode(resp), message:"Mise à jour effectué avec succés"}]): res.status(200).json([]);
 
             }else{
 

@@ -39,6 +39,7 @@ routerAdmin.post(
   createArticleValidation,
   ArticleController.create
 );
+
 routerAdmin.put(
   "/article",
   validateToken,

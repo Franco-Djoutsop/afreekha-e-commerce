@@ -7,8 +7,9 @@ dotenv.config();
 const crypt = {
     encode(value: any){
         const key = process.env.HASH_KEY as string;
+        console.log(key);
         const iv = CryptoJS.lib.WordArray.random(16); // Générer un IV aléatoire
-        const ciphertext = CryptoJS.AES.encrypt(JSON.stringify(value), key, { iv: iv });
+        const ciphertext = CryptoJS.AES.encrypt(JSON.stringify(value), key, {iv: iv});
         return ciphertext.toString();
     },
 
@@ -33,4 +34,4 @@ const crypt = {
 
 }
 
-export { crypt }
+export { crypt };
