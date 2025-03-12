@@ -4,6 +4,7 @@ import Image from "../models/image";
 
 const GestionArticle = {
   async save(artilce: Articles) {
+    console.log("first");
     const dataRetrieves = await Article.create(artilce);
 
     return dataRetrieves.dataValues;

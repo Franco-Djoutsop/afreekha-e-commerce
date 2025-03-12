@@ -56,7 +56,7 @@ const updateUsers = asyncHandler(async (req: Request, res: Response) => {
 });
 
 //@desc delete a user
-//@route DEL /api/users/:id
+//@route DEL /api/admin/users/:id
 //@access public
 const deleteUsers = asyncHandler(async (req: Request, res: Response) => {
   const id = req.params.id;

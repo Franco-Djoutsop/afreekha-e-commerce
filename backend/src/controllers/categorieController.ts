@@ -65,6 +65,7 @@ const gest_categorie = {
       return res.status(200).json({
         update: true,
         message: "mise a jour reussi",
+        data: updateData,
       });
     } catch (error) {
       console.log(error);
@@ -172,7 +173,10 @@ const gest_categorie = {
           messages: "aucune categorie pour le moment",
         });
       }
-      return res.status(200).json({ data: crypt.encode(allCategorie) });
+      return res.status(200).json({
+        // data: crypt.encode(allCategorie)
+        data: allCategorie,
+      });
     } catch (error) {
       console.log(error);
       res.status(500).json({

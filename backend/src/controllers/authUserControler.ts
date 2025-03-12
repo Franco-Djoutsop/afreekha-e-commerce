@@ -30,6 +30,7 @@ const register = asyncHandler(async (req: Request, res: Response) => {
 //@route POST /api/auth
 //@access public
 const login = asyncHandler(async (req: Request, res: Response) => {
+  console.log("first");
   const { tel, email, mot_de_passe } = req.body;
   if ((!tel && !email) || !mot_de_passe) {
     res.status(400);

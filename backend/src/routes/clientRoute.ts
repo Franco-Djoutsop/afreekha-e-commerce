@@ -69,7 +69,7 @@ router.get(
   gest_sous_categorie.articleOfSousCategorie
 );
 router.get(
-  "/categorieAndSousCategorie/:id",
+  "/categorieAndSousCategorie",
   gest_sous_categorie.categorieAndSousCategorie
 );
 

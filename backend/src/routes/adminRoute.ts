@@ -46,7 +46,7 @@ routerAdmin.route("/").get((req, res) => {
 
 routerAdmin.post(
   "/article",
-  crypt.decode,
+  // crypt.decode,
   createArticleValidation,
   ArticleController.create
 );
@@ -75,7 +75,7 @@ routerAdmin.post(
 );
 routerAdmin.put(
   "/categorie/:id",
-  crypt.decode,
+  // crypt.decode,
   updatecategorie,
   gest_categorie.updateCategorie
 );
@@ -84,7 +84,7 @@ routerAdmin.delete("/categorie/:id", gest_categorie.deleteCategorie);
 //sous categorie
 routerAdmin.post(
   "/sousCategorie",
-  crypt.decode,
+  // crypt.decode,
   createSousCategorie,
   gest_sous_categorie.addsousCategorie
 );
@@ -113,12 +113,6 @@ routerAdmin.route("/").get((req, res) => {
   res.status(200).json({ message: "displays lists of users" });
 });
 
-routerAdmin.route("/article").post(
-  // validateToken,
-  //crypt.decode,
-  createArticleValidation,
-  ArticleController.create
-);
 routerAdmin.put(
   "/article",
   validateToken,
