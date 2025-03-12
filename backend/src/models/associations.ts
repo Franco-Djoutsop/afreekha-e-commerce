@@ -9,6 +9,7 @@ import Article from "./Article";
 import Image from "./image";
 import CommandArticle from "./CommandArticle";
 import Paiement from "./Paiment";
+import ArticleImage from "./ArticleImage";
 
 // One-to-Many Rel0-89+ (User, { foreignKey: "idUser" }); //each message beyongs to one user
 
@@ -47,16 +48,21 @@ Article.belongsTo(Categorie, {
 });
 
 // One User has Many Categories
-Article.hasMany(Image, {
+// Article.hasMany(Image, {
+//   foreignKey: "idArticle",
+//   onDelete: "CASCADE",
+//   onUpdate: "CASCADE",
+// });
+// Image.belongsTo(Article, {
+//   foreignKey: "idArticle",
+//   onDelete: "CASCADE",
+//   onUpdate: "CASCADE",
+// });
+Article.belongsToMany(Image, {
+  through: ArticleImage,
   foreignKey: "idArticle",
-  onDelete: "CASCADE",
-  onUpdate: "CASCADE",
 });
-Image.belongsTo(Article, {
-  foreignKey: "idArticle",
-  onDelete: "CASCADE",
-  onUpdate: "CASCADE",
-});
+Image.belongsToMany(Article, { through: ArticleImage, foreignKey: "idImage" });
 
 // One categorie has Many sub-Categories
 Categorie.hasMany(SousCategorie, {
