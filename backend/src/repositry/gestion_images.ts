@@ -33,13 +33,7 @@ const GestionImage = {
     },
 
     async articleImageAssigment($idArticle: number, $idImage: number){
-        const resp = await Image.update(
-            {idArticle: $idArticle},
-            {
-                where: {
-                    idImage: $idImage
-                }
-            }
+        const resp = await Image.create(
         );
 
         return resp

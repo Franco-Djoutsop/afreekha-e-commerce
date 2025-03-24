@@ -46,20 +46,31 @@ const updateArticleImg = [
 ]
 
 const createCommandeValidation = [
-  body("Montant_total").notEmpty().withMessage("Montant total pas fourni !"),
-  body("quantite_articles").notEmpty().withMessage("Quantite d'article necessaire !"),
-  body('idUser').notEmpty().withMessage("Id user non défini")
+     body('article')
+        .isArray({ min: 1 }).withMessage("Le champ 'article' doit être un tableau contenant au moins un article"),
+
+    body('article.*.idArticle')
+        .isInt({ gt: 0 }).withMessage("L'ID de l'article doit être un entier positif"),
+
+    body('article.*.quantite')
+        .isInt({ gt: 0 }).withMessage("La quantité doit être un entier positif"),
+
+    body('idUser')
+        .isInt({ gt: 0 }).withMessage("L'ID de l'utilisateur doit être un entier positif"),
+
+    body('statut')
+        .isIn(['payé', 'en attente']).withMessage("Le statut doit être 'payé' ou 'en attente'")
+      
 ]
 
 const createInvoiceValidation = [
   body("idCommande").notEmpty().withMessage("ID de la commande est obligatoire !"),
   body('idArticles').notEmpty().withMessage("tableau d'id d'article est obligatoire"),
-  body('statut').notEmpty().withMessage("statut de la facture non fourni !")
 ]
 
 const changeInvoiceStatus = [
   body("status").notEmpty().withMessage("Nouveau status non fourni !"),
-  body("commandeId").notEmpty().withMessage("ID de la facture introuvable !")
+  body("commandeId").notEmpty().withMessage("ID de la commande introuvable !")
 ]
 
 

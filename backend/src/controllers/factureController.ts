@@ -1,6 +1,7 @@
 import { Request } from "express";
 import { GestionFacture } from "../repositry/gestion_facture";
 import { crypt } from "../config/crypto-js";
+import { GestionCommande } from "../repositry/gestion_commande";
 
 const FactureController = {
 
@@ -27,10 +28,12 @@ const FactureController = {
     async changeStatus(req: Request, res: any){
         try {
             if(!req.body.errors){
-                const { status, invoiceId } = req.body;
+                const { status, commandeId } = req.body;
 
-                const resp = await GestionFacture.changeStatus(status, invoiceId);
-                
+                const resp = await GestionCommande.changeStatus(status, commandeId);
+                if(status == "payé"){
+                    
+                }
                 return resp[0] != 0 ? res.status(200).json([{message: "Statut de la facture changé en : " + status}]): res.status(200).json([]);
             }
         } catch (error: any) {

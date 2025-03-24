@@ -8,7 +8,7 @@ class Article extends Model {
   public prix!: number;
   public promo!: boolean;
   public quantite!: number;
-  public caracteristiques!: string;
+  public caracteristiques?: string;
   public pourcentage_promo?: number;
   public marque?: string;
   public garantie?: string;

@@ -4,7 +4,7 @@ import { Commande as Commande_model } from './objets/commande';
 
 const GestionCommande = {
     async create(commande: Commande_model){
-        const queryRslt = await Commande.create({commande});
+        const queryRslt = await Commande.create(commande);
 
         return queryRslt;
     },
@@ -18,6 +18,19 @@ const GestionCommande = {
 
         return queryRslt;
     },
+
+    async changeStatus(status: string, id: number){
+      const queryRslt = await Commande.update(
+          {statut: status},
+          {
+              where: {
+                  idCommande: id
+              }
+          }
+      );
+
+      return queryRslt;
+  },
 
     async getCommandOwner(idCommande: number, idUser: number){
      const commandsWithUsers = await Commande.findAll({

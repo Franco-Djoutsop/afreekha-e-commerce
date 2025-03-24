@@ -22,18 +22,6 @@ const GestionFacture = {
         }
     },
 
-    async changeStatus(status: string, id: number){
-        const queryRslt = await CommandArticle.update(
-            {statut: status},
-            {
-                where: {
-                    idCommandArticle: id
-                }
-            }
-        );
-
-        return queryRslt;
-    },
 
     async getFactureCommandUser(offset: number){
         const articlesWithFacturesAndUsers = await Commande.findAll({

@@ -1,7 +1,8 @@
 import Article from "../models/Article"
 import { Articles } from "./objets/article";
 import Image from "../models/image";
-import { fn, col, literal } from "sequelize";
+import { fn, col, literal, Sequelize } from "sequelize";
+import {sequelize} from "../config/database"; // Adjust the path as necessary
 import Commande from "../models/Commande";
 import CommandArticle from "../models/CommandArticle";
 
@@ -186,6 +187,28 @@ const GestionArticle ={
             });
     
             return topArticles;
+        },
+
+        async updateArticleQty(articleID: number, qty: number){
+            const transaction = await sequelize.transaction();
+            
+            const article = await Article.findByPk(articleID, { transaction });
+
+            if (!article) {
+                throw new Error(`Article ID ${articleID} non trouvé`);
+            }
+
+            // Vérifier que la quantité demandée ne dépasse pas le stock actuel
+            if (article.quantite < qty) {
+                throw new Error(`Stock insuffisant pour l'article ID ${articleID}`);
+            }
+
+            // Mettre à jour la quantité
+            article.quantite -= qty;
+            await article.save({ transaction });
+            await transaction.commit(); // Valider la transaction
+            
+            return { success: true, message: "Stock mis à jour avec succès" };
         }
 };
 

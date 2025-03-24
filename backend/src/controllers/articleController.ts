@@ -3,6 +3,7 @@ import { GestionArticle } from "../repositry/gestion_articles";
 import  {crypt}  from "../config/crypto-js";
 import { Articles } from "../repositry/objets/article";
 import CryptoJS from "crypto-js";
+import { GestionImage } from "../repositry/gestion_images";
 
 const ArticleController = {
     //@route /api/admin/article
@@ -19,7 +20,8 @@ const ArticleController = {
             
              article =  req.body as Articles;
              const resp = await GestionArticle.save(article);
-            
+             //const imgAssigment = await GestionImage.articleImageAssigment(article.idArtice, article.idImage);
+
             return res.status(200).json([{data: crypt.encode(resp), done: true }]);
     
         } else {
