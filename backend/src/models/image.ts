@@ -1,11 +1,9 @@
 import { DataTypes, Model } from "sequelize";
 import { sequelize } from "../config/database";
-import Article from "./Article";
 
 class Image extends Model {
   public idImage!: number;
   public lien!: string;
-  public idArticle!: number;
 }
 
 // Initialisation du modèle
@@ -20,14 +18,7 @@ Image.init(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    idArticle: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      references: {
-        model: Article,
-        key: "idArticle",
-      },
-    },
+   
   },
   {
     sequelize,

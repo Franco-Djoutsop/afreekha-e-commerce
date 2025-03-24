@@ -1,6 +1,7 @@
 import User from "./User";
 import Role from "./Role";
 import UserRole from "./userRoles";
+import ImageArticle from "./ImageArticle";
 import Commande from "./Commande";
 import Categorie from "./categorie";
 import SousCategorie from "./SousCategorie";
@@ -25,13 +26,17 @@ Categorie.belongsTo(User, { foreignKey: "idUser" });
 User.hasMany(Paiement,{foreignKey: "idUser", onDelete: "CASCADE", onUpdate:"CASCADE"});
 Paiement.belongsTo(User,{foreignKey:"idUser"});
 
+//One User has Many message
+User.hasMany(Message,{foreignKey:"idUser",onDelete:"CASCADE",onUpdate:"CASCADE"})
+Message.belongsTo(User,{foreignKey:"idUser"})
+
 // One User has Many Categories
 Categorie.hasMany(Article, { foreignKey: "idCategorie" });
 Article.belongsTo(Categorie, { foreignKey: "idCategorie",onDelete: "CASCADE",onUpdate:"CASCADE" });
 
 // One User has Many Categories
-Article.hasMany(Image, { foreignKey: "idArticle" });
-Image.belongsTo(Article, { foreignKey: "idArticle", onDelete: "CASCADE",onUpdate:"CASCADE" });
+Article.belongsToMany(Image, {  through: ImageArticle, foreignKey: "idArticle"});
+Image.belongsToMany(Article, {through:ImageArticle,foreignKey:"idImage" });
 
 // One User has Many Categories
 Categorie.hasMany(SousCategorie, {foreignKey: "idCategorie"});
