@@ -1,6 +1,9 @@
 import Article from "../models/Article"
 import { Articles } from "./objets/article";
 import Image from "../models/image";
+import { fn, col, literal } from "sequelize";
+import Commande from "../models/Commande";
+import CommandArticle from "../models/CommandArticle";
 
 const GestionArticle ={
 
@@ -54,7 +57,41 @@ const GestionArticle ={
             const data = await Article.findAll(
                 {
                     where: {
-                        promo : 1
+                        promo : true
+                    },
+                    offset: offset,
+                    limit: 15,
+                    include: [{
+                        model: Image,
+                        required: true
+                    }]
+                }
+            )
+            return data;
+        },
+
+        async getArticleOnFeatured(offset: number){
+            const data = await Article.findAll(
+                {
+                    where: {
+                        featured : true
+                    },
+                    offset: offset,
+                    limit: 15,
+                    include: [{
+                        model: Image,
+                        required: true
+                    }]
+                }
+            )
+            return data;
+        },
+
+        async getArticleOnTrend(offset: number){
+            const data = await Article.findAll(
+                {
+                    where: {
+                        trend : true
                     },
                     offset: offset,
                     limit: 15,
@@ -117,6 +154,38 @@ const GestionArticle ={
             )
             
             return queryResp;
+        },
+
+        async getTopArticleSeller(){
+            const topArticles = await Article.findAll({
+                attributes: [
+                    'id',
+                    'nom_article',
+                    [fn('SUM', col('CommandArticle.quantite')), 'total_vendu']
+                ],
+                include: [
+                    {
+                        model: CommandArticle,
+                        as: 'CommandArticle',
+                        attributes: [],
+                        include: [
+                            {
+                                model: Commande,
+                                as: 'Commande',
+                                attributes: [],
+                                where: {
+                                    statut: 'payé'
+                                }
+                            }
+                        ]
+                    }
+                ],
+                group: ['Article.id'],
+                order: [[literal('total_vendu'), 'DESC']],
+                limit: 10 
+            });
+    
+            return topArticles;
         }
 };
 

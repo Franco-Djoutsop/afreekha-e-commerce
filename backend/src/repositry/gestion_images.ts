@@ -1,6 +1,7 @@
 import Image from "../models/image";
 import { MoveImg, DeleteImg } from "../config/img_file";
 import dotenv from 'dotenv';
+import { Op } from "sequelize";
 
 dotenv.config();
 
@@ -61,6 +62,31 @@ const GestionImage = {
             }
 
             return "";
+    },
+
+    async getOne(id: number){
+        const dataRetrieve = await Image.findAll({
+            where: {
+                idImage : id
+            }
+        });
+        return dataRetrieve;
+     },
+
+    async getFeatured(){
+        const data = await Image.findAll({
+            attributes: ['id', 'lien'],
+            limit: 8,
+            where: {
+                featured: true,
+                idCategory: {
+                    [Op.not]: null
+                }
+            }
+        });
+
+        return data;
+
     },
 
    async execCreationImg(base64: string, dossier: string, contentType: string): Promise<any>{

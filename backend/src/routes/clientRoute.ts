@@ -15,12 +15,15 @@ import { CommandeController } from "../controllers/commandController";
 import { crypt } from "../config/crypto-js";
 import { createCommandeValidation } from "../middlewares/validation";
 import { FactureController } from "../controllers/factureController";
+import { HomeController } from "../controllers/homeController";
 
 const router = express.Router();
 
 router.route("/").get((req, res) => {
   res.status(200).json({ message: "displays lists of users" });
 });
+router.get("/home-data", HomeController.getHomeData);
+
 /**
  * @openapi
  * /api/users:
