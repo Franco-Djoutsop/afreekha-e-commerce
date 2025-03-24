@@ -60,9 +60,9 @@ Article.init(
       allowNull: true,
     },
     isVogue: {
-      type: DataTypes.STRING,
+      type: DataTypes.BOOLEAN,
       allowNull: false,
-      defaultValue: "Pas vogue",
+      defaultValue: false,
     },
     statut: {
       type: DataTypes.STRING,

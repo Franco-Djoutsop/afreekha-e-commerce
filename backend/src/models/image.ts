@@ -21,11 +21,16 @@ Image.init(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    isVogue: {
-      type: DataTypes.STRING,
+    featured: {
+      type: DataTypes.BOOLEAN,
       allowNull: false,
-      defaultValue: "Pas vogue",
+      defaultValue: false,
     },
+    inTrend: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
+    }
 
     // idArticle: {
     //   type: DataTypes.INTEGER,
