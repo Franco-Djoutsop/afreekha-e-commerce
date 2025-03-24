@@ -45,7 +45,7 @@ router.route("/").get((req, res) => {
  *      401:
  *        description: Non autorisé
  */
-router.route("/users").get(validateToken, allUSers);
+router.route("/users").get(allUSers);
 
 //<<<<<<< HEAD
 //categorie
@@ -106,7 +106,7 @@ router.route("/usersRoles/:id").get(validateToken, oneUsersRole);
  *      404:
  *        description: une erreur est survenue
  */
-router.route("/roles").get(validateToken, allRoles);
+router.route("/roles").get(allRoles);
 
 //authentification
 /**
@@ -235,7 +235,7 @@ router.route("/users/reset-password/:token").post(resetPassword);
  *        description: Erreur serveur
  *
  */
-router.route("/users").post(userValidationRules, validate, register);
+router.route("/users").post(userValidationRules,crypt.decode, validate, register);
 
 //client route
 router.get("/article-categorie/:id", ArticleController.getByCategorie);

@@ -43,12 +43,13 @@ router.put('/sousCategorie/:id',crypt.decode,updatesousCategorie ,gest_sous_cate
 router.delete('/deleteSousCategorie/:id',gest_sous_categorie.deleteSousCategorie);
 
 //message
-router.get('/detail-message/:id',gest_message.getMessage);
-router.delete('/message/:id', gest_message.deleteMessage);
+routerAdmin.get('/detail-message/:id',gest_message.getMessage);
+routerAdmin.delete('/message/:id', gest_message.deleteMessage);
+routerAdmin.get('/message',gest_message.getAllMessage)
 
  //paiement
- router.get('/allpaiement',gest_paiement.showpaiement);
-router.get('/detail-paiement/:id',gest_paiement.showDetailUserPaiement)
+ routerAdmin.get('/allpaiement',gest_paiement.showpaiement);
+routerAdmin.get('/detail-paiement/:id',gest_paiement.showDetailUserPaiement)
 //export default router;
 
 //client route
@@ -79,21 +80,14 @@ routerAdmin.put("/image", updateArticleImg, ImageController.update);
 routerAdmin.delete("/image/:id", ImageController.destroy);
 
 routerAdmin.put("/facture", crypt.decode, FactureController.changeStatus);
-routerAdmin.get(
-  "/facture/:offset",
-  FactureController.getFactureWithArticleUser
-);
+routerAdmin.get("/facture/:offset",FactureController.getFactureWithArticleUser);
 routerAdmin.post("/facture", crypt.decode, FactureController.create);
 
 //users route
-routerAdmin
-  .route("/users/roles/:id")
-  .post(crypt.decode, validateToken, asignRoleToUser);
-routerAdmin.route("/users/:id").patch(crypt.decode, validateToken, updateUsers);
-routerAdmin.route("/users/:id").delete(validateToken, deleteUsers);
-routerAdmin
-  .route("/users/:idUser/:idRole")
-  .delete(validateToken, removeRoleToUser);
+routerAdmin.route("/users/roles/:id").post(crypt.decode, validateToken, asignRoleToUser);
+routerAdmin.route("/users/:id").patch(crypt.decode, updateUsers);
+routerAdmin.route("/users/:id").delete(deleteUsers);
+routerAdmin.route("/users/:idUser/:idRole").delete(validateToken, removeRoleToUser);
 
 //role route
 /**
@@ -168,7 +162,7 @@ routerAdmin.route("/roles").post(crypt.decode, createRole);
  *        description: Erreur liée au serveur
  */
 
-routerAdmin.route("/roles/:id").put(validateToken, updateRole);
+routerAdmin.route("/roles/:id").put(updateRole);
 
 /**
  * @openapi
@@ -224,6 +218,6 @@ routerAdmin.route("/roleUsers/:id").get(validateToken, roleUsers);
  *      404:
  *        description : Role non trouve
  */
-routerAdmin.route("/roles/:id").delete(validateToken, deleteRole);
+routerAdmin.route("/roles/:id").delete(deleteRole);
 export default routerAdmin;
 //>>>>>>> vf1/vf1
