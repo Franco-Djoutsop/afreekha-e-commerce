@@ -1,5 +1,6 @@
 import { Request } from "express";
 import { GestionArticle } from "../repositry/gestion_articles";
+import { GestionImage } from "../repositry/gestion_images";
 import { crypt } from "../config/crypto-js";
 
 const HomeController = {
@@ -14,6 +15,7 @@ const HomeController = {
                 articlesFeature : await GestionArticle.getArticleOnFeatured(offset),
                 articlesBestSell: await GestionArticle.getTopArticleSeller(),
                 articlesTrend: await GestionArticle.getArticleOnTrend(offset),
+                imageFeatured: await GestionImage.getFeatured()
             };
 
             const response = {
@@ -45,8 +47,8 @@ const HomeController = {
                     /*list_categories: [{
                       ...attributs de la categorie
                       sous_categorie: SousCategorie[];
-                    }],
-                     v_img: image[]*/
+                    }],*/
+                     v_img: data.imageFeatured
                 }
             }
             return res.status(200).json([{data: crypt.encode(response.data)}]);

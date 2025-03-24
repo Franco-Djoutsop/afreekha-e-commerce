@@ -32,6 +32,20 @@ const GestionImage = {
         return resp;
     },
 
+    async articleImageAssigment($idArticle: number, $idImage: number){
+        const resp = await Image.update(
+            {idArticle: $idArticle},
+            {
+                where: {
+                    idImage: $idImage
+                }
+            }
+        );
+
+        return resp
+
+    },
+
     async update(base64: string, idArticle: number, idImage: number, dossier: string, contentType: string, old_link?: string){
             let old_linkDeleted = false;
 
