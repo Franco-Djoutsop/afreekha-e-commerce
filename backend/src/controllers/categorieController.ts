@@ -123,14 +123,14 @@ async ArticleOfCategorie(req:Request,res:any){
           where:{
             idCategorie:id
          },
-               attributes:['nom_article','prix','quantite','caracteristiques','marque','garantie','promo','pourcentage_promo'],
+               attributes:['idArticle','nom_article','prix','quantite','caracteristiques','marque','garantie','promo','pourcentage_promo'],
                  include:[
                    {
                   model:Categorie, 
-                  attributes:['nom']}, 
+                  attributes:['idCategorie','nom']}, 
                   {
                   model:Image,
-                  attributes:['lien'],
+                  attributes:['idImage','lien'],
                },   
              ],
         });
@@ -187,19 +187,20 @@ async sousCategorie(req:Request,res:any){
             },
                include:[
                   {
-                    model:Categorie, attributes:['nom']
+                    model:Categorie, attributes:['idCategorie','nom']
                   }
                ],
-           attributes:['nom']
+               
+           attributes:['idSousCategorie','nom']
          });
 
-         if(result[0]==null){
+         if(result == null){
             return res.status(404).json({
                 'message':'cette categorie na pas de sous categorie ','data':[]})
          }
          return res.status(200).json({
             'isHere':true,
-            'data': crypt.encode(result)
+            'data': result
          })
     }catch(error){
         console.log(error);

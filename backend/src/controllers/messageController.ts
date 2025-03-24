@@ -76,7 +76,7 @@ async deleteMessage(req:Request,res:any){
 async getMessage(req:Request, res:any){
     try{
         const id = req.params.id;
-        const information = await message.findAll(
+        const information = await message.findOne(
             {  
                 where:
                 {
@@ -85,14 +85,14 @@ async getMessage(req:Request, res:any){
             
                 include:[
                     { 
-                        model:User, attributes:['idUser','nom','prenom','tel']
+                        model:User, attributes:['idUser','nom','tel']
                     },
                 ],
                 attributes:['contenus'],
             }
         )
         
-        if(information[0]==null){
+        if(information==null){
             return res.status(404).json({
                 'data':[],
                 'message':'aucun message trouve pour ce client'
@@ -107,6 +107,37 @@ async getMessage(req:Request, res:any){
        return res.status(500).json({
         'message':'erreur du serveur'
        })
+    }
+},
+
+async getAllMessage(req:Request, res:any){
+    try{
+        const getMessage = await message.findAll(
+            {  
+                include:[
+                    { 
+                        model:User, attributes:['idUser','nom','tel']
+                    },
+                ],
+                attributes:['contenus','createdAt'],
+            }
+        )
+        
+        if(getMessage[0]==null){
+            return res.status(404).json({
+                'data':[],
+                'message':'aucun message trouve'
+            });
+        }
+            return res.status(200).json({
+                'data': (getMessage)
+             })
+    }catch(error){
+        console.log(error);
+        return res.status(500).json({
+            'get':false,
+            'error': console.log('erreur sur le serveur:',error)
+        })
     }
 }
 
