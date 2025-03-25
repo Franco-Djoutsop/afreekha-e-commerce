@@ -3,15 +3,24 @@ import express, { Express } from "express";
 import gest_message from "../controllers/messageController";
 import gest_paiement from "../controllers/paiementController";
 import gest_categorie from "../controllers/categorieController";
-import { addMessage,addpaiement } from "../middlewares/validation";
+import { addMessage, addpaiement } from "../middlewares/validation";
 import { createCommandeValidation } from "../middlewares/validation";
-import  {ArticleController}  from "../controllers/articleController";
+import { ArticleController } from "../controllers/articleController";
 //=======
-import { allUSers, oneUsersRole } from "../controllers/userControler";
+import {
+  allUSers,
+  getUserRole,
+  oneUsersRole,
+} from "../controllers/userControler";
 import { userValidationRules } from "../middlewares/validationsRules";
 import { validate } from "../middlewares/validate";
 import { allRoles } from "../controllers/roleControler";
-import {login,register,resetPassword,sendEmail} from "../controllers/authUserControler";
+import {
+  login,
+  register,
+  resetPassword,
+  sendEmail,
+} from "../controllers/authUserControler";
 import { validateToken } from "../middlewares/validateTokenHandler";
 //import { ArticleController } from "../controllers/articleController";
 //>>>>>>> vf1/vf1
@@ -49,20 +58,26 @@ router.route("/users").get(allUSers);
 
 //<<<<<<< HEAD
 //categorie
-router.get('/allCategorie',gest_categorie.getCategorie);
-router.get('/sousCategorieOfCategorie/:id',gest_categorie.sousCategorie);
-router.get('/articleOfCategorie/:id',gest_categorie.ArticleOfCategorie);
+router.get("/allCategorie", gest_categorie.getCategorie);
+router.get("/sousCategorieOfCategorie/:id", gest_categorie.sousCategorie);
+router.get("/articleOfCategorie/:id", gest_categorie.ArticleOfCategorie);
 
 //sous categorie
-router.get('/allSousCategorie',gest_sous_categorie.allSousCategorie);
-router.get('/articleOfSousCategorie/:id',gest_sous_categorie.articleOfSousCategorie);
-router.get('/categorieAndSousCategorie/:id',gest_sous_categorie.categorieAndSousCategorie);
+router.get("/allSousCategorie", gest_sous_categorie.allSousCategorie);
+router.get(
+  "/articleOfSousCategorie/:id",
+  gest_sous_categorie.articleOfSousCategorie
+);
+router.get(
+  "/categorieAndSousCategorie",
+  gest_sous_categorie.categorieAndSousCategorie
+);
 
 //message
-router.post('/message',crypt.decode,addMessage,gest_message.createMessage);
+router.post("/message", crypt.decode, addMessage, gest_message.createMessage);
 
- //paiement
- router.post('/paiement',crypt.decode,addpaiement,gest_paiement.addPaiement);
+//paiement
+router.post("/paiement", crypt.decode, addpaiement, gest_paiement.addPaiement);
 //=======
 /**
  * @openapi
@@ -139,7 +154,7 @@ router.route("/roles").get(allRoles);
  *        description: Erreur serveur
  *
  */
-router.route("/auth").post(login);
+router.route("/auth").post(login, crypt.decode);
 /**
  * @openapi
  * /api/users/recovery-password:
@@ -235,16 +250,148 @@ router.route("/users/reset-password/:token").post(resetPassword);
  *        description: Erreur serveur
  *
  */
+//<<<<<<< HEAD
 router.route("/users").post(userValidationRules,crypt.decode, validate, register);
+//=======
+router.route("/users").post(userValidationRules, validate, register);
+router.route("/users/me").get(validateToken, getUserRole);
+//>>>>>>> vf1/vf1
 
 //client route
+
+/**
+ * @openapi
+ * /article-categorie/{id}:
+ *  get:
+ *    summary: Récupérer tous les articles par sa categorie
+ *    tags:
+ *      - Article
+ *    security:
+ *      - bearerAuth: []
+ *    responses:
+ *      200:
+ *        description: requete executée
+ *      400:
+ *        description: id de la categorie indefini
+ */
 router.get("/article-categorie/:id", ArticleController.getByCategorie);
-router.get("/article-promo/:offset", ArticleController.getByCategorie);
+
+/**
+ * @openapi
+ * /article-promo/{offset}:
+ *  get:
+ *    summary: liste des articles en promo
+ *    tags:
+ *     - Article
+ *     - name: limite de sélection des articles
+ *        in: path
+ *        required: true
+ *        schema:
+ *          type: integer
+ *          description: limite de selection
+ *      required: true
+ *      content:
+ *        application/json:
+ *         schema:
+             type: object
+ *          schema:
+ *            $ref: '#/components/schemas/UsersInput'
+ *    responses:
+ *      200:
+ *        description: Requete executée et resultat renvoyé
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/UsersInputResponse'
+ *      400:
+ *        description: Données invalides
+ *  
+ *      500:
+ *        description: Erreur serveur
+ *
+ */
+router.get("/article-promo/:offset", ArticleController.getArticlesOnPromo);
+
+/**
+ * @openapi
+ * /article-details/{id}:
+ *  get:
+ *    summary: Information sur un article
+ *    tags:
+ *      - Article
+ *      - name: id de l'article
+ *        in: path
+ *        required: true
+ *        schema:
+ *          type: integer
+ *          description: id de l'article
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            $ref: '#/components/schemas/UsersInput'
+ *    responses:
+ *           [
+ *              {
+ *                "data": "ecryptedData with crypto-js",
+ *               }
+ *            ]
+ *      200:
+ *        description: Requete executée et resultat renvoyé
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/UsersInputResponse'
+ *      400:
+ *        description: Données invalides
+ *
+ *      500:
+ *        description: Erreur serveur
+ *
+ */
 router.get("/article-details/:id", ArticleController.getOne);
+
+/**
+ * @openapi
+ * /article/{offset}:
+ *  get:
+ *    summary: liste des articles
+ *    tags:
+ *      - Article
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            $ref: '#/components/schemas/UsersInput'
+ *    responses:
+ *      200:
+ *        description: Requete executée et resultat renvoyé
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/UsersInputResponse'
+ *      400:
+ *        description: Données invalides
+ *
+ *      500:
+ *        description: Erreur serveur
+ *
+ */
 router.get("/article/:offset", ArticleController.getAll);
-router.get("/commande/:idArticle/:idUser", CommandeController.getCommad);
-router.delete("/commande/:id", CommandeController.delete);
-router.post("/commande", createCommandeValidation, CommandeController.create);
+router.get(
+  "/commande/:idArticle/:idUser",
+  validateToken,
+  CommandeController.getCommad
+);
+router.delete("/commande/:id", validateToken, CommandeController.delete);
+router.post(
+  "/commande",
+  // validateToken,
+  createCommandeValidation,
+  CommandeController.create
+);
 router.get("/my-facture/:offset/:idUser", FactureController.getFactureOfUser);
 //>>>>>>> vf1/vf1
 export default router;

@@ -1,25 +1,46 @@
-import express,{Express} from "express";
+import express, { Express } from "express";
 import { crypt } from "../config/crypto-js";
 import gest_message from "../controllers/messageController";
 import { ImageController } from "../controllers/imageContoller";
-import gest_categorie  from "../controllers/categorieController";
-import  {ArticleController}  from "../controllers/articleController";
+import gest_categorie from "../controllers/categorieController";
+import { ArticleController } from "../controllers/articleController";
 import gest_sous_categorie from "../controllers/sousCategorieController";
 
-import { createArticleValidation, updateArticleValidation, createImgValidation, updateArticleImg } from "../middlewares/validation";
-import { addcategorie,updatecategorie,updatesousCategorie,createSousCategorie } from "../middlewares/validation";
+import {
+  createArticleValidation,
+  updateArticleValidation,
+  createImgValidation,
+  updateArticleImg,
+} from "../middlewares/validation";
+import {
+  addcategorie,
+  updatecategorie,
+  updatesousCategorie,
+  createSousCategorie,
+} from "../middlewares/validation";
 import gest_paiement from "../controllers/paiementController";
 
 import { FactureController } from "../controllers/factureController";
 import { validateToken } from "../middlewares/validateTokenHandler";
-import {asignRoleToUser,deleteUsers,removeRoleToUser,updateUsers} from "../controllers/userControler";
-import {createRole,deleteRole,roleUsers,updateRole} from "../controllers/roleControler";
+import {
+  asignRoleToUser,
+  deleteUsers,
+  removeRoleToUser,
+  updateUsers,
+} from "../controllers/userControler";
+import {
+  createRole,
+  deleteRole,
+  roleUsers,
+  updateRole,
+} from "../controllers/roleControler";
 
 const routerAdmin = express.Router();
 const router = express.Router();
 
 //<<<<<<< HEAD
 //Admin route
+//<<<<<<< HEAD
 router.route("/").get((req, res) => {
   res.status(200).json({ message: "displays lists of users" });
 });
@@ -53,13 +74,15 @@ routerAdmin.get('/detail-paiement/:id',gest_paiement.showDetailUserPaiement)
 //export default router;
 
 //client route
+//=======
+//>>>>>>> vf1/vf1
 routerAdmin.route("/").get((req, res) => {
   res.status(200).json({ message: "displays lists of users" });
 });
 
 routerAdmin.post(
   "/article",
-  crypt.decode,
+  // crypt.decode,
   createArticleValidation,
   ArticleController.create
 );
@@ -75,7 +98,7 @@ routerAdmin.put(
   crypt.decode,
   ArticleController.updateCategories
 );
-routerAdmin.post("/image", createArticleValidation, ImageController.create);
+routerAdmin.post("/image", createImgValidation, ImageController.create);
 routerAdmin.put("/image", updateArticleImg, ImageController.update);
 routerAdmin.delete("/image/:id", ImageController.destroy);
 

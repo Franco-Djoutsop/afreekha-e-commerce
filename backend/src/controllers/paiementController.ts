@@ -47,7 +47,11 @@ async addPaiement(req:Request,res:any){
 async showpaiement(req:Request,res:any){
     try{
         const allPaiement = await Paiement.findAll({
-            attributes:['montant','methodePaiement','date']
+            attributes:['montant','methodePaiement','date'],
+            include:[{
+                model:User,
+                attributes:['nom','tel']
+            }]
          });
          if(allPaiement[0]==null)
          {

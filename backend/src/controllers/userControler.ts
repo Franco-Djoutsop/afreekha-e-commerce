@@ -9,6 +9,7 @@ import { crypt } from "../config/crypto-js";
 //@desc read all users
 //@route GET /api/users
 //@access private
+//<<<<<<< HEAD
 const allUSers = asyncHandler(async (req: Request, res: any) => {
   try{
     const users = await User.findAll({
@@ -21,7 +22,7 @@ const allUSers = asyncHandler(async (req: Request, res: any) => {
     });
     if(users){
       console.log(users);
-     return res.status(200).json({ reps: users, done: true });
+     return res.status(200).json({ reps: crypt.encode(users), done: true });
     }
      return res.status(404).json({ message:'aucun utilisateur treouve' });
     
@@ -31,6 +32,28 @@ const allUSers = asyncHandler(async (req: Request, res: any) => {
   }});
   
  
+//=======
+/*const allUSers = asyncHandler(async (req: Request, res: Response) => {
+  const users = await User.findAll({
+    include: [
+      {
+        model: Role,
+        through: { attributes: [] },
+      },
+    ],
+  });
+  try {
+    res.status(200).json({
+      // reps: crypt.encode(users),
+      reps: users,
+      done: true,
+    });
+    console.log("first");
+  } catch (error: any) {
+    res.status(404).json({ messageError: error.message });
+  }
+});
+>>>>>>> vf1/vf1*/
 
 //@desc Update a user
 //@route PATCH /api/admin/users/:id
@@ -83,7 +106,7 @@ const updateUsers = asyncHandler(async (req: Request, res: Response) => {
 });
 
 //@desc delete a user
-//@route DEL /api/users/:id
+//@route DEL /api/admin/users/:id
 //@access public
 const deleteUsers = asyncHandler(async (req: Request, res: any) => {
   try{
@@ -126,18 +149,56 @@ const oneUsersRole = asyncHandler(async (req: Request, res: Response) => {
 });
 
 //@desc assign a role to user
-//@route POST /api/users/roles/:iduser
+//@route POST /api/admin/users/id/roles
 //@access private
 const asignRoleToUser = asyncHandler(async (req: Request, res: Response) => {
   const idUser = req.params.id;
   const { idRole } = req.body;
 
-  //verifier si le user existe
-  const existUser = await User.findByPk(idUser);
-  if (!existUser) {
-    res.status(404).json({ errorMessage: "Utilisateur non trouvé" });
-    return;
+  try {
+    //verifier si le user existe
+    const existUser = await User.findByPk(idUser);
+    if (!existUser) {
+      res.status(404).json({ errorMessage: "Utilisateur non trouvé" });
+      return;
+    }
+    console.log("verification");
+
+    //verifier si le role existe
+    const existRole = await Role.findByPk(idRole);
+    if (!existRole) {
+      res.status(404).json({ errorMessage: "Rôle non trouvé" });
+      return;
+    }
+
+    //verifier si l'utilisateur a deja un role
+    const existUserRole = await UserRole.findOne({
+      where: { idUser: idUser, idRole: idRole },
+    });
+
+    if (existUserRole) {
+      res.status(400).json({ errorMessage: "L'utilisateur a déjà ce rôle." });
+      return;
+    }
+
+    //ajouter le role a un user
+    await UserRole.create({ idUser: idUser, idRole: idRole });
+    const datas = {
+      message: "Rôle assigné avec succès à l'utilisateur",
+      nom: existUser.nom,
+      prenom: existUser.prenom,
+      tel: existUser.tel,
+      email: existUser.email,
+      role: existRole.name,
+    };
+    res.status(200).json({
+      reps: datas,
+      done: true,
+    });
+  } catch (error: any) {
+    res.status(400).json({ errorMessage: error.message });
   }
+//<<<<<<< HEAD
 
   //verifier si le role existe
   const existRole = await Role.findByPk(idRole);
@@ -158,7 +219,7 @@ const asignRoleToUser = asyncHandler(async (req: Request, res: Response) => {
 
   //ajouter le role a un user
   await UserRole.create({ idUser: idUser, idRole: idRole });
-  const datas = {
+  /*const datas = {
     message: "Rôle assigné avec succès à l'utilisateur",
     nom: existUser.nom,
     prenom: existUser.prenom,
@@ -169,7 +230,9 @@ const asignRoleToUser = asyncHandler(async (req: Request, res: Response) => {
   res.status(200).json({
     reps: datas,
     done: true,
-  });
+  });*/
+//=======
+//>>>>>>> vf1/vf1
 });
 
 //@desc remove a role to user
@@ -200,6 +263,31 @@ const removeRoleToUser = asyncHandler(async (req: Request, res: Response) => {
   });
 });
 
+//@desc get user with her role
+//@route GET /api/users/me
+//@access private
+const getUserRole = asyncHandler(async (req: Request, res: Response) => {
+  try {
+    const idUser = req.body?.id; //recuperer l'id du user depuis le token
+    console.log("idUser : ", idUser);
+
+    //rechercher le user et inclure ses roles
+    const user = await User.findByPk(idUser, {
+      attributes: { exclude: ["mot_de_passe"] },
+      include: [{ model: Role, as: "Roles" }],
+    });
+
+    if (!user) {
+      res.status(404).json({ errorMessage: "Utilisateur non trouvé" });
+      return;
+    }
+    res.json(user);
+  } catch (error) {
+    console.error("Erreur lors de la récupération de l'utilisateur :", error);
+    res.status(500).json({ errorMessage: "Erreur serveur" });
+  }
+});
+
 export {
   allUSers,
   updateUsers,
@@ -207,4 +295,5 @@ export {
   oneUsersRole,
   asignRoleToUser,
   removeRoleToUser,
+  getUserRole,
 };

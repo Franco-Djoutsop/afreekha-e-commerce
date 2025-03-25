@@ -5,6 +5,7 @@ import User from "./User"; // Import du modèle User
 class Categorie extends Model {
   public idCategorie!: number;
   public nom!: string;
+  public urlLogo!: string;
   public idUser!: number;
 }
 
@@ -20,6 +21,10 @@ Categorie.init(
       type: DataTypes.STRING,
       allowNull: false,
       unique: true,
+    },
+    urlLogo: {
+      type: DataTypes.STRING,
+      allowNull: true,
     },
     idUser: {
       type: DataTypes.INTEGER,

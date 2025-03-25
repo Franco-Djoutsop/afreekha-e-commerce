@@ -13,7 +13,7 @@ class SousCategorie extends Model {
 
 // Initialisation du modèle
 SousCategorie.init(
-//>>>>>>> vf1/vf1
+  //>>>>>>> vf1/vf1
   {
     idSousCategorie: {
       type: DataTypes.INTEGER,

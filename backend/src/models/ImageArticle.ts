@@ -1,31 +1,21 @@
 import { DataTypes, Model } from "sequelize";
 import { sequelize } from "../config/database";
-import Commande from "./Commande";
 import Article from "./Article";
+import Image from "./image";
 
-class CommandArticle extends Model {
-  public idCommandArticle!: number;
-  public idCommande!: number;
+class ImageArticle extends Model {
+  public idImageArticle!: number;
   public idArticle!: number;
-  public statut!: string;
-  public date!: Date;
+  public idImage!: number;
 }
 
 // Initialisation du modèle
-CommandArticle.init(
+ImageArticle.init(
   {
-    idCommandArticle: {
+    idImageArticle: {
       type: DataTypes.INTEGER,
       autoIncrement: true,
       primaryKey: true,
-    },
-    idCommande: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      references: {
-        model: Commande,
-        key: "idCommande",
-      },
     },
     idArticle: {
       type: DataTypes.INTEGER,
@@ -35,16 +25,21 @@ CommandArticle.init(
         key: "idArticle",
       },
     },
-    quantite : {
+    idImage: {
       type: DataTypes.INTEGER,
       allowNull: false,
-    }
+      references: {
+        model: Image,
+        key: "idImage",
+      },
+    },
   },
   {
     sequelize,
-    modelName: "CommandArticle",
-    tableName: "commandes_articles",
+    modelName: "ImageArticle",
+    tableName: "image_article",
+    timestamps: false, // Pas de `createdAt` ni `updatedAt`
   }
 );
 
-export default CommandArticle;
+export default ImageArticle;

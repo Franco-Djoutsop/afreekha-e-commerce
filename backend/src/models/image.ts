@@ -4,6 +4,11 @@ import { sequelize } from "../config/database";
 class Image extends Model {
   public idImage!: number;
   public lien!: string;
+//<<<<<<< HEAD
+//=======
+  public idArticle!: number;
+  public isVogue!: "vogue" | "Pas vogue";
+//>>>>>>> vf1/vf1
 }
 
 // Initialisation du modèle
@@ -18,7 +23,24 @@ Image.init(
       type: DataTypes.STRING,
       allowNull: false,
     },
+//<<<<<<< HEAD
    
+//=======
+    isVogue: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      defaultValue: "Pas vogue",
+    },
+
+    // idArticle: {
+    //   type: DataTypes.INTEGER,
+    //   allowNull: false,
+    //   references: {
+    //     model: Article,
+    //     key: "idArticle",
+    //   },
+    // },
+//>>>>>>> vf1/vf1
   },
   {
     sequelize,
