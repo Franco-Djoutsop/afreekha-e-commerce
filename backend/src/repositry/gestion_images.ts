@@ -2,11 +2,15 @@ import Image from "../models/image";
 import { MoveImg, DeleteImg } from "../config/img_file";
 import dotenv from 'dotenv';
 import { Op } from "sequelize";
+import ArticleImage from "../models/ArticleImage";
+import Article from "../models/Article";
+import {sequelize} from "../config/database"; // Adjust the path as necessary
+
 
 dotenv.config();
 
 const GestionImage = {  
-    async createImg(base64: string, idArticle: number, dossier: string, contentType: string){
+    async createImg(base64: string, idArticle: number, dossier: string, contentType: string, featured: boolean){
             const result = await this.execCreationImg(base64, dossier, contentType);
             
             if(result.creationDone){
@@ -14,6 +18,7 @@ const GestionImage = {
                 const url = ""+process.env.HTTPS+process.env.DB_HOST+process.env.HTPP+result.link;
                 const queryRslt = await Image.create({
                     lien: url,
+                    featured: featured,
                     idArticle: idArticle
                 });
 
@@ -32,15 +37,36 @@ const GestionImage = {
         return resp;
     },
 
-    async articleImageAssigment($idArticle: number, $idImage: number){
-        const resp = await Image.create(
-        );
+    async articleImageAssigment(idArticle: number, idImage: number[]){
+        const transaction = await sequelize.transaction(); // Gérer la transaction
 
-        return resp
+        const article = await Article.findByPk(idArticle);
+        if (!article) {
+            throw new Error('Article introuvable');
+        }
+    
+        // Vérifier si les images existent
+        const images = await Image.findAll({
+          where: { idImage: idImage }, 
+        });
+    
+        if (images.length !== idImage.length) {
+          throw new Error("Une ou plusieurs images sont introuvables");
+        }
+        
+        const articleImagesData = idImage.map((imageId) => ({
+            articleId: idArticle,
+            imageId: imageId,
+          }));
+    
+        const resp = await ArticleImage.bulkCreate(articleImagesData, { transaction });
 
+        await transaction.commit();
+
+        return resp;
     },
 
-    async update(base64: string, idArticle: number, idImage: number, dossier: string, contentType: string, old_link?: string){
+    async update(base64: string, idArticle: number, idImage: number, dossier: string, contentType: string,featured: boolean, old_link?: string){
             let old_linkDeleted = false;
 
             if(old_link){
@@ -57,7 +83,7 @@ const GestionImage = {
             if(creationResult.creationDone){
                 const url = ""+process.env.HTTPS+process.env.DB_HOST+process.env.HTPP+creationResult.link;
                 const queryRslt = await Image.update(
-                    {lien : url},
+                    {lien : url, featured: featured},
                     {
                         where:{
                             idImage: idImage
@@ -83,13 +109,10 @@ const GestionImage = {
 
     async getFeatured(){
         const data = await Image.findAll({
-            attributes: ['id', 'lien'],
+            attributes: ['idImage', 'lien'],
             limit: 8,
             where: {
-                featured: true,
-                idCategory: {
-                    [Op.not]: null
-                }
+                featured: true
             }
         });
 

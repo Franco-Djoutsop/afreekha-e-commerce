@@ -6,14 +6,12 @@ import User from "../models/User";
 import { Facture } from "./objets/facture";
 
 const GestionFacture = {
-    async create(facture: Facture){
-        try {
-            const records = facture.idArtice.map(id=> (
-                {
-                    idCommande: facture.idCommande,
-                    idArticle: id
-                }
-            ));
+  async create(facture: Facture) {
+    try {
+      const records = facture.idArtice.map((id) => ({
+        idCommande: facture.idCommande,
+        idArticle: id,
+      }));
 
             const queryRslt = await CommandArticle.bulkCreate(records);
             return queryRslt;
@@ -72,9 +70,8 @@ const GestionFacture = {
           });
 
           return facturesOfUser;
-    }
+    },
 
+};
 
-}
-
-export {GestionFacture};
+export { GestionFacture };

@@ -2,10 +2,13 @@ import { Request } from "express";
 import { GestionArticle } from "../repositry/gestion_articles";
 import { GestionImage } from "../repositry/gestion_images";
 import { crypt } from "../config/crypto-js";
+import { GestionCommande } from "../repositry/gestion_commande";
+import User from "../models/User";
 
 const HomeController = {
-    //@route /api/home
+    //@route /api/home-data ----FrontEnd, clientSide
     //@method GET
+    //urlparams :true {offset}
     async getHomeData(req: Request, res: any){
         try {
             const offset = req.params.offset ? Number.parseInt(req.params.offset) : 0;
@@ -13,7 +16,7 @@ const HomeController = {
             const data = {
                 articlesPromo: await GestionArticle.getArticleOnPromo(offset),
                 articlesFeature : await GestionArticle.getArticleOnFeatured(offset),
-                articlesBestSell: await GestionArticle.getTopArticleSeller(),
+                articlesBestSell: await GestionArticle.getTopArticleSeller(offset),
                 articlesTrend: await GestionArticle.getArticleOnTrend(offset),
                 imageFeatured: await GestionImage.getFeatured()
             };
@@ -51,11 +54,36 @@ const HomeController = {
                      v_img: data.imageFeatured
                 }
             }
-            return res.status(200).json([{data: crypt.encode(response.data)}]);
+            return res.status(200).json([{data: (response.data)}]);
         } catch (error: any) {
             return res.status(400).json([{message: error.message}]);
         }
-    }
+    },
+
+     //@route /api/home/{offset} ----adminSide
+    //@method GET
+    //urlparams :true 
+    async getHomeAdminData(req: Request, res: any){
+        try {
+            const offset = req.params.offset ? Number.parseInt(req.params.offset) : 0;
+
+            const resp = {
+                data :{
+                    articles_nbr: await GestionArticle.countArticle(),
+                    topArticleSeller: await GestionArticle.getTopArticleSeller(offset),
+                    totalSeller: await GestionCommande.getTotalSeller(),
+                    totalCommande: await GestionCommande.getTotalCommande(),
+                    total_user: await User.count()
+                }
+            }
+    
+            return res.status(200).json([{data: crypt.encode(resp.data)}]);
+         
+        } catch (error: any) {
+            return res.status(400).json([{message: error.message}]);
+            
+        }
+       }
 }
 
 export {HomeController};

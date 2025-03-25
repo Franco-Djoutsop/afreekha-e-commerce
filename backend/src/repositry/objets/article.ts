@@ -9,7 +9,8 @@ type Articles = {
      marque: string,
      garantie: string,
      idCategorie: number,
-     idImage?: number
+     idImage?: number,
+     imgsID?: number[],
 }
 
 export {Articles}

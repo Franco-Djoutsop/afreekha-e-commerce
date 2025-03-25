@@ -1,4 +1,4 @@
-import CryptoJS from "crypto-js"
+import CryptoJS from "crypto-js";
 import { Request, Response, NextFunction } from "express";
 import dotenv from "dotenv";
 

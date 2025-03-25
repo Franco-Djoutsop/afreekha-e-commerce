@@ -27,9 +27,10 @@ const register = asyncHandler(async (req: Request, res: Response) => {
 });
 
 //@desc login a user
-//@route POST /api/login
+//@route POST /api/auth
 //@access public
 const login = asyncHandler(async (req: Request, res: Response) => {
+  console.log("first");
   const { tel, email, mot_de_passe } = req.body;
   if ((!tel && !email) || !mot_de_passe) {
     res.status(400);
@@ -38,6 +39,7 @@ const login = asyncHandler(async (req: Request, res: Response) => {
     );
   }
 
+  console.log("first");
   const user = await User.findOne({
     where: {
       ...(email ? { email } : {}),
@@ -51,6 +53,7 @@ const login = asyncHandler(async (req: Request, res: Response) => {
       },
     ],
   });
+  console.log("end");
   if (!user) {
     res.status(400);
     throw new Error("Utilisateur non trouvé");
@@ -81,7 +84,7 @@ const login = asyncHandler(async (req: Request, res: Response) => {
       },
     },
     secretToken,
-    { expiresIn: "10m" }
+    { expiresIn: "24h" }
   );
   const reps = {
     user: {
@@ -99,6 +102,7 @@ const login = asyncHandler(async (req: Request, res: Response) => {
   res.status(200).json({
     accessToken: accessToken,
     reps: crypt.encode(reps),
+    // reps: reps,
     done: true,
   });
 });

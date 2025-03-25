@@ -13,6 +13,10 @@ class Article extends Model {
   public marque?: string;
   public garantie?: string;
   public idCategorie!: number;
+  public featured!: boolean;
+  public inTrend!: boolean;
+  public statut!: "En stock" | "Hors Stock";
+  public quantite_critique!: number;
 }
 
 // Initialisation du modèle
@@ -55,6 +59,26 @@ Article.init(
     garantie: {
       type: DataTypes.STRING,
       allowNull: true,
+    },
+    featured: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
+    },
+    inTrend: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
+    },
+    statut: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      defaultValue: "En stock",
+    },
+    quantite_critique: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 10,
     },
     idCategorie: {
       type: DataTypes.INTEGER,

@@ -6,4 +6,4 @@ type Commande = {
     idUser: number
 }
 
-export {Commande}
+export { Commande };

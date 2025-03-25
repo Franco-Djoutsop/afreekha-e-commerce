@@ -101,4 +101,4 @@ const CommandeController = {
     }
 }
 
-export {CommandeController};
+export { CommandeController };

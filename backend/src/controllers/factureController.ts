@@ -4,14 +4,13 @@ import { crypt } from "../config/crypto-js";
 import { GestionCommande } from "../repositry/gestion_commande";
 
 const FactureController = {
-
-    //@route /api/admin/facture
-    //@methode POST
-    //urlbody :true
-    async create(req: Request, res: any){
-        try {
-            if(!req.body.errors){
-                const { idCommande, idArticles, statut } = req.body;
+  //@route /api/admin/facture
+  //@methode POST
+  //urlbody :true
+  async create(req: Request, res: any) {
+    try {
+      if (!req.body.errors) {
+        const { idCommande, idArticles, statut } = req.body;
 
                 const resp = await GestionFacture.create({idCommande: idCommande, idArtice: idArticles, statut: statut, date: null});
 
@@ -72,7 +71,7 @@ const FactureController = {
         } catch (error: any) {
             return res.status(400).json([{message: error.message}]);
         }
-    }
-}
+  }
+};
 
-export {FactureController};
+export { FactureController };

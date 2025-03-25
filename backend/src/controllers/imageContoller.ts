@@ -14,11 +14,11 @@ const ImageController = {
         try {
             if(!req.body.errors){
                 const dossier = process.env.IMG_URL as string;
-                const { idArticle, base64Encryption, contentType} = req.body;
+                const { idArticle, base64Encryption, contentType, featured} = req.body;
 
                 const decryptedID = crypt.idOnUrlDecoder(idArticle);
 
-                const resp = await GestionImage.createImg(base64Encryption, decryptedID, dossier, contentType);
+                const resp = await GestionImage.createImg(base64Encryption, decryptedID, dossier, contentType, featured);
 
                 return typeof resp != "string" ?  res.status(200).json([{data: crypt.encode(resp.dataValues)}]): res.status(200).json([]);
             }else{

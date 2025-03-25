@@ -6,6 +6,7 @@ class Image extends Model {
   public idImage!: number;
   public lien!: string;
   public idArticle!: number;
+  public isVogue!: "vogue" | "Pas vogue";
 }
 
 // Initialisation du modèle
@@ -20,14 +21,25 @@ Image.init(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    idArticle: {
-      type: DataTypes.INTEGER,
+    featured: {
+      type: DataTypes.BOOLEAN,
       allowNull: false,
-      references: {
-        model: Article,
-        key: "idArticle",
-      },
+      defaultValue: false,
     },
+    inTrend: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
+    }
+
+    // idArticle: {
+    //   type: DataTypes.INTEGER,
+    //   allowNull: false,
+    //   references: {
+    //     model: Article,
+    //     key: "idArticle",
+    //   },
+    // },
   },
   {
     sequelize,
