@@ -54,7 +54,7 @@ router.put('/image', updateArticleImg, ImageController.update);
 router.delete('/image/:id', ImageController.destroy);
 
 //categorie
-router.post('/categorie',crypt.decode,addcategorie, gest_categorie.addCategorie);
+routerAdmin.post('/categorie',addcategorie, gest_categorie.addCategorie);
 router.put('/categorie/:id',crypt.decode ,updatecategorie, gest_categorie.updateCategorie);
 router.delete('/categorie/:id',gest_categorie.deleteCategorie);
 
