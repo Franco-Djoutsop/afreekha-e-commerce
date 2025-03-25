@@ -7,7 +7,7 @@ class CommandArticle extends Model {
   public idCommandArticle!: number;
   public idCommande!: number;
   public idArticle!: number;
-  public statut!: string;
+  public quantite!: string;
   public date!: Date;
 }
 

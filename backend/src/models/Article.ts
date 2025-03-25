@@ -8,12 +8,13 @@ class Article extends Model {
   public prix!: number;
   public promo!: boolean;
   public quantite!: number;
-  public caracteristiques!: string;
+  public caracteristiques?: string;
   public pourcentage_promo?: number;
   public marque?: string;
   public garantie?: string;
   public idCategorie!: number;
-  public isVogue!: "vogue" | "Pas vogue";
+  public featured!: boolean;
+  public inTrend!: boolean;
   public statut!: "En stock" | "Hors Stock";
   public quantite_critique!: number;
 }
@@ -59,10 +60,15 @@ Article.init(
       type: DataTypes.STRING,
       allowNull: true,
     },
-    isVogue: {
-      type: DataTypes.STRING,
+    featured: {
+      type: DataTypes.BOOLEAN,
       allowNull: false,
-      defaultValue: "Pas vogue",
+      defaultValue: false,
+    },
+    inTrend: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
     },
     statut: {
       type: DataTypes.STRING,

@@ -143,13 +143,20 @@ Role.belongsToMany(User, { through: UserRole, foreignKey: "idRole" });
 
 //article - commande
 // Many-to-Many: A Command has many Articles and an Article can be in many Commands
+
 Commande.belongsToMany(Article, {
   through: CommandArticle,
   foreignKey: "idCommande",
   otherKey: "idArticle",
-});
+  as: "Articles",
+}); 
 Article.belongsToMany(Commande, {
   through: CommandArticle,
   foreignKey: "idArticle",
   otherKey: "idCommande",
+//<<<<<<< HEAD
 })
+//=======
+  //as: "commandes",
+//});
+//>>>>>>> vf0/vf0

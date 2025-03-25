@@ -24,12 +24,23 @@ Image.init(
       allowNull: false,
     },
 //<<<<<<< HEAD
+//<<<<<<< HEAD
    
 //=======
     isVogue: {
       type: DataTypes.STRING,
+//=======
+    //featured: {
+     // type: DataTypes.BOOLEAN,
+//>>>>>>> vf0/vf0
       allowNull: false,
-      defaultValue: "Pas vogue",
+      defaultValue: false,
+    //},
+   // inTrend: {
+      //type: DataTypes.BOOLEAN,
+      //allowNull: false,
+      //defaultValue: false,
+     // },
     },
 
     // idArticle: {
@@ -46,7 +57,7 @@ Image.init(
     sequelize,
     modelName: "Image",
     tableName: "images",
-  }
+  },
 );
 
 // // Association avec `Article` (Un article peut avoir plusieurs images)

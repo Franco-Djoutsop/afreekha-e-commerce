@@ -14,12 +14,13 @@ const gest_categorie = {
   async addCategorie(req: Request, res: any) {
     try {
       const data = req.body;
-      const exitOrnotExist = await Categorie.findByPk(data.nom);
-      console.log('type of ')
-      if(exitOrnotExist)
-      //const dataDecode = crypt.decode(req,res,data)
-      // console.log(dataDecode);
-      if (data != null) {
+      const exitOrnotExist = await Categorie.findOne({
+        where:{nom:data.nom}
+      });
+      if(exitOrnotExist){
+          return res.status(400).json({'message':'cette categorie exite deja'})
+      }else{
+      if (data && data.nom && data.idUser) {
         const categorie = await Categorie.create({
           idUser: data.idUser,
           nom: data.nom,
@@ -30,6 +31,7 @@ const gest_categorie = {
           reps: categorie,
         });
       }
+    } 
       return res.status(404).json({ message: "veilez fournir les donnees" });
     } catch (error: any) {
       console.log(error);

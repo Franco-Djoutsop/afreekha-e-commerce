@@ -6,6 +6,7 @@ class Commande extends Model {
   public idCommande!: number;
   public Montant_total!: number;
   public quantite_articles!: number;
+  public statut! : string;
   public idUser!: number;
 }
 
