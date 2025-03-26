@@ -73,7 +73,7 @@ const HomeController = {
                     topArticleSeller: await GestionArticle.getTopArticleSeller(offset),
                     totalSeller: await GestionCommande.getTotalSeller(), //"commande payé"
                     totalCommande: await GestionCommande.getTotalCommande(), //statut "en attente"
-                   //general_amount: await GestionCommande.getGeneralAmount(), // montant total des facture payé
+                    general_amount: await GestionCommande.getGeneralAmount(), // montant total des facture payé
                     total_user: await User.count()
                 }
             }
