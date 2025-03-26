@@ -1,3 +1,4 @@
+import { sequelize } from "../config/database";
 import Article from "../models/Article";
 import CommandArticle from "../models/CommandArticle";
 import Commande from "../models/Commande";
@@ -12,71 +13,65 @@ const GestionFacture = {
         idArticle: id,
       }));
 
-      const queryRslt = await CommandArticle.bulkCreate(records);
-      return queryRslt;
-    } catch (error: any) {
-      console.log("erreur de creation", error.message);
-    }
-  },
+            const queryRslt = await CommandArticle.bulkCreate(records);
+            return queryRslt;
+        } catch (error: any) {
+            console.log('erreur de creation', error.message);
+        }
+    },
 
-  async changeStatus(status: string, id: number) {
-    const queryRslt = await CommandArticle.update(
-      { statut: status },
-      {
-        where: {
-          idCommandArticle: id,
-        },
-      }
-    );
 
-    return queryRslt;
-  },
+    async getFactureCommandUser(offset: number){
+        const articlesWithFacturesAndUsers = await Commande.findAll({
+            offset: offset,
+            limit: 15,
+            
+            order: [
+                ['idCommande', 'DESC']
+            ],
+            include: [
+              {
+                model: User,
+                attributes: ["idUser", "nom", "prenom", "email", "tel"], // Sélectionne uniquement ces colonnes
+              },
+              {
+                model: Article,
+                attributes: ["idArticle", "nom_article", "prix"],
+                through: {
+                  attributes: ['quantite'], // Récupérer la quantité de chaque article commandé
+                }
+              }      
+            ]
+          });
+        
+          return articlesWithFacturesAndUsers;
+    },
 
-  async getFactureCommandUser(offset: number) {
-    const articlesWithFacturesAndUsers = await Commande.findAll({
-      offset: offset,
-      limit: 15,
-      order: [["idCommande", "DESC"]],
-      include: [
-        {
-          model: User,
-          required: true,
-          attributes: ["idUser", "nom", "prenom", "email", "tel"], // Sélectionne uniquement ces colonnes
-        },
-        {
-          model: Article,
-          required: true,
-          attributes: ["idArticle", "nom_article", "prix"],
-          through: {
-            attributes: ["quantite"], // Récupérer la quantité de chaque article commandé
-          },
-        },
-      ],
-    });
+    async getFactureOfUser(offset: number, idUser: number){
+        const facturesOfUser = await Commande.findAll({
+            limit: 15,
+            offset: offset,
+            where: {idUser: idUser},
+            include: [
+              {
+                model: Article,
+                 // INNER JOIN avec Article
+                through: {
+                  attributes: ['quantite']
+                }
+              },
+              {
+                model: User,
+                //required: true,
+                attributes: ["idUser", "nom", "prenom", "tel"], 
+              }
+              
+            ],
+          });
 
-    return articlesWithFacturesAndUsers;
-  },
+          return facturesOfUser;
+    },
 
-  async getFactureOfUser(offset: number, idUser: number) {
-    const facturesOfUser = await Commande.findAll({
-      limit: 15,
-      offset: offset,
-      where: { idUser: idUser },
-      include: [
-        {
-          model: User,
-          required: true,
-          attributes: ["idUser", "nom", "prenom", "tel"],
-        },
-        {
-          model: Article,
-          required: true, // INNER JOIN avec Article
-        },
-      ],
-    });
-
-    return facturesOfUser;
-  },
 };
 
 export { GestionFacture };

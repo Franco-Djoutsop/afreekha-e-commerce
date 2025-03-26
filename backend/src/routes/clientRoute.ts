@@ -3,7 +3,7 @@ import express, { Express } from "express";
 import gest_message from "../controllers/messageController";
 import gest_paiement from "../controllers/paiementController";
 import gest_categorie from "../controllers/categorieController";
-import { addMessage, addpaiement } from "../middlewares/validation";
+import { addMessage, addpaiement, adresseValidation, updateArticleValidation } from "../middlewares/validation";
 import { createCommandeValidation } from "../middlewares/validation";
 import { ArticleController } from "../controllers/articleController";
 //=======
@@ -32,13 +32,16 @@ import { crypt } from "../config/crypto-js";
 //=======
 //import { createCommandeValidation } from "../middlewares/validation";
 import { FactureController } from "../controllers/factureController";
-//>>>>>>> vf1/vf1
+import { HomeController } from "../controllers/homeController";
+import { AdresseController } from "../controllers/adresseController";
 
 const router = express.Router();
 
 router.route("/").get((req, res) => {
   res.status(200).json({ message: "displays lists of users" });
 });
+router.get("/home-data", HomeController.getHomeData);
+
 /**
  * @openapi
  * /api/users:
@@ -375,6 +378,11 @@ router.get("/article-details/:id", ArticleController.getOne);
  *        description: Erreur serveur
  *
  */
+
+router.delete("/adresse/:id", validateToken, AdresseController.delete);
+router.post("/adresse", validateToken, adresseValidation, AdresseController.create);
+router.put("/adresse", validateToken, updateArticleValidation, AdresseController.update);
+
 router.get("/article/:offset", ArticleController.getAll);
 router.get(
   "/commande/:idArticle/:idUser",

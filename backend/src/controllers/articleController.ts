@@ -1,7 +1,9 @@
 import { Request, Response } from "express";
 import { GestionArticle } from "../repositry/gestion_articles";
-import { crypt } from "../config/crypto-js";
+import  {crypt}  from "../config/crypto-js";
 import { Articles } from "../repositry/objets/article";
+import CryptoJS from "crypto-js";
+import { GestionImage } from "../repositry/gestion_images";
 
 //@route /api/admin/article
 //@method POST
@@ -10,27 +12,22 @@ const ArticleController = {
   async create(req: Request, res: any) {
     console.log("before creation");
     try {
-      // Vérification, si des erreurs de validation sont présentes
-      if (!req.body.errors) {
-        // Si req.body.errors n'existe pas, alor la validation a réussi
-        // Les données sont validées et disponibles dans req.body
-        let article: any;
-
+   
         // Vérification, si des erreurs de validation sont présentes
-        if (!req.body.errors) {
-          // Si req.body.errors n'existe pas, alor la validation a réussi
-          // Les données sont validées et disponibles dans req.body
-          let article: any;
+        if (!req.body.errors) { // Si req.body.errors n'existe pas, alor la validation a réussi
+            // Les données sont validées et disponibles dans req.body
+            let article: any;
+            
+             article =  req.body as Articles;
+             const resp = await GestionArticle.save(article);
+             const imgAssigment = await GestionImage.articleImageAssigment(article.idArtice, article.imgId);
 
-          article = req.body as Articles;
-          const resp = await GestionArticle.save(article);
-
-          return res.status(200).json([{ data: resp, done: true }]);
+            return res.status(200).json([{data: crypt.encode(resp), done: true }]);
+    
         } else {
           // La validation a échoué, les erreurs sont dans req.body.errors
           return res.status(401).json({ message: req.body.errors[0].msg });
         }
-      }
     } catch (err: any) {
       return res.status(400).send([{ message: err.message }]);
     }
@@ -45,18 +42,9 @@ const ArticleController = {
         let article: any;
 
         article = req.body as Articles;
-
         const resp = await GestionArticle.update(article);
+        return resp ? res.status(200).json([{isDone: true, data: crypt.encode(resp), message:"Mise à jour effectué avec succés"}]): res.status(200).json([]);
 
-        return resp
-          ? res.status(200).json([
-              {
-                isDone: true,
-                data: resp,
-                message: "Mise à jour effectué avec succés",
-              },
-            ])
-          : res.status(200).json([]);
       } else {
         return res.status(400).json({ message: req.body.errors[0].msg });
       }

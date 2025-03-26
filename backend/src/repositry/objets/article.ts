@@ -8,7 +8,9 @@ type Articles = {
      pourcentage_promo: number,
      marque: string,
      garantie: string,
-     idCategorie: number
+     idCategorie: number,
+     idImage?: number,
+     imgsID?: number[],
 }
 
 export {Articles}

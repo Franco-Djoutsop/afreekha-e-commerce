@@ -34,6 +34,7 @@ import {
   roleUsers,
   updateRole,
 } from "../controllers/roleControler";
+import { HomeController } from "../controllers/homeController";
 
 const routerAdmin = express.Router();
 const router = express.Router();
@@ -44,12 +45,16 @@ routerAdmin.route("/").get((req, res) => {
   res.status(200).json({ message: "displays lists of users" });
 });
 
+routerAdmin.get("/home/:offset", HomeController.getHomeAdminData);
+
 routerAdmin.post(
   "/article",
-  // crypt.decode,
+  validateToken,
+  crypt.decode,
   createArticleValidation,
   ArticleController.create
 );
+
 routerAdmin.put(
   "/article",
   crypt.decode,

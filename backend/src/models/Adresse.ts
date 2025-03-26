@@ -46,6 +46,14 @@ Adresse.init(
       type: DataTypes.STRING,
       allowNull: false,
     },
+    createdAt : {
+      type: DataTypes.DATE,
+      defaultValue: DataTypes.NOW,
+    },
+    updatedAt : {
+      type: DataTypes.DATE,
+      defaultValue: DataTypes.NOW,
+    },
     idUser: {
       type: DataTypes.INTEGER,
       allowNull: false,

@@ -70,6 +70,8 @@ const createArticleValidation = [
   body("nom_article").notEmpty().withMessage("Nom de l'article non défini !"),
   body("prix").notEmpty().withMessage("Prix darticle non défini"),
   body("promo").notEmpty().withMessage("Instant promo non defini"),
+  body("inTrend").notEmpty().withMessage("Article en Tendances ? Non defini"),
+  body("featured").notEmpty().withMessage("Article en vedette ? Non defini"),
   body("quantite").notEmpty().withMessage("Quantité de l'article non défini"),
   body("caracteristiques").notEmpty().withMessage("Caractéristique non défini"),
   body("pourcentage_promo")
@@ -94,38 +96,74 @@ const updateArticleValidation = [
 
 const createImgValidation = [
   body("idArticle").notEmpty().withMessage("ID article pas fourni !"),
+  body("featured").notEmpty().withMessage(" article en vedette pas fourni !"),
   body("base64Encryption")
     .notEmpty()
     .withMessage("Données de l'image non défini"),
 ];
 
+const adresseValidation = [
+  body("adresse").notEmpty().withMessage("Adresse non fournie !"),
+  body("ville").notEmpty().withMessage("Ville non fournie !"),
+  body("quartier").notEmpty().withMessage("Quartier non fourni !"),
+  body("pays").notEmpty().withMessage("Pays non fourni !"),
+  body("etat").notEmpty().withMessage("Etat du pays non fourni !"),
+  body("numero_telephone").notEmpty().withMessage("num de tel non fourni !"),
+  body("titre").notEmpty().withMessage("titre non fourni !"),
+  body("idUser").notEmpty().withMessage("ID user non fourni !"),
+  (req: Request, res: Response, next: NextFunction) => {
+    handleValidationErrors(req, res, next);
+  },
+]
+
+const adressUpdateValidation = [
+  ...adresseValidation,
+  body("idAdresse").notEmpty().withMessage("ID adresse non fourni !"),
+]
 const updateArticleImg = [
   ...createImgValidation,
   body("idImage").notEmpty().withMessage("ID non fourni !"),
+  (req: Request, res: Response, next: NextFunction) => {
+    handleValidationErrors(req, res, next);
+  },
 ];
 
 const createCommandeValidation = [
-  body("Montant_total").notEmpty().withMessage("Montant total pas fourni !"),
-  body("quantite_articles")
-    .notEmpty()
-    .withMessage("Quantite d'article necessaire !"),
-  body("idUser").notEmpty().withMessage("Id user non défini"),
-];
+     body('article')
+        .isArray({ min: 1 }).withMessage("Le champ 'article' doit être un tableau contenant au moins un article"),
+
+    body('article.*.idArticle')
+        .isInt({ gt: 0 }).withMessage("L'ID de l'article doit être un entier positif"),
+
+    body('article.*.quantite')
+        .isInt({ gt: 0 }).withMessage("La quantité doit être un entier positif"),
+
+    body('idUser')
+        .isInt({ gt: 0 }).withMessage("L'ID de l'utilisateur doit être un entier positif"),
+
+    body('statut')
+        .isIn(['payé', 'en attente']).withMessage("Le statut doit être 'payé' ou 'en attente'"),
+        (req: Request, res: Response, next: NextFunction) => {
+          handleValidationErrors(req, res, next);
+        }
+      
+]
 
 const createInvoiceValidation = [
-  body("idCommande")
-    .notEmpty()
-    .withMessage("ID de la commande est obligatoire !"),
-  body("idArticles")
-    .notEmpty()
-    .withMessage("tableau d'id d'article est obligatoire"),
-  body("statut").notEmpty().withMessage("statut de la facture non fourni !"),
-];
+  body("idCommande").notEmpty().withMessage("ID de la commande est obligatoire !"),
+  body('idArticles').notEmpty().withMessage("tableau d'id d'article est obligatoire"),
+  (req: Request, res: Response, next: NextFunction) => {
+    handleValidationErrors(req, res, next);
+  },
+]
 
 const changeInvoiceStatus = [
   body("status").notEmpty().withMessage("Nouveau status non fourni !"),
-  body("commandeId").notEmpty().withMessage("ID de la facture introuvable !"),
-];
+  body("commandeId").notEmpty().withMessage("ID de la commande introuvable !"),
+  (req: Request, res: Response, next: NextFunction) => {
+    handleValidationErrors(req, res, next);
+  },
+]
 
 export {
   createArticleValidation,
@@ -133,15 +171,17 @@ export {
   updateArticleImg,
   createImgValidation,
   createCommandeValidation,
-  //<<<<<<< HEAD
+
   addcategorie,
   updatecategorie,
   createSousCategorie,
   updatesousCategorie,
   addMessage,
   addpaiement,
-  //=======
+ 
   changeInvoiceStatus,
   createInvoiceValidation,
-  //>>>>>>> vf1/vf1
+
+  adresseValidation,
+  adressUpdateValidation
 };
