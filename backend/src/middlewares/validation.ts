@@ -78,6 +78,7 @@ const createArticleValidation = [
     .notEmpty()
     .withMessage("Pourcentage de promotion non défini"),
   body("garantie").notEmpty().withMessage("garantie non définie"),
+  body("imgsID").isArray().notEmpty().withMessage("Veuillez fourni les ids des images pour cette article !"),
   body("idCategorie")
     .notEmpty()
     .withMessage("Veuillez choisir une categorie pour cet article"),

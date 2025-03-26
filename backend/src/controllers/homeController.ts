@@ -1,7 +1,6 @@
 import { Request } from "express";
 import { GestionArticle } from "../repositry/gestion_articles";
 import { GestionImage } from "../repositry/gestion_images";
-import { crypt } from "../config/crypto-js";
 import { GestionCommande } from "../repositry/gestion_commande";
 import User from "../models/User";
 
@@ -60,7 +59,7 @@ const HomeController = {
         }
     },
 
-     //@route /api/home/{offset} ----adminSide
+    //@route /api/home/{offset} ----adminSide
     //@method GET
     //urlparams :true 
     async getHomeAdminData(req: Request, res: any){
