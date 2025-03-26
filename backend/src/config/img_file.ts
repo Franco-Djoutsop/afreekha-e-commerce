@@ -1,6 +1,8 @@
 import { v4 as uuidv4 } from 'uuid';
 import { promises as fs } from 'fs'; 
+import dotenv from "dotenv";
 
+dotenv.config()
 interface ImageData {
   data: string; // Le code base64 de l'image
   contentType: string; // Le type de contenu (ex: 'image/jpeg')
@@ -13,6 +15,7 @@ const MoveImg = async (image: ImageData, dossier: string) => {
       throw new Error("Données d'image ou type de contenu manquants.");
     }
 
+    const host = process.env.HTTPS || 'http://localhost:3001/';
     // Décoder l'image base64 en utilisant le type de contenu pour plus de sécurité
     const base64Data = image.data.trim();
     const imgBuffer = Buffer.from(base64Data, 'base64');
@@ -24,7 +27,7 @@ const MoveImg = async (image: ImageData, dossier: string) => {
     // Enregistrer l'image dans le dossier avec gestion asynchrone des erreur
     await fs.writeFile(cheminFichier, imgBuffer);
 
-    const lienBaseDeDonnees = `imgs/${nomFichier}`; 
+    const lienBaseDeDonnees = host+`imgs/${nomFichier}`; 
 
     return lienBaseDeDonnees;
 
@@ -47,10 +50,5 @@ const DeleteImg = async (imageLink: string) =>{
         }
 
 }
-
-// Exemple d'utilisation
-
-const dossier = 'public/images'; // Le dossier où enregistrer l'image
-
 
 export {MoveImg, DeleteImg};

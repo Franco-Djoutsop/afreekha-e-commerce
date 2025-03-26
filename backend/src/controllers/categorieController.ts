@@ -4,6 +4,9 @@ import { Request, Response } from "express";
 import Categorie from "../models/categorie";
 import { crypt } from "../config/crypto-js";
 import SousCategorie from "../models/SousCategorie";
+import { MoveImg } from "../config/img_file";
+import { promises } from "dns";
+import { error } from "console";
 
 const gest_categorie = {
   //@route/api/admin/categorie
@@ -14,6 +17,7 @@ const gest_categorie = {
   async addCategorie(req: Request, res: any) {
     try {
       const data = req.body;
+      //const logoUrl = await this.urlLogo()
       const exitOrnotExist = await Categorie.findOne({
         where:{nom:data.nom}
       });
@@ -24,6 +28,7 @@ const gest_categorie = {
         const categorie = await Categorie.create({
           idUser: data.idUser,
           nom: data.nom,
+          urlLogo: gest_categorie.urlLogo
         });
         return res.status(201).json({
           create: true,
@@ -339,5 +344,16 @@ async sousCategorie(req:Request,res:any){
       });
     }
   },*/
+
+  //methode pour gerer urlLogo
+  async urlLogo(base64:string,dossier:string,contentType:string):Promise<any>
+  {
+    return MoveImg({data:base64,contentType:contentType},dossier).then((lien)=>{
+      return {create:true,link:lien+process.env.HTTPS}
+    }).catch((error)=>{
+      return {erreur:error.message,create:false}
+    })
+  }
+
 };
 export default gest_categorie;

@@ -11,21 +11,30 @@ dotenv.config();
 
 const GestionImage = {  
 //<<<<<<< HEAD
-    async createImg(base64: string, dossier: string, contentType: string){
+//<<<<<<< HEAD
+   // async createImg(base64: string, dossier: string, contentType: string){
 //=======
   //  async createImg(base64: string, idArticle: number, dossier: string, contentType: string, featured: boolean){
+//>>>>>>> vf0/vf0
+//=======
+    async createImg(base64: string, dossier: string, contentType: string, featured: boolean){
 //>>>>>>> vf0/vf0
             const result = await this.execCreationImg(base64, dossier, contentType);
             
             if(result.creationDone){
                 //const img = await Image.cr
-                const url = ""+process.env.HTTPS+process.env.DB_HOST+process.env.HTPP+result.link;
+                
                 const queryRslt = await Image.create({
-                    lien: url,
+//<<<<<<< HEAD
+                   // lien: url,
 //<<<<<<< HEAD
 //=======
                     //featured: featured,
                     //idArticle: idArticle
+//>>>>>>> vf0/vf0
+//=======
+                    lien: result.link,
+                    featured: featured
 //>>>>>>> vf0/vf0
                 });
 
@@ -36,12 +45,22 @@ const GestionImage = {
     },
 
     async destroy(id: number){
-        const resp = await Image.destroy({
-            where: {
-                idImage : id
+        const getImage = await Image.findByPk(id);
+        if(getImage){
+
+            const resp = await Image.destroy({
+                where: {
+                    idImage : id
+                }
+            });
+            if(resp){
+                if(await DeleteImg(getImage.lien)){
+                    return resp;
+                }
             }
-        });
-        return resp;
+            return null;
+        }
+      return null;  
     },
 
     async articleImageAssigment(idArticle: number, idImage: number[]){
@@ -88,7 +107,7 @@ const GestionImage = {
 
 
             if(creationResult.creationDone){
-                const url = ""+process.env.HTTPS+process.env.DB_HOST+process.env.HTPP+creationResult.link;
+                const url = ""+process.env.HTTPS+process.env.DB_HOST+process.env.PORT+creationResult.link;
                 const queryRslt = await Image.update(
                     {lien : url, featured: featured},
                     {
@@ -129,7 +148,7 @@ const GestionImage = {
 
    async execCreationImg(base64: string, dossier: string, contentType: string): Promise<any>{
       return await MoveImg({data: base64, contentType: contentType}, dossier).then((lien) => {
-            console.log('lien pour la base de donnée', lien);
+            
             return {creationDone: true, link: lien};
         }).catch((error: any)=>{
             return {creationDone: false, error: error.message}

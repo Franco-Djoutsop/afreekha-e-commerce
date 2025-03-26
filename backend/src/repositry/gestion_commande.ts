@@ -72,6 +72,19 @@ const GestionCommande = {
     } catch (error) {
         console.error('Erreur lors de la récupération du nombre de ventes:', error);
     }
+  },
+
+  async getGeneralAmount(){
+    
+    try {
+      const totalAmount = await Commande.sum('Montant_total', {
+        where: { statut: 'payé' }
+      });
+     
+      return totalAmount;
+    } catch (error: any) {
+      console.log('erreur lors du calcul', error.message)
+    }
   }
 };
 
