@@ -6,7 +6,7 @@ class Image extends Model {
   public idImage!: number;
   public lien!: string;
   public idArticle!: number;
-  public isVogue!: "vogue" | "Pas vogue";
+  public isVogue!: string;
 }
 
 // Initialisation du modèle

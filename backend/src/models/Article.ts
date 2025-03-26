@@ -13,8 +13,8 @@ class Article extends Model {
   public marque?: string;
   public garantie?: string;
   public idCategorie!: number;
-  public isVogue!: "vogue" | "Pas vogue";
-  public statut!: "En stock" | "Hors Stock";
+  public isVogue!: string;
+  public statut!: string;
   public quantite_critique!: number;
 }
 
@@ -70,9 +70,9 @@ Article.init(
       defaultValue: "En stock",
     },
     quantite_critique: {
-      type: DataTypes.NUMBER,
+      type: DataTypes.INTEGER,
       allowNull: false,
-      defaultValue: 10,
+      defaultValue: 5,
     },
     idCategorie: {
       type: DataTypes.INTEGER,

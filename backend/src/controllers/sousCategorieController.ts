@@ -11,7 +11,7 @@ const gest_sous_categorie = {
   //@data = objet, response true ? false
 
   //creation d'une sous categorie
-  async addsousCategorie(req: Request, res: any) {
+  async   addsousCategorie(req: Request, res: any) {
     try {
       const data = req.body;
 
