@@ -95,11 +95,11 @@ const updateArticleValidation = [
 ];
 
 const createImgValidation = [
-  body("idArticle").notEmpty().withMessage("ID article pas fourni !"),
   body("featured").notEmpty().withMessage(" article en vedette pas fourni !"),
   body("base64Encryption")
     .notEmpty()
     .withMessage("Données de l'image non défini"),
+    body("contentType").notEmpty().withMessage(" Format du fichier non defini !"),
 ];
 
 const adresseValidation = [

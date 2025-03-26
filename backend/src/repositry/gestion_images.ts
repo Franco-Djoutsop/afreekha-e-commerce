@@ -10,16 +10,15 @@ import {sequelize} from "../config/database"; // Adjust the path as necessary
 dotenv.config();
 
 const GestionImage = {  
-    async createImg(base64: string, idArticle: number, dossier: string, contentType: string, featured: boolean){
+    async createImg(base64: string, dossier: string, contentType: string, featured: boolean){
             const result = await this.execCreationImg(base64, dossier, contentType);
             
             if(result.creationDone){
                 //const img = await Image.cr
-                const url = ""+process.env.HTTPS+process.env.DB_HOST+process.env.HTPP+result.link;
+                
                 const queryRslt = await Image.create({
-                    lien: url,
-                    featured: featured,
-                    idArticle: idArticle
+                    lien: result.link,
+                    featured: featured
                 });
 
                 return queryRslt;
@@ -29,12 +28,22 @@ const GestionImage = {
     },
 
     async destroy(id: number){
-        const resp = await Image.destroy({
-            where: {
-                idImage : id
+        const getImage = await Image.findByPk(id);
+        if(getImage){
+
+            const resp = await Image.destroy({
+                where: {
+                    idImage : id
+                }
+            });
+            if(resp){
+                if(await DeleteImg(getImage.lien)){
+                    return resp;
+                }
             }
-        });
-        return resp;
+            return null;
+        }
+      return null;  
     },
 
     async articleImageAssigment(idArticle: number, idImage: number[]){
@@ -81,7 +90,7 @@ const GestionImage = {
 
 
             if(creationResult.creationDone){
-                const url = ""+process.env.HTTPS+process.env.DB_HOST+process.env.HTPP+creationResult.link;
+                const url = ""+process.env.HTTPS+process.env.DB_HOST+process.env.PORT+creationResult.link;
                 const queryRslt = await Image.update(
                     {lien : url, featured: featured},
                     {

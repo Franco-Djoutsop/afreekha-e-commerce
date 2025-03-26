@@ -10,7 +10,6 @@ import { GestionImage } from "../repositry/gestion_images";
 //@bodyparams :true
 const ArticleController = {
   async create(req: Request, res: any) {
-    console.log("before creation");
     try {
    
         // Vérification, si des erreurs de validation sont présentes
@@ -20,9 +19,13 @@ const ArticleController = {
             
              article =  req.body as Articles;
              const resp = await GestionArticle.save(article);
-             const imgAssigment = await GestionImage.articleImageAssigment(article.idArtice, article.imgId);
-
-            return res.status(200).json([{data: crypt.encode(resp), done: true }]);
+             const imgAssigment = await GestionImage.articleImageAssigment(article.idArtice, article.imgsID);
+            
+             const response = {
+                articleData: resp,
+                imgsID : imgAssigment
+             }
+            return res.status(200).json([{data: crypt.encode(response), done: true }]);
     
         } else {
           // La validation a échoué, les erreurs sont dans req.body.errors

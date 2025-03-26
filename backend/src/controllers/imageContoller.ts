@@ -14,11 +14,9 @@ const ImageController = {
         try {
             if(!req.body.errors){
                 const dossier = process.env.IMG_URL as string;
-                const { idArticle, base64Encryption, contentType, featured} = req.body;
+                const { base64Encryption, contentType, featured} = req.body;
 
-                const decryptedID = crypt.idOnUrlDecoder(idArticle);
-
-                const resp = await GestionImage.createImg(base64Encryption, decryptedID, dossier, contentType, featured);
+                const resp = await GestionImage.createImg(base64Encryption, dossier, contentType, featured);
 
                 return typeof resp != "string" ?  res.status(200).json([{data: crypt.encode(resp.dataValues)}]): res.status(200).json([]);
             }else{
@@ -58,9 +56,9 @@ const ImageController = {
     async destroy(req: Request, res: any){
         try {
             if(req.params.id){
-                const resp = await GestionImage.destroy(crypt.idOnUrlDecoder(req.params.id));
+                const resp = await GestionImage.destroy(Number(req.params.id));
 
-                const message = resp == 0 ? "Aucune Image supprimée":"Suppréssion éffectuer avec succés !"
+                const message = resp == 0 || !resp ? "Aucune Image supprimée":"Suppréssion éffectuer avec succés !"
 
                 return res.status(200).json([{done: resp != 0, affectedRows: resp, message: message}]);
             
