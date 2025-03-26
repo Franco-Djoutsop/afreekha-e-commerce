@@ -14,47 +14,48 @@ const CommandeController = {
     async create(req: Request, res: any){
         try {
             if(!req.body.errors){
-                const result = await GestionCommande.create(req.body);
-                const data = req.body as  {article: Article[], idUser: number, statut: string}[];
+                
+                const data = req.body as  {article: Article[], idUser: number, statut: string};
 
                 let commande_toSave : Commande = new Commande();
                 let articlesID: {idArticle: number, qty: number}[] = [];
                 let commande_article: {idArticle: number, idCommande: number, quantite: number}[] = [];
 
-                if(data.length != 0){
-                    let quantite_articles = data.length;
+                if(data.article.length != 0){
+                    let quantite_articles = data.article.length;
                     let total = 0;
-                    data.forEach((element: {article: Article[], idUser: number}) => {
-                        element.article.forEach((art: Article) => {
-                            total += art.prix;
+                    
+                        data.article.forEach((art: Article) => {
+                            total += (art.prix * art.quantite);
                         });
-                    });
 
+                    
                     commande_toSave.Montant_total = total;
                     commande_toSave.quantite_articles = quantite_articles;
-                    commande_toSave.idUser = data[0].idUser;
-                    commande_toSave.statut = data[0].statut;
+                    commande_toSave.idUser = data.idUser;
+                    commande_toSave.statut = data.statut;
 
-                    const resp = await GestionCommande.create(commande_toSave);
+                    const resp = await GestionCommande.create(commande_toSave.dataValues);
                     if(resp){
-                        data.forEach((element: {article: Article[], idUser: number}) => {
-                            element.article.forEach((art: Article) => {
+                            data.article.forEach((art: Article) => {
                                 articlesID.push({idArticle: art.idArticle, qty: art.quantite});
                                 commande_article.push({idArticle: art.idArticle, idCommande: resp.idCommande, quantite: art.quantite})
                             });
-                        });
 
                         const commandPivotInsertion = await GestionCommandeArticle.create(commande_article as any[]);
-                        if(commandPivotInsertion && data[0].statut == "payé"){
+                        if(commandPivotInsertion && data.statut == "payé"){
                             for(const item of articlesID){
                                  await GestionArticle.updateArticleQty(item.idArticle, item.qty);
                             }
                         }
 
                     }
-                }                
+                    return res.status(200).json([{message: "Commande crée !", data: crypt.encode(resp), amountToBuy: total}]);
 
-                return res.status(200).json([{message: "Commande crée !", data: crypt.encode(result)}]);
+                } else{
+                    throw new Error("Aucun Article présent dans la commande !")
+                }               
+
             }else{
                 return res.status(400).json([{message: "Erreurs sur les données de traitement!"}]);
             }

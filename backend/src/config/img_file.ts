@@ -15,7 +15,7 @@ const MoveImg = async (image: ImageData, dossier: string) => {
       throw new Error("Données d'image ou type de contenu manquants.");
     }
 
-    const host = process.env.HTTPS;
+    const host = process.env.HTTPS || 'http://localhost:3001/';
     // Décoder l'image base64 en utilisant le type de contenu pour plus de sécurité
     const base64Data = image.data.trim();
     const imgBuffer = Buffer.from(base64Data, 'base64');

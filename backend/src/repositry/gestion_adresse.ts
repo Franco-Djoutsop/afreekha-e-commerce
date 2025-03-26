@@ -25,7 +25,8 @@ const GestionAdresse = {
                     idUser: newAdresse.idUser
                 }
             }
-        )
+        );
+        return resp;
     },
 
     async delete(id: number){

@@ -137,6 +137,8 @@ const createCommandeValidation = [
 
     body('article.*.quantite')
         .isInt({ gt: 0 }).withMessage("La quantité doit être un entier positif"),
+    body('article.*.prix')
+        .isInt({ gt: 0 }).withMessage("La quantité doit être un entier positif"),
 
     body('idUser')
         .isInt({ gt: 0 }).withMessage("L'ID de l'utilisateur doit être un entier positif"),

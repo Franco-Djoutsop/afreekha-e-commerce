@@ -71,13 +71,14 @@ const HomeController = {
                 data :{
                     articles_nbr: await GestionArticle.countArticle(),
                     topArticleSeller: await GestionArticle.getTopArticleSeller(offset),
-                    totalSeller: await GestionCommande.getTotalSeller(),
-                    totalCommande: await GestionCommande.getTotalCommande(),
+                    totalSeller: await GestionCommande.getTotalSeller(), //"commande payé"
+                    totalCommande: await GestionCommande.getTotalCommande(), //statut "en attente"
+                   //general_amount: await GestionCommande.getGeneralAmount(), // montant total des facture payé
                     total_user: await User.count()
                 }
             }
     
-            return res.status(200).json([{data: crypt.encode(resp.data)}]);
+            return res.status(200).json([{data: (resp.data)}]);
          
         } catch (error: any) {
             return res.status(400).json([{message: error.message}]);

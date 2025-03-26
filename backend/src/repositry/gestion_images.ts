@@ -131,7 +131,7 @@ const GestionImage = {
 
    async execCreationImg(base64: string, dossier: string, contentType: string): Promise<any>{
       return await MoveImg({data: base64, contentType: contentType}, dossier).then((lien) => {
-            console.log('lien pour la base de donnée', lien);
+            
             return {creationDone: true, link: lien};
         }).catch((error: any)=>{
             return {creationDone: false, error: error.message}

@@ -2,7 +2,6 @@ import { Request, Response } from "express";
 import { GestionArticle } from "../repositry/gestion_articles";
 import  {crypt}  from "../config/crypto-js";
 import { Articles } from "../repositry/objets/article";
-import CryptoJS from "crypto-js";
 import { GestionImage } from "../repositry/gestion_images";
 
 //@route /api/admin/article
