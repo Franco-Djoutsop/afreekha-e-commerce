@@ -14,11 +14,19 @@ const ImageController = {
         try {
             if(!req.body.errors){
                 const dossier = process.env.IMG_URL as string;
-                const { idArticle, base64Encryption, contentType, featured} = req.body;
+//<<<<<<< HEAD
+                const {  base64Encryption, contentType} = req.body;
+//=======
+               // const { idArticle, base64Encryption, contentType, featured} = req.body;
+//>>>>>>> vf0/vf0
 
-                const decryptedID = crypt.idOnUrlDecoder(idArticle);
+                //const decryptedID = crypt.idOnUrlDecoder(idArticle);
 
-                const resp = await GestionImage.createImg(base64Encryption, decryptedID, dossier, contentType, featured);
+//<<<<<<< HEAD
+                const resp = await GestionImage.createImg(base64Encryption, dossier, contentType);
+//=======
+                //const resp = await GestionImage.createImg(base64Encryption, decryptedID, dossier, contentType, featured);
+//>>>>>>> vf0/vf0
 
                 return typeof resp != "string" ?  res.status(200).json([{data: crypt.encode(resp.dataValues)}]): res.status(200).json([]);
             }else{
@@ -37,7 +45,7 @@ const ImageController = {
 
         try {
             if(!req.body.errors){
-                const {idArticle, base64Encryption, idImage, contentType, old_link} = req.body;
+                const {idArticle,base64Encryption, idImage, contentType, old_link} = req.body;
                 const dossier = process.env.IMG_URL as string;
 
                 const resp = await GestionImage.update(base64Encryption, crypt.idOnUrlDecoder(idArticle), crypt.idOnUrlDecoder(idImage), dossier, contentType, old_link);

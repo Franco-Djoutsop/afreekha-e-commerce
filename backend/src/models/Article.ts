@@ -89,6 +89,7 @@ Article.init(
       },
     },
   },
+
   {
     sequelize,
     modelName: "Article",
