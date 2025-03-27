@@ -1,7 +1,6 @@
 import { Request } from "express";
 import { GestionArticle } from "../repositry/gestion_articles";
 import { GestionImage } from "../repositry/gestion_images";
-import { crypt } from "../config/crypto-js";
 import { GestionCommande } from "../repositry/gestion_commande";
 import User from "../models/User";
 
@@ -60,7 +59,7 @@ const HomeController = {
         }
     },
 
-     //@route /api/home/{offset} ----adminSide
+    //@route /api/home/{offset} ----adminSide
     //@method GET
     //urlparams :true 
     async getHomeAdminData(req: Request, res: any){
@@ -71,13 +70,14 @@ const HomeController = {
                 data :{
                     articles_nbr: await GestionArticle.countArticle(),
                     topArticleSeller: await GestionArticle.getTopArticleSeller(offset),
-                    totalSeller: await GestionCommande.getTotalSeller(),
-                    totalCommande: await GestionCommande.getTotalCommande(),
+                    totalSeller: await GestionCommande.getTotalSeller(), //"commande payé"
+                    totalCommande: await GestionCommande.getTotalCommande(), //statut "en attente"
+                    general_amount: await GestionCommande.getGeneralAmount(), // montant total des facture payé
                     total_user: await User.count()
                 }
             }
     
-            return res.status(200).json([{data: crypt.encode(resp.data)}]);
+            return res.status(200).json([{data: (resp.data)}]);
          
         } catch (error: any) {
             return res.status(400).json([{message: error.message}]);

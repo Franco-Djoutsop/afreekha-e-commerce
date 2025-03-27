@@ -9,7 +9,7 @@ import UserRole from "../models/userRoles";
 
 const GestionArticle = {
   async save(artilce: Articles) {
-    console.log("first");
+    
     const dataRetrieves = await Article.create(artilce);
 
     return dataRetrieves.dataValues;

@@ -8,6 +8,8 @@ class Commande extends Model {
   public quantite_articles!: number;
   public statut!: string;
   public idUser!: number;
+  public createdAt?: string;
+  public updatedAt?: string;
 }
 
 // Initialisation du modèle

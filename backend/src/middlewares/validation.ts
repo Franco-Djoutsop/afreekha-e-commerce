@@ -78,6 +78,7 @@ const createArticleValidation = [
     .notEmpty()
     .withMessage("Pourcentage de promotion non défini"),
   body("garantie").notEmpty().withMessage("garantie non définie"),
+  body("imgsID").isArray().notEmpty().withMessage("Veuillez fourni les ids des images pour cette article !"),
   body("idCategorie")
     .notEmpty()
     .withMessage("Veuillez choisir une categorie pour cet article"),
@@ -95,11 +96,11 @@ const updateArticleValidation = [
 ];
 
 const createImgValidation = [
-  body("idArticle").notEmpty().withMessage("ID article pas fourni !"),
   body("featured").notEmpty().withMessage(" article en vedette pas fourni !"),
   body("base64Encryption")
     .notEmpty()
     .withMessage("Données de l'image non défini"),
+    body("contentType").notEmpty().withMessage(" Format du fichier non defini !"),
 ];
 
 const adresseValidation = [
@@ -136,6 +137,8 @@ const createCommandeValidation = [
         .isInt({ gt: 0 }).withMessage("L'ID de l'article doit être un entier positif"),
 
     body('article.*.quantite')
+        .isInt({ gt: 0 }).withMessage("La quantité doit être un entier positif"),
+    body('article.*.prix')
         .isInt({ gt: 0 }).withMessage("La quantité doit être un entier positif"),
 
     body('idUser')

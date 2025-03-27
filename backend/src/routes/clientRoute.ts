@@ -411,7 +411,7 @@ router.get(
   validateToken,
   CommandeController.getCommad
 );
-router.delete("/commande/:id", validateToken, CommandeController.delete);
+router.delete("/commande/:id", CommandeController.delete);
 router.post(
   "/commande",
   // validateToken,

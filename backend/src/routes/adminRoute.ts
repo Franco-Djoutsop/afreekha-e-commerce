@@ -37,61 +37,63 @@ import {
 import { HomeController } from "../controllers/homeController";
 
 const routerAdmin = express.Router();
-const router = express.Router();
 
 //<<<<<<< HEAD
 //Admin route
 //<<<<<<< HEAD
-router.route("/").get((req, res) => {
+routerAdmin.route("/").get((req, res) => {
   res.status(200).json({ message: "displays lists of users" });
 });
 
-router.post(
+routerAdmin.post(
   "/article",
   crypt.decode,
   createArticleValidation,
   ArticleController.create
 );
-router.put(
+routerAdmin.put(
   "/article",
   crypt.decode,
   updateArticleValidation,
   ArticleController.update
 );
-router.delete("/article/:id", ArticleController.destroy);
-router.put(
+routerAdmin.delete("/article/:id", ArticleController.destroy);
+routerAdmin.put(
   "/article-changes-categorie",
   crypt.decode,
   ArticleController.updateCategories
 );
-router.post("/image", createImgValidation, ImageController.create);
-router.put("/image", updateArticleImg, ImageController.update);
-router.delete("/image/:id", ImageController.destroy);
+routerAdmin.post("/image", createImgValidation, ImageController.create);
+routerAdmin.put("/image", updateArticleImg, ImageController.update);
+routerAdmin.delete("/image/:id", ImageController.destroy);
 
 //categorie
-routerAdmin.post("/categorie", addcategorie, gest_categorie.addCategorie);
+routerAdmin.post(
+  "/categorie",
+  crypt.decode,
+  addcategorie,
+  gest_categorie.addCategorie
+);
 routerAdmin.put(
   "/categorie/:id",
-  crypt.decode,
   updatecategorie,
   gest_categorie.updateCategorie
 );
 routerAdmin.delete("/categorie/:id", gest_categorie.deleteCategorie);
 
 //sous categorie
-router.post(
+routerAdmin.post(
   "/sousCategorie",
-  crypt.decode,
   createSousCategorie,
   gest_sous_categorie.addsousCategorie
 );
-router.put(
+routerAdmin.put(
   "/sousCategorie/:id",
   crypt.decode,
   updatesousCategorie,
   gest_sous_categorie.updateSousCategorie
 );
-router.delete(
+routerAdmin.delete(
   "/deleteSousCategorie/:id",
   gest_sous_categorie.deleteSousCategorie
 );

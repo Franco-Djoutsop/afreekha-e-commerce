@@ -1,3 +1,5 @@
+import { Op } from "sequelize";
+import Article from "../models/Article";
 import Commande from "../models/Commande";
 import User from "../models/User";
 import { Commande as Commande_model } from "./objets/commande";
@@ -8,6 +10,18 @@ const GestionCommande = {
 
     return queryRslt;
   },
+
+  async verifyArticlesExist(ids: number[]) {
+    const articles = await Article.findAll({
+        where: {
+            idArticle: {
+                [Op.in]: ids
+            }
+        }
+    });
+
+    return articles.length === ids.length;
+},
 
   async supprimer(id: number) {
     const queryRslt = await Commande.destroy({
@@ -71,6 +85,19 @@ const GestionCommande = {
         return totalVentes;
     } catch (error) {
         console.error('Erreur lors de la récupération du nombre de ventes:', error);
+    }
+  },
+
+  async getGeneralAmount(){
+
+    try {
+      const totalAmount = await Commande.sum('Montant_total', {
+        where: { statut: 'payé' }
+      });
+     
+      return totalAmount;
+    } catch (error: any) {
+      console.log('erreur lors du calcul', error.message)
     }
   }
 };
