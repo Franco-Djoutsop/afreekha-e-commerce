@@ -49,7 +49,7 @@ const GestionFacture = {
                     attributes: ['lien'],
                   }
                 ],
-                as: 'Articles',
+                as: 'Article',
               }      
             ]
           });
@@ -82,7 +82,7 @@ const GestionFacture = {
                     attributes: ['lien']
                   },
                 ],
-                as: 'Articles',
+                as: 'Article',
               }
               
             ],
