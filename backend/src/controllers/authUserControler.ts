@@ -8,12 +8,15 @@ import jwt from "jsonwebtoken";
 import Role from "../models/Role";
 import { Op } from "sequelize";
 import { crypt } from "../config/crypto-js";
+import UserRole from "../models/userRoles";
+
 
 //@desc register a user
 //@route POST /api/users
 //@access public
-const register = asyncHandler(async (req: Request, res: Response) => {
-  const { nom, prenom, date_naissance, email, tel, mot_de_passe } = req.body;
+const register = asyncHandler(async (req: Request, res: any) => {
+  try{
+  const { nom, prenom, date_naissance, email, tel, mot_de_passe,idRole } = req.body;
   const hashpassword = await bcrypt.hash(mot_de_passe, 10);
   const user = await User.create({
     nom,
@@ -23,8 +26,22 @@ const register = asyncHandler(async (req: Request, res: Response) => {
     tel,
     mot_de_passe: hashpassword,
   });
-  res.status(201).json({ reps: crypt.encode(user), done: true });
-});
+  const lastId = user.get('idUser');
+ const userrole = await UserRole.create({
+  idRole,
+  idUser:lastId
+ })
+  if(user!==null && userrole!==null){
+   console.log('enregistrement reuissi');
+   return res.status(201).json({ done: true ,message:console.log('enregistrement reuissi')});
+  }
+  console.log('donnee introuvable');
+   return res.status(404).json({message: console.log('donnee introuvable')});
+ 
+}catch(error){
+  console.log(error);
+  return res.status(500).json({message:error})
+}});
 
 //@desc login a user
 //@route POST /api/auth
@@ -95,7 +112,7 @@ const login = asyncHandler(async (req: Request, res: Response) => {
       tel: user.tel,
       roles: user.Role?.map((role) => ({
         idRole: role.idRole,
-        nomRole: role.nom,
+        nomRole: role.name,
       })),
     },
   };

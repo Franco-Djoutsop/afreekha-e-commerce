@@ -10,15 +10,32 @@ import {sequelize} from "../config/database"; // Adjust the path as necessary
 dotenv.config();
 
 const GestionImage = {  
+//<<<<<<< HEAD
+//<<<<<<< HEAD
+   // async createImg(base64: string, dossier: string, contentType: string){
+//=======
+  //  async createImg(base64: string, idArticle: number, dossier: string, contentType: string, featured: boolean){
+//>>>>>>> vf0/vf0
+//=======
     async createImg(base64: string, dossier: string, contentType: string, featured: boolean){
+//>>>>>>> vf0/vf0
             const result = await this.execCreationImg(base64, dossier, contentType);
             
             if(result.creationDone){
                 //const img = await Image.cr
                 
                 const queryRslt = await Image.create({
+//<<<<<<< HEAD
+                   // lien: url,
+//<<<<<<< HEAD
+//=======
+                    //featured: featured,
+                    //idArticle: idArticle
+//>>>>>>> vf0/vf0
+//=======
                     lien: result.link,
                     featured: featured
+//>>>>>>> vf0/vf0
                 });
 
                 return queryRslt;

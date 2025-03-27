@@ -78,7 +78,7 @@ Article.init(
     quantite_critique: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      defaultValue: 10,
+      defaultValue: 10
     },
     idCategorie: {
       type: DataTypes.INTEGER,
@@ -89,6 +89,7 @@ Article.init(
       },
     },
   },
+
   {
     sequelize,
     modelName: "Article",

@@ -11,8 +11,8 @@ class User extends Model {
   public tel!: string;
   public mot_de_passe!: string;
   public Role?: Role[];
-  public resetToken?: string | null;
-  public resetTokenExpires?: Date | null;
+ // public resetToken?: string | null;
+  //public resetTokenExpires?: Date | null;
 }
 
 /**
@@ -126,7 +126,7 @@ User.init(
     mot_de_passe: {
       type: DataTypes.STRING,
       allowNull: false,
-    },
+    }/*,
     resetToken: {
       type: DataTypes.STRING,
       allowNull: true,
@@ -134,7 +134,7 @@ User.init(
     resetTokenExpires: {
       type: DataTypes.DATE,
       allowNull: true,
-    },
+    },*/
   },
   {
     sequelize,

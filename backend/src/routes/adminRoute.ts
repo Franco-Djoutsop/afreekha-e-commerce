@@ -41,6 +41,42 @@ const router = express.Router();
 
 //<<<<<<< HEAD
 //Admin route
+//<<<<<<< HEAD
+router.route("/").get((req, res) => {
+  res.status(200).json({ message: "displays lists of users" });
+});
+
+router.post("/article", crypt.decode, createArticleValidation, ArticleController.create);
+router.put('/article', crypt.decode, updateArticleValidation, ArticleController.update)
+router.delete('/article/:id', ArticleController.destroy);
+router.put('/article-changes-categorie', crypt.decode, ArticleController.updateCategories)
+router.post('/image', createImgValidation, ImageController.create);
+router.put('/image', updateArticleImg, ImageController.update);
+router.delete('/image/:id', ImageController.destroy);
+
+//categorie
+routerAdmin.post('/categorie',crypt.decode,addcategorie, gest_categorie.addCategorie);
+routerAdmin.put('/categorie/:id',updatecategorie, gest_categorie.updateCategorie);
+routerAdmin.delete('/categorie/:id',gest_categorie.deleteCategorie);
+
+//sous categorie
+router.post('/sousCategorie',crypt.decode,createSousCategorie,gest_sous_categorie.addsousCategorie);
+router.put('/sousCategorie/:id',crypt.decode,updatesousCategorie ,gest_sous_categorie.updateSousCategorie);
+router.delete('/deleteSousCategorie/:id',gest_sous_categorie.deleteSousCategorie);
+
+//message
+routerAdmin.get('/detail-message/:id',gest_message.getMessage);
+routerAdmin.delete('/message/:id', gest_message.deleteMessage);
+routerAdmin.get('/message',gest_message.getAllMessage)
+
+ //paiement
+ routerAdmin.get('/allpaiement',gest_paiement.showpaiement);
+routerAdmin.get('/detail-paiement/:id',gest_paiement.showDetailUserPaiement)
+//export default router;
+
+//client route
+//=======
+//>>>>>>> vf1/vf1
 routerAdmin.route("/").get((req, res) => {
   res.status(200).json({ message: "displays lists of users" });
 });
@@ -71,105 +107,15 @@ routerAdmin.post("/image", createImgValidation, ImageController.create);
 routerAdmin.put("/image", updateArticleImg, ImageController.update);
 routerAdmin.delete("/image/:id", ImageController.destroy);
 
-//categorie
-routerAdmin.post(
-  "/categorie",
-  // crypt.decode,
-  addcategorie,
-  gest_categorie.addCategorie
-);
-routerAdmin.put(
-  "/categorie/:id",
-  // crypt.decode,
-  updatecategorie,
-  gest_categorie.updateCategorie
-);
-routerAdmin.delete("/categorie/:id", gest_categorie.deleteCategorie);
-
-//sous categorie
-routerAdmin.post(
-  "/sousCategorie",
-  // crypt.decode,
-  createSousCategorie,
-  gest_sous_categorie.addsousCategorie
-);
-routerAdmin.put(
-  "/sousCategorie/:id",
-  crypt.decode,
-  updatesousCategorie,
-  gest_sous_categorie.updateSousCategorie
-);
-routerAdmin.delete(
-  "/deleteSousCategorie/:id",
-  gest_sous_categorie.deleteSousCategorie
-);
-
-//message
-routerAdmin.get("/detail-message/:id", gest_message.getMessage);
-routerAdmin.delete("/message/:id", gest_message.deleteMessage);
-
-//paiement
-routerAdmin.get("/allpaiement", gest_paiement.showpaiement);
-routerAdmin.get("/detail-paiement/:id", gest_paiement.showDetailUserPaiement);
-//export default routerAdmin;
-
-//client route
-routerAdmin.route("/").get((req, res) => {
-  res.status(200).json({ message: "displays lists of users" });
-});
-
-routerAdmin.put(
-  "/article",
-  validateToken,
-  crypt.decode,
-  updateArticleValidation,
-  ArticleController.update
-);
-routerAdmin.delete("/article/:id", ArticleController.destroy);
-routerAdmin.put(
-  "/article-changes-categorie",
-  validateToken,
-  crypt.decode,
-  ArticleController.updateCategories
-);
-routerAdmin.post(
-  "/image",
-  validateToken,
-  createArticleValidation,
-  ImageController.create
-);
-routerAdmin.put(
-  "/image",
-  validateToken,
-  updateArticleImg,
-  ImageController.update
-);
-routerAdmin.delete("/image/:id", validateToken, ImageController.destroy);
-
-routerAdmin.put(
-  "/facture",
-  validateToken,
-  crypt.decode,
-  FactureController.changeStatus
-);
-routerAdmin.get(
-  "/facture/:offset",
-  FactureController.getFactureWithArticleUser
-);
-routerAdmin.post(
-  "/facture",
-  validateToken,
-  crypt.decode,
-  FactureController.create
-);
+routerAdmin.put("/facture", crypt.decode, FactureController.changeStatus);
+routerAdmin.get("/facture/:offset",FactureController.getFactureWithArticleUser);
+routerAdmin.post("/facture", crypt.decode, FactureController.create);
 
 //users route
-routerAdmin.route("/users/:id").patch(crypt.decode, validateToken, updateUsers);
-routerAdmin.route("/users/:id/roles").post(validateToken, asignRoleToUser);
-routerAdmin.route("/users/:id").delete(validateToken, deleteUsers);
-routerAdmin
-  .route("/users/:idUser/:idRole")
-  .delete(validateToken, removeRoleToUser);
+routerAdmin.route("/users/roles/:id").post(crypt.decode, validateToken, asignRoleToUser);
+routerAdmin.route("/users/:id").patch(crypt.decode, updateUsers);
+routerAdmin.route("/users/:id").delete(deleteUsers);
+routerAdmin.route("/users/:idUser/:idRole").delete(validateToken, removeRoleToUser);
 
 //role route
 /**
@@ -244,7 +190,7 @@ routerAdmin.route("/roles").post(crypt.decode, createRole);
  *        description: Erreur liée au serveur
  */
 
-routerAdmin.route("/roles/:id").put(validateToken, updateRole);
+routerAdmin.route("/roles/:id").put(updateRole);
 
 /**
  * @openapi
@@ -300,6 +246,6 @@ routerAdmin.route("/roleUsers/:id").get(validateToken, roleUsers);
  *      404:
  *        description : Role non trouve
  */
-routerAdmin.route("/roles/:id").delete(validateToken, deleteRole);
+routerAdmin.route("/roles/:id").delete(deleteRole);
 export default routerAdmin;
 //>>>>>>> vf1/vf1
