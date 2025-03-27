@@ -43,6 +43,7 @@ Article.init(
     quantite: {
       type: DataTypes.FLOAT,
       allowNull: false,
+      defaultValue: 1,
     },
     caracteristiques: {
       type: DataTypes.STRING,
