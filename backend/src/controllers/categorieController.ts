@@ -5,30 +5,39 @@ import Categorie from "../models/categorie";
 import { crypt } from "../config/crypto-js";
 import SousCategorie from "../models/SousCategorie";
 import { MoveImg } from "../config/img_file";
-import { promises } from "dns";
-import { error } from "console";
-
+import dotenv from "dotenv"
+dotenv.config()
 const gest_categorie = {
   //@route/api/admin/categorie
   //@mathod post
   //@response true ? false
 
   //creation d'une categorie
+  async log(base64:string,contentType:string,featured:boolean){
+      const dossier = process.env.IMG_URL as string;
+      const result = await this.LogoUrl(base64,contentType,dossier);
+      if(result.create == true){
+        return result.link;
+      }
+      return '';
+  },
   async addCategorie(req: Request, res: any) {
     try {
       const data = req.body;
-      //const logoUrl = await this.urlLogo()
+      const{base64,contentType,featured} = req.body;
+      const result = await gest_categorie.log(base64,contentType,featured);
       const exitOrnotExist = await Categorie.findOne({
         where:{nom:data.nom}
       });
+      console.log('le result',result.link)
       if(exitOrnotExist){
           return res.status(400).json({'message':'cette categorie exite deja'})
       }else{
-      if (data && data.nom && data.idUser) {
+      if (data && result) {
         const categorie = await Categorie.create({
           idUser: data.idUser,
           nom: data.nom,
-          urlLogo: gest_categorie.urlLogo
+          urlLogo: result
         });
         return res.status(201).json({
           create: true,
@@ -346,10 +355,10 @@ async sousCategorie(req:Request,res:any){
   },*/
 
   //methode pour gerer urlLogo
-  async urlLogo(base64:string,dossier:string,contentType:string):Promise<any>
+  async LogoUrl(base64:string,contentType:string,dossier:string):Promise<any>
   {
     return MoveImg({data:base64,contentType:contentType},dossier).then((lien)=>{
-      return {create:true,link:lien+process.env.HTTPS}
+      return {create:true,link:lien}
     }).catch((error)=>{
       return {erreur:error.message,create:false}
     })
