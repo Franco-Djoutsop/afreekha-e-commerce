@@ -2,7 +2,9 @@ import { sequelize } from "../config/database";
 import Article from "../models/Article";
 import CommandArticle from "../models/CommandArticle";
 import Commande from "../models/Commande";
+import Image from "../models/image";
 import User from "../models/User";
+import { Articles } from "./objets/article";
 import { Facture } from "./objets/facture";
 
 const GestionFacture = {
@@ -38,8 +40,16 @@ const GestionFacture = {
                 model: Article,
                 attributes: ["idArticle", "nom_article", "prix"],
                 through: {
-                  attributes: ['quantite'], // Récupérer la quantité de chaque article commandé
-                }
+                  attributes: ['quantite'],
+                  as: "total_article" // Récupérer la quantité de chaque article commandé
+                },
+                include: [
+                  {
+                    model: Image,
+                    attributes: ['lien'],
+                  }
+                ],
+                as: 'Articles',
               }      
             ]
           });
@@ -53,17 +63,26 @@ const GestionFacture = {
             offset: offset,
             where: {idUser: idUser},
             include: [
-              {
-                model: Article,
-                 // INNER JOIN avec Article
-                through: {
-                  attributes: ['quantite']
-                }
-              },
+              
               {
                 model: User,
                 //required: true,
                 attributes: ["idUser", "nom", "prenom", "tel"], 
+              },
+              {
+                model: Article,
+                 // INNER JOIN avec Article
+                through: {
+                  attributes: ['quantite'],
+                  as: "total_article"
+                },
+                include: [
+                  {
+                    model: Image,
+                    attributes: ['lien']
+                  },
+                ],
+                as: 'Articles',
               }
               
             ],
