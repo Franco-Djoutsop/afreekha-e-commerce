@@ -133,6 +133,10 @@ const GestionImage = {
         return dataRetrieve;
      },
 
+     async getAll(){
+        return await Image.findAll();
+     },
+
     async getFeatured(){
         const data = await Image.findAll({
             attributes: ['idImage', 'lien'],

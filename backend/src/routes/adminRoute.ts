@@ -52,6 +52,7 @@ routerAdmin.put('/article-changes-categorie', crypt.decode, ArticleController.up
 routerAdmin.post('/image', createImgValidation, ImageController.create);
 routerAdmin.put('/image', updateArticleImg, ImageController.update);
 routerAdmin.delete('/image/:id', ImageController.destroy);
+routerAdmin.get('/image', ImageController.getImage);
 
 //categorie
 routerAdmin.post('/categorie',crypt.decode,addcategorie, gest_categorie.addCategorie);

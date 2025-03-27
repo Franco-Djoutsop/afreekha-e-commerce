@@ -89,14 +89,13 @@ const CommandeController = {
     //@bodyparams :true
     async getCommad(req: Request, res: any){
         try {
-            if(req.params.idArticle && req.params.idUser){
+            if(req.params.idUser){
                 
                 const result = await GestionCommande.getCommandOwner(
-                    Number.parseInt(req.params.idArticle),
-                    Number.parseInt(req.params.idArticle)
+                    Number.parseInt(req.params.idUser)
                 );
 
-                return result.length != 0 ? res.status(200).json([{data: crypt.encode(result)}]):res.status(200).json([]);
+                return result.length != 0 ? res.status(200).json([{data: (result)}]):res.status(200).json([]);
                 
             }else{
                 res.status(400).json([{message: "Informations manquantes"}]);

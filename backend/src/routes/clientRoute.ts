@@ -389,8 +389,8 @@ router.put("/adresse", validateToken, updateArticleValidation, AdresseController
 
 router.get("/article/:offset", ArticleController.getAll);
 router.get(
-  "/commande/:idArticle/:idUser",
-  validateToken,
+  "/commande/:idUser",
+  
   CommandeController.getCommad
 );
 router.delete("/commande/:id", CommandeController.delete);

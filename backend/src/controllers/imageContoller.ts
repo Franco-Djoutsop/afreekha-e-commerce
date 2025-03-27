@@ -84,6 +84,16 @@ const ImageController = {
         } catch (error: any) {
             return res.status(400).json([{message: error.message}]);
         }
+    },
+
+    async getImage(req: Request, res: any){
+        try {
+            const imgData = await GestionImage.getAll();
+
+            return res.status(200).json(imgData);
+        } catch (error: any) {
+            return res.status(400).json([{message: error.message}]);
+        }
     }
 }
 
