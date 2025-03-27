@@ -4,11 +4,9 @@ import { sequelize } from "../config/database";
 class Image extends Model {
   public idImage!: number;
   public lien!: string;
-//<<<<<<< HEAD
-//=======
   public idArticle!: number;
-  public isVogue!: "vogue" | "Pas vogue";
-//>>>>>>> vf1/vf1
+  public featured!: boolean;
+
 }
 
 // Initialisation du modèle
@@ -27,20 +25,10 @@ Image.init(
 //<<<<<<< HEAD
    
 //=======
-    isVogue: {
-      type: DataTypes.STRING,
-//=======
-    //featured: {
-     // type: DataTypes.BOOLEAN,
-//>>>>>>> vf0/vf0
+    featured: {
+      type: DataTypes.BOOLEAN,
       allowNull: false,
       defaultValue: false,
-    //},
-   // inTrend: {
-      //type: DataTypes.BOOLEAN,
-      //allowNull: false,
-      //defaultValue: false,
-     // },
     },
 
     // idArticle: {
