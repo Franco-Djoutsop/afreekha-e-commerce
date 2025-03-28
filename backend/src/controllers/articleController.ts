@@ -15,9 +15,10 @@ const ArticleController = {
         if (!req.body.errors) { // Si req.body.errors n'existe pas, alor la validation a réussi
             // Les données sont validées et disponibles dans req.body
             let article: any;
-            
+             console.log('entering in the controller');
              article =  req.body as Articles;
              const resp = await GestionArticle.save(article);
+             console.log(resp.idArticle, resp);
              const imgAssigment = await GestionImage.articleImageAssigment(resp.idArticle, article.imgsID);
             
              const response = {
@@ -28,7 +29,7 @@ const ArticleController = {
     
         } else {
           // La validation a échoué, les erreurs sont dans req.body.errors
-          return res.status(401).json({ message: req.body.errors[0].msg });
+          return res.status(403).json({ message: req.body.errors[0].msg });
         }
     } catch (err: any) {
       return res.status(400).send([{ message: err.message }]);

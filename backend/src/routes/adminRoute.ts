@@ -45,7 +45,7 @@ routerAdmin.route("/").get((req, res) => {
   res.status(200).json({ message: "displays lists of users" });
 });
 
-routerAdmin.post("/article", crypt.decode, createArticleValidation, ArticleController.create);
+routerAdmin.post("/article", createArticleValidation, ArticleController.create);
 routerAdmin.put('/article', crypt.decode, updateArticleValidation, ArticleController.update)
 routerAdmin.delete('/article/:id', ArticleController.destroy);
 routerAdmin.put('/article-changes-categorie', crypt.decode, ArticleController.updateCategories)
@@ -55,7 +55,7 @@ routerAdmin.delete('/image/:id', ImageController.destroy);
 routerAdmin.get('/image', ImageController.getImage);
 
 //categorie
-routerAdmin.post('/categorie',crypt.decode,addcategorie, gest_categorie.addCategorie);
+routerAdmin.post('/categorie', addcategorie, gest_categorie.addCategorie);
 routerAdmin.put('/categorie/:id',updatecategorie, gest_categorie.updateCategorie);
 routerAdmin.delete('/categorie/:id',gest_categorie.deleteCategorie);
 
@@ -82,14 +82,6 @@ routerAdmin.route("/").get((req, res) => {
 });
 
 routerAdmin.get("/home/:offset", HomeController.getHomeAdminData);
-
-routerAdmin.post(
-  "/article",
-  validateToken,
-  crypt.decode,
-  createArticleValidation,
-  ArticleController.create
-);
 
 routerAdmin.put(
   "/article",

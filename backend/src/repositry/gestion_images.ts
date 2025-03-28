@@ -81,8 +81,8 @@ const GestionImage = {
         }
         
         const articleImagesData = idImage.map((imageId) => ({
-            articleId: idArticle,
-            imageId: imageId,
+            idArticle: idArticle,
+            idImage: imageId,
           }));
     
         const resp = await ArticleImage.bulkCreate(articleImagesData, { transaction });
