@@ -3,7 +3,9 @@ type Commande = {
     Montant_total: number,
     quantite_articles: number,
     statut: string,
-    idUser: number
+    idUser: number,
+    createdAt: string,
+    updatedAt: string
 }
 
 export { Commande };

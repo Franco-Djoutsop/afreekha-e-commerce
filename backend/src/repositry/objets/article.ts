@@ -11,6 +11,7 @@ type Articles = {
      idCategorie: number,
      idImage?: number,
      imgsID?: number[],
+     Images: any[],
 }
 
 export {Articles}

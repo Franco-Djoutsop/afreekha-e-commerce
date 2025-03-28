@@ -5,13 +5,12 @@ import Role from "../models/Role";
 import UserRole from "../models/userRoles";
 import { crypt } from "../config/crypto-js";
 
-
 //@desc read all users
 //@route GET /api/users
 //@access private
 //<<<<<<< HEAD
 const allUSers = asyncHandler(async (req: Request, res: any) => {
-  try{
+  try {
     const users = await User.findAll({
       include: [
         {
@@ -20,18 +19,21 @@ const allUSers = asyncHandler(async (req: Request, res: any) => {
         },
       ],
     });
-    if(users){
+    if (users) {
       console.log(users);
-     return res.status(200).json({ reps: crypt.encode(users), done: true });
+      return res.status(200).json({
+        // reps: crypt.encode(users),
+        reps: users,
+        done: true,
+      });
     }
-     return res.status(404).json({ message:'aucun utilisateur treouve' });
-    
-  }catch(error){
+    return res.status(404).json({ message: "aucun utilisateur treouve" });
+  } catch (error) {
     console.log(error);
-    return res.status(500).json({erreur:error});
-  }});
-  
- 
+    return res.status(500).json({ erreur: error });
+  }
+});
+
 //=======
 /*const allUSers = asyncHandler(async (req: Request, res: Response) => {
   const users = await User.findAll({
@@ -75,29 +77,35 @@ const updateUsers = asyncHandler(async (req: Request, res: Response) => {
     user.email = email || user.email;
     user.tel = tel || user.tel;
     user.mot_de_passe = mot_de_passe || user.mot_de_passe;
-    
-   //mise a jour des roles(ajout d'un/des nouveau.x role.s ou suppresion de.s autre role.s)
-   const existingRole = await UserRole.findAll({
-    where:{
-      idUser:id
-    }
-   });
-   
-   const newROle =  idRole
-      .filter((role:any) => ! existingRole
-        .find(existingRole=>existingRole.idRole===role));
-   const roleToRemove = existingRole
-      .filter(existingRole=> ! idRole
-        .some((id:any) => id ===existingRole.idRole));
 
-   await Promise.all([...newROle.map((role:any)=> UserRole.create({idRole:role,
-    idUser:id}
-  )),
-    ...roleToRemove.map((role:any)=> UserRole.destroy({where:{
-      idRole:role.idRole,
-      idUser:id
-    }}))
-   ]);
+    //mise a jour des roles(ajout d'un/des nouveau.x role.s ou suppresion de.s autre role.s)
+    const existingRole = await UserRole.findAll({
+      where: {
+        idUser: id,
+      },
+    });
+
+    const newROle = idRole.filter(
+      (role: any) =>
+        !existingRole.find((existingRole) => existingRole.idRole === role)
+    );
+    const roleToRemove = existingRole.filter(
+      (existingRole) => !idRole.some((id: any) => id === existingRole.idRole)
+    );
+
+    await Promise.all([
+      ...newROle.map((role: any) =>
+        UserRole.create({ idRole: role, idUser: id })
+      ),
+      ...roleToRemove.map((role: any) =>
+        UserRole.destroy({
+          where: {
+            idRole: role.idRole,
+            idUser: id,
+          },
+        })
+      ),
+    ]);
     await user.save();
     res.status(200).json({ reps: user, done: true });
   } catch (error) {
@@ -109,20 +117,18 @@ const updateUsers = asyncHandler(async (req: Request, res: Response) => {
 //@route DEL /api/admin/users/:id
 //@access public
 const deleteUsers = asyncHandler(async (req: Request, res: any) => {
-  try{
+  try {
     const id = req.params.id;
-  const user = await User.findByPk(id);
-  if (!user) {
-   return res.status(400).json({ actionDone: false });
-    
-  }
-  await user.destroy();
-   return res.status(204).json({ actionDone: true });
-  }catch(error){
+    const user = await User.findByPk(id);
+    if (!user) {
+      return res.status(400).json({ actionDone: false });
+    }
+    await user.destroy();
+    return res.status(204).json({ actionDone: true });
+  } catch (error) {
     console.log(error);
-    return res.status(500).json({message:error})
-}
-  
+    return res.status(500).json({ message: error });
+  }
 });
 
 //@desc a user with all roles
@@ -189,7 +195,7 @@ const asignRoleToUser = asyncHandler(async (req: Request, res: Response) => {
       prenom: existUser.prenom,
       tel: existUser.tel,
       email: existUser.email,
-      role: existRole.name,
+      role: existRole.nom,
     };
     res.status(200).json({
       reps: datas,
@@ -198,7 +204,7 @@ const asignRoleToUser = asyncHandler(async (req: Request, res: Response) => {
   } catch (error: any) {
     res.status(400).json({ errorMessage: error.message });
   }
-//<<<<<<< HEAD
+  //<<<<<<< HEAD
 
   //verifier si le role existe
   const existRole = await Role.findByPk(idRole);
@@ -231,8 +237,8 @@ const asignRoleToUser = asyncHandler(async (req: Request, res: Response) => {
     reps: datas,
     done: true,
   });*/
-//=======
-//>>>>>>> vf1/vf1
+  //=======
+  //>>>>>>> vf1/vf1
 });
 
 //@desc remove a role to user
@@ -268,7 +274,7 @@ const removeRoleToUser = asyncHandler(async (req: Request, res: Response) => {
 //@access private
 const getUserRole = asyncHandler(async (req: Request, res: Response) => {
   try {
-    const idUser = req.body?.id; //recuperer l'id du user depuis le token
+    const idUser = req.user?.id; //recuperer l'id du user depuis le token
     console.log("idUser : ", idUser);
 
     //rechercher le user et inclure ses roles

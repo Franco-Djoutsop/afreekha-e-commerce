@@ -6,7 +6,6 @@ import ArticleImage from "../models/ArticleImage";
 import Article from "../models/Article";
 import {sequelize} from "../config/database"; // Adjust the path as necessary
 
-
 dotenv.config();
 
 const GestionImage = {  

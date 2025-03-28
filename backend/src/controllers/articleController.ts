@@ -18,7 +18,7 @@ const ArticleController = {
             
              article =  req.body as Articles;
              const resp = await GestionArticle.save(article);
-             const imgAssigment = await GestionImage.articleImageAssigment(article.idArtice, article.imgsID);
+             const imgAssigment = await GestionImage.articleImageAssigment(resp.idArticle, article.imgsID);
             
              const response = {
                 articleData: resp,

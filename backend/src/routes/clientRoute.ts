@@ -3,7 +3,12 @@ import express, { Express } from "express";
 import gest_message from "../controllers/messageController";
 import gest_paiement from "../controllers/paiementController";
 import gest_categorie from "../controllers/categorieController";
-import { addMessage, addpaiement, adresseValidation, updateArticleValidation } from "../middlewares/validation";
+import {
+  addMessage,
+  addpaiement,
+  adresseValidation,
+  updateArticleValidation,
+} from "../middlewares/validation";
 import { createCommandeValidation } from "../middlewares/validation";
 import { ArticleController } from "../controllers/articleController";
 //=======
@@ -57,6 +62,7 @@ router.get("/home-data", HomeController.getHomeData);
  *      401:
  *        description: Non autorisé
  */
+// router.route("/users").get(crypt.decode, allUSers);
 router.route("/users").get(allUSers);
 
 //<<<<<<< HEAD
@@ -254,7 +260,9 @@ router.route("/users/reset-password/:token").post(resetPassword);
  *
  */
 //<<<<<<< HEAD
-router.route("/users").post(userValidationRules,crypt.decode, validate, register);
+router
+  .route("/users")
+  .post(userValidationRules, crypt.decode, validate, register);
 //=======
 router.route("/users").post(userValidationRules, validate, register);
 router.route("/users/me").get(validateToken, getUserRole);
@@ -384,8 +392,18 @@ router.get("/article-details/:id", ArticleController.getOne);
  */
 
 router.delete("/adresse/:id", validateToken, AdresseController.delete);
-router.post("/adresse", validateToken, adresseValidation, AdresseController.create);
-router.put("/adresse", validateToken, updateArticleValidation, AdresseController.update);
+router.post(
+  "/adresse",
+  validateToken,
+  adresseValidation,
+  AdresseController.create
+);
+router.put(
+  "/adresse",
+  validateToken,
+  updateArticleValidation,
+  AdresseController.update
+);
 
 router.get("/article/:offset", ArticleController.getAll);
 router.get(
@@ -393,7 +411,7 @@ router.get(
   validateToken,
   CommandeController.getCommad
 );
-router.delete("/commande/:id", validateToken, CommandeController.delete);
+router.delete("/commande/:id", CommandeController.delete);
 router.post(
   "/commande",
   // validateToken,

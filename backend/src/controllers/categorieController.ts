@@ -161,9 +161,9 @@ async ArticleOfCategorie(req:Request,res:any){
 //>>>>>>> vf1/vf1
         }
       return res.status(200).json({
-        update: true,
+        get: true,
         message: "mise a jour reussi",
-        //data: updateData,
+        data: result,
       });
     } catch (error) {
       console.log(error);

@@ -6,8 +6,10 @@ class Commande extends Model {
   public idCommande!: number;
   public Montant_total!: number;
   public quantite_articles!: number;
-  public statut! : string;
+  public statut!: string;
   public idUser!: number;
+  public createdAt?: string;
+  public updatedAt?: string;
 }
 
 // Initialisation du modèle
@@ -29,7 +31,7 @@ Commande.init(
     statut: {
       type: DataTypes.STRING,
       allowNull: false,
-      defaultValue: "Encours", // Exemple : "Encours", "Paye"
+      defaultValue: "En attente", // Exemple "En entente", "payé"
     },
     idUser: {
       type: DataTypes.INTEGER,

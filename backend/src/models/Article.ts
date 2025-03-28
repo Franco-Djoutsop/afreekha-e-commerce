@@ -43,6 +43,7 @@ Article.init(
     quantite: {
       type: DataTypes.FLOAT,
       allowNull: false,
+      defaultValue: 1,
     },
     caracteristiques: {
       type: DataTypes.STRING,
@@ -78,7 +79,7 @@ Article.init(
     quantite_critique: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      defaultValue: 10
+      defaultValue: 5,
     },
     idCategorie: {
       type: DataTypes.INTEGER,
