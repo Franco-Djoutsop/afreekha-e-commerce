@@ -1,7 +1,6 @@
 import Image from "../models/image";
 import { MoveImg, DeleteImg } from "../config/img_file";
 import dotenv from 'dotenv';
-import { Op } from "sequelize";
 import ArticleImage from "../models/ArticleImage";
 import Article from "../models/Article";
 import {sequelize} from "../config/database"; // Adjust the path as necessary
