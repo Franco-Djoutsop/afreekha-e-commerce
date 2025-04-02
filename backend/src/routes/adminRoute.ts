@@ -190,7 +190,7 @@ routerAdmin
  *      500:
  *        description: Erreur serveur
  */
-routerAdmin.route("/roles").post(crypt.decode, createRole);
+routerAdmin.route("/roles").post( crypt.decode,createRole);
 
 /**
  * @openapi
@@ -231,7 +231,7 @@ routerAdmin.route("/roles").post(crypt.decode, createRole);
  *        description: Erreur liée au serveur
  */
 
-routerAdmin.route("/roles/:id").put(updateRole);
+routerAdmin.route("/roles/:id").put(crypt.decode,updateRole);
 
 /**
  * @openapi
