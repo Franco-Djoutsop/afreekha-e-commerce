@@ -46,15 +46,10 @@ const GestionCommande = {
       return queryRslt;
   },
 
-    async getCommandOwner(idCommande: number, idUser: number){
+    async getCommandOwner(idUser: number){
      const commandsWithUsers = await Commande.findAll({
-            where: { idCommande: idCommande}, 
-            include: [
-              {
-                model: User,
-                required: true,
-              },
-            ],
+            where: { idUser: idUser}, 
+            
           });
 
     return commandsWithUsers;

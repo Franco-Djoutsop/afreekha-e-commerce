@@ -74,14 +74,10 @@ const createArticleValidation = [
   body("featured").notEmpty().withMessage("Article en vedette ? Non defini"),
   body("quantite").notEmpty().withMessage("Quantité de l'article non défini"),
   body("caracteristiques").notEmpty().withMessage("Caractéristique non défini"),
-  body("pourcentage_promo")
-    .notEmpty()
-    .withMessage("Pourcentage de promotion non défini"),
+  body("pourcentage_promo").notEmpty().withMessage("Pourcentage de promotion non défini"),
   body("garantie").notEmpty().withMessage("garantie non définie"),
-  body("imgsID").isArray().notEmpty().withMessage("Veuillez fourni les ids des images pour cette article !"),
-  body("idCategorie")
-    .notEmpty()
-    .withMessage("Veuillez choisir une categorie pour cet article"),
+  body("imgsID").isArray({min: 1}).withMessage("Veuillez fourni les ids des images pour cette article !"),
+  body("idCategorie").notEmpty().withMessage("Veuillez choisir une categorie pour cet article"),
   (req: Request, res: Response, next: NextFunction) => {
     handleValidationErrors(req, res, next);
   },
@@ -101,6 +97,9 @@ const createImgValidation = [
     .notEmpty()
     .withMessage("Données de l'image non défini"),
     body("contentType").notEmpty().withMessage(" Format du fichier non defini !"),
+    (req: Request, res: Response, next: NextFunction) => {
+      handleValidationErrors(req, res, next);
+    },
 ];
 
 const adresseValidation = [

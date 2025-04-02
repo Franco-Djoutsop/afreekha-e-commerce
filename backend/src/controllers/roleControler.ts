@@ -8,6 +8,7 @@ import { crypt } from "../config/crypto-js";
 //@route POST /api/admin/roles
 //@access public
 const createRole = asyncHandler(async (req: Request, res: Response) => {
+  console.log("entree");
   const { name } = req.body;
   const role = await Role.create({ name });
   res.status(201).json({ reps: crypt.encode(role), done: true });

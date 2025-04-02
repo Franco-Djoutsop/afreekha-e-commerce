@@ -47,13 +47,13 @@ routerAdmin.route("/").get((req, res) => {
 
 routerAdmin.post(
   "/article",
-  // crypt.decode,
+  crypt.decode,
   createArticleValidation,
   ArticleController.create
 );
 routerAdmin.put(
   "/article",
-  crypt.decode,
+  // crypt.decode,
   updateArticleValidation,
   ArticleController.update
 );
@@ -120,7 +120,7 @@ routerAdmin.get("/home/:offset", HomeController.getHomeAdminData);
 routerAdmin.post(
   "/article",
   // validateToken,
-  // crypt.decode,
+  // crypt.decode,;
   createArticleValidation,
   ArticleController.create
 );

@@ -7,7 +7,8 @@ class Image extends Model {
   //<<<<<<< HEAD
   //=======
   public idArticle!: number;
-  public isVogue!: string;
+  public isVogue!: "vogue" | "Pas vogue";
+  //>>>>>>> vf1/vf1
 }
 
 // Initialisation du modèle

@@ -22,7 +22,6 @@ const ImageController = {
           contentType,
           featured
         );
-
         return typeof resp != "string"
           ? res.status(200).json([{ data: crypt.encode(resp.dataValues) }])
           : res.status(200).json([]);
@@ -96,6 +95,16 @@ const ImageController = {
           .status(400)
           .json([{ message: "ID d'article introuvable !" }]);
       }
+    } catch (error: any) {
+      return res.status(400).json([{ message: error.message }]);
+    }
+  },
+
+  async getImage(req: Request, res: any) {
+    try {
+      const imgData = await GestionImage.getAll();
+
+      return res.status(200).json(imgData);
     } catch (error: any) {
       return res.status(400).json([{ message: error.message }]);
     }

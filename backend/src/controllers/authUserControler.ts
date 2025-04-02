@@ -13,35 +13,42 @@ import UserRole from "../models/userRoles";
 //@desc register a user
 //@route POST /api/users
 //@access public
-const register = asyncHandler(async (req: Request, res: any) => {
+const register = asyncHandler(async (req: Request, res: Response) => {
   try {
     const { nom, prenom, date_naissance, email, tel, mot_de_passe, idRole } =
       req.body;
     const hashpassword = await bcrypt.hash(mot_de_passe, 10);
-    const user = await User.create({
-      nom,
-      prenom,
-      date_naissance,
-      email,
-      tel,
-      mot_de_passe: hashpassword,
+    const existUser = await User.findOne({
+      where: { email: email },
     });
-    const lastId = user.get("idUser");
-    const userrole = await UserRole.create({
-      idRole,
-      idUser: lastId,
-    });
-    if (user !== null && userrole !== null) {
-      console.log("enregistrement reuissi");
-      return res
-        .status(201)
-        .json({ done: true, message: console.log("enregistrement reuissi") });
+    if (!existUser) {
+      const user = await User.create({
+        nom,
+        prenom,
+        date_naissance,
+        email,
+        tel,
+        mot_de_passe: hashpassword,
+      });
+      const lastId = user.get("idUser");
+      const userrole = await UserRole.create({
+        idRole,
+        idUser: lastId,
+      });
+      if (user !== null && userrole !== null) {
+        console.log("enregistrement reuissi");
+        res
+          .status(201)
+          .json({ done: true, message: console.log("enregistrement reuissi") });
+      }
+    } else {
+      res.status(404).json({
+        message: "L'utilisateur existe deja , veuillez vous connecter !!",
+      });
     }
-    console.log("donnee introuvable");
-    return res.status(404).json({ message: console.log("donnee introuvable") });
   } catch (error) {
     console.log(error);
-    return res.status(500).json({ message: error });
+    res.status(500).json({ message: error });
   }
 });
 
