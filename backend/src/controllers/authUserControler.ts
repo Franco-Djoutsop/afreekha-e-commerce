@@ -15,9 +15,9 @@ import UserRole from "../models/userRoles";
 //@access public
 const register = asyncHandler(async (req: Request, res: any) => {
   try {
-    const { nom, prenom, date_naissance, email, tel, mot_de_passe, idRole } =
-      req.body;
+    const { nom, prenom, date_naissance, email, tel, mot_de_passe, idRole } = req.body;
     const hashpassword = await bcrypt.hash(mot_de_passe, 10);
+   
     const user = await User.create({
       nom,
       prenom,
@@ -114,7 +114,7 @@ const login = asyncHandler(async (req: Request, res: Response) => {
       tel: user.tel,
       roles: user.Role?.map((role) => ({
         idRole: role.idRole,
-        nomRole: role.nom,
+        nomRole: role.name,
       })),
     },
   };

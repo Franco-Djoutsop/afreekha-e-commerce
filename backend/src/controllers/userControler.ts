@@ -12,11 +12,14 @@ import { crypt } from "../config/crypto-js";
 const allUSers = asyncHandler(async (req: Request, res: any) => {
   try {
     const users = await User.findAll({
+      attributes:['idUser','nom','email','createdAt'],
       include: [
         {
           model: Role,
-          through: { attributes: [] },
+         attributes: ['idRole','name','createdAt'],
+         through:{attributes:[]}
         },
+        
       ],
     });
     if (users) {
@@ -85,12 +88,11 @@ const updateUsers = asyncHandler(async (req: Request, res: Response) => {
       },
     });
 
-    const newROle = idRole.filter(
-      (role: any) =>
-        !existingRole.find((existingRole) => existingRole.idRole === role)
+    const newROle = idRole.filter((role: any) =>
+      !existingRole.find((existingRole) => existingRole.idRole === role)
     );
-    const roleToRemove = existingRole.filter(
-      (existingRole) => !idRole.some((id: any) => id === existingRole.idRole)
+    const roleToRemove = existingRole.filter((existingRole) =>
+       !idRole.some((id: any) => id === existingRole.idRole)
     );
 
     await Promise.all([
@@ -195,7 +197,7 @@ const asignRoleToUser = asyncHandler(async (req: Request, res: Response) => {
       prenom: existUser.prenom,
       tel: existUser.tel,
       email: existUser.email,
-      role: existRole.nom,
+      role: existRole.name,
     };
     res.status(200).json({
       reps: datas,

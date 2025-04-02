@@ -7,10 +7,22 @@ import { crypt } from "../config/crypto-js";
 //@desc create a role
 //@route POST /api/admin/roles
 //@access public
-const createRole = asyncHandler(async (req: Request, res: Response) => {
-  const { name } = req.body;
-  const role = await Role.create({ name });
-  res.status(201).json({ reps: crypt.encode(role), done: true });
+const createRole = asyncHandler(async (req: Request, res: any) => {
+  try{
+    const { name } = req.body;
+    console.log('le name:',name);
+    const role = await Role.create({
+      name
+    })
+    if(role)
+   return res.status(201).json({ reps: crypt.encode(role), done: true });
+  else
+  return res.status(404).json({reps:[],'message':'imposible de creer ce role'})
+  }catch(error){
+    console.log(error);
+    return res.status(500).json({'create':false,'cause':error});
+  }
+
 });
 
 //@desc read all roles
@@ -45,31 +57,29 @@ const allRoles = asyncHandler(async (req: Request, res: Response) => {
 //@desc update a role
 //@route PATCH /api/admin/roles/"id"
 //@access public
-const updateRole = asyncHandler(async (req: Request, res: Response) => {
+const updateRole = asyncHandler(async (req: Request, res: any) => {
   const id = req.params.id;
-  const { nom } = req.body;
+  const { name } = req.body;
   const role = await Role.findByPk(id);
   if (!role) {
-    res.status(400);
-    throw new Error("Aucun role trouve");
+    return res.status(400).json({message:'aucun role trouve'});
   }
-  role.nom = nom || role.nom;
+  role.name = name || role.name;
   await role.save();
-  res.status(200).json({ reps: role, done: true });
+  return res.status(200).json({ reps: crypt.encode(role), done: true });
 });
 
 //@desc delete a role
 //@route DEL /api/admin/roles/:id
 //@access private
-const deleteRole = asyncHandler(async (req: Request, res: Response) => {
+const deleteRole = asyncHandler(async (req: Request, res: any) => {
   const { id } = req.params;
   const role = await Role.findByPk(id);
   if (!role) {
-    res.status(400);
-    throw new Error("aucun role trouve");
+   return res.status(400).json({'delete':true});
   }
   await role.destroy();
-  res.status(204).json({ actionDone: true });
+  return res.status(204).json({ actionDone: true });
 });
 
 //@desc read a role with all users

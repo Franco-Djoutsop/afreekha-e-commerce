@@ -4,10 +4,16 @@ import { sequelize } from "../config/database";
 class Image extends Model {
   public idImage!: number;
   public lien!: string;
+//<<<<<<< HEAD
   //<<<<<<< HEAD
   //=======
   public idArticle!: number;
   public isVogue!: string;
+//=======
+  //public idArticle!: number;
+  public featured!: boolean;
+
+//>>>>>>> vf0/vf0
 }
 
 // Initialisation du modèle
@@ -22,6 +28,7 @@ Image.init(
       type: DataTypes.STRING,
       allowNull: false,
     },
+//<<<<<<< HEAD
     //<<<<<<< HEAD
     //<<<<<<< HEAD
 
@@ -35,11 +42,22 @@ Image.init(
       allowNull: false,
       defaultValue: false,
       //},
+    },
       // inTrend: {
       //type: DataTypes.BOOLEAN,
       //allowNull: false,
       //defaultValue: false,
       // },
+//=======
+//<<<<<<< HEAD
+//<<<<<<< HEAD
+   
+//=======
+    featured: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
+//>>>>>>> vf0/vf0
     },
 
     // idArticle: {
@@ -56,8 +74,7 @@ Image.init(
     sequelize,
     modelName: "Image",
     tableName: "images",
-  }
-);
+  });
 
 // // Association avec `Article` (Un article peut avoir plusieurs images)
 // Article.hasMany(Image, { foreignKey: "idArticle", as: "images" });

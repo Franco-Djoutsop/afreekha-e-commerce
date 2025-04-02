@@ -45,6 +45,7 @@ routerAdmin.route("/").get((req, res) => {
   res.status(200).json({ message: "displays lists of users" });
 });
 
+//<<<<<<< HEAD
 routerAdmin.post(
   "/article",
   crypt.decode,
@@ -80,6 +81,21 @@ routerAdmin.put(
   gest_categorie.updateCategorie
 );
 routerAdmin.delete("/categorie/:id", gest_categorie.deleteCategorie);
+//=======
+routerAdmin.post("/article", createArticleValidation, ArticleController.create);
+routerAdmin.put('/article', crypt.decode, updateArticleValidation, ArticleController.update)
+routerAdmin.delete('/article/:id', ArticleController.destroy);
+routerAdmin.put('/article-changes-categorie', crypt.decode, ArticleController.updateCategories)
+routerAdmin.post('/image', createImgValidation, ImageController.create);
+routerAdmin.put('/image', updateArticleImg, ImageController.update);
+routerAdmin.delete('/image/:id', ImageController.destroy);
+routerAdmin.get('/image', ImageController.getImage);
+
+//categorie
+routerAdmin.post('/categorie', addcategorie, gest_categorie.addCategorie);
+routerAdmin.put('/categorie/:id',updatecategorie, gest_categorie.updateCategorie);
+routerAdmin.delete('/categorie/:id',gest_categorie.deleteCategorie);
+//>>>>>>> vf0/vf0
 
 //sous categorie
 routerAdmin.post(
@@ -117,6 +133,7 @@ routerAdmin.route("/").get((req, res) => {
 
 routerAdmin.get("/home/:offset", HomeController.getHomeAdminData);
 
+//<<<<<<< HEAD
 routerAdmin.post(
   "/article",
   // validateToken,
@@ -125,6 +142,8 @@ routerAdmin.post(
   ArticleController.create
 );
 
+//=======
+//>>>>>>> vf0/vf0
 routerAdmin.put(
   "/article",
   crypt.decode,

@@ -40,7 +40,7 @@ const gest_categorie = {
         });
         return res.status(201).json({
           create: true,
-          message: "nouvelle categorie ajoute",
+          message: "nouvelle categorie ajoutée",
           reps: crypt.encode(categorie),
         });
       }

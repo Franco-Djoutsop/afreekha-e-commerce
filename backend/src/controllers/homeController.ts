@@ -11,7 +11,6 @@ const HomeController = {
     async getHomeData(req: Request, res: any){
         try {
             const offset = req.params.offset ? Number.parseInt(req.params.offset) : 0;
-
             const data = {
                 articlesPromo: await GestionArticle.getArticleOnPromo(offset),
                 articlesFeature : await GestionArticle.getArticleOnFeatured(offset),
