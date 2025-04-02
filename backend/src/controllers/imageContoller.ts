@@ -34,7 +34,7 @@ const ImageController = {
                 const resp = await GestionImage.createImg(base64Encryption, dossier, contentType, featured);
 //>>>>>>> vf0/vf0
 
-                return typeof resp != "string" ?  res.status(200).json([{data: crypt.encode(resp.dataValues)}]): res.status(200).json([]);
+                return typeof resp != "string" ?  res.status(200).json([{data: resp.dataValues}]): res.status(200).json([]);
             }else{
                 return res.status(400).json([{message: "Informations manquantes pour continuer l'opération !"}])
             }
