@@ -12,7 +12,7 @@ import { crypt } from "../config/crypto-js";
 const allUSers = asyncHandler(async (req: Request, res: any) => {
   try {
     const users = await User.findAll({
-      attributes:['idUser','nom','email','createdAt'],
+      attributes:['idUser','nom','email','prenom','tel','date_naissance','createdAt'],
       include: [
         {
           model: Role,

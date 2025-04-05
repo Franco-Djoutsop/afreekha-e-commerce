@@ -46,8 +46,6 @@ User.hasMany(Commande, {
 });
 Commande.belongsTo(User, {
   foreignKey: "idUser",
-  onDelete: "CASCADE",
-  onUpdate: "CASCADE",
 });
 
 // One categorie has Many article
@@ -105,25 +103,14 @@ Commande.belongsToMany(Article, {
   foreignKey: "idCommande",
   otherKey: "idArticle",
 //<<<<<<< HEAD
-  as: "Commande",
+  as: "Article",
 }); 
-//=======
-  //as: "Articles",
-//});
-//>>>>>>> vf1/vf1
 Article.belongsToMany(Commande, {
   through: CommandArticle,
   foreignKey: "idArticle",
   otherKey: "idCommande",
 //<<<<<<< HEAD
-  as:"Article"
+  as:"Commandes"
 //<<<<<<< HEAD
 });
-//=======
- // as: "commandes",
-//});
-//>>>>>>> vf0/vf0
-//=======
-  //<<<<<<< HEAD
-//});
-//>>>>>>> vf1/vf1
+

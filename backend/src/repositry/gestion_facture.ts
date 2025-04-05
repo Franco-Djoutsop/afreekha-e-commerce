@@ -4,7 +4,6 @@ import CommandArticle from "../models/CommandArticle";
 import Commande from "../models/Commande";
 import Image from "../models/image";
 import User from "../models/User";
-import { Articles } from "./objets/article";
 import { Facture } from "./objets/facture";
 
 const GestionFacture = {

@@ -132,7 +132,7 @@ const GestionImage = {
      },
 
      async getAll(){
-        return await Image.findAll();
+        return await Image.findAll({attributes:['idImage','lien']});
      },
 
     async getFeatured(){

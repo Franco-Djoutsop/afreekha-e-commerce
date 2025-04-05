@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { GestionImage } from "../repositry/gestion_images";
 import { crypt } from "../config/crypto-js";
 import dotenv from "dotenv"
+import { where } from "sequelize";
 
 dotenv.config();
 
@@ -30,15 +31,15 @@ const ImageController = {
 //>>>>>>> vf0/vf0
 //=======
                 const { base64Encryption, contentType, featured} = req.body;
-
+                
                 const resp = await GestionImage.createImg(base64Encryption, dossier, contentType, featured);
-//>>>>>>> vf0/vf0
-
+                
                 return typeof resp != "string" ?  res.status(200).json([{data: resp.dataValues}]): res.status(200).json([]);
             }else{
                 return res.status(400).json([{message: "Informations manquantes pour continuer l'opération !"}])
             }
         } catch (error: any) {
+            console.log(error)
             return res.status(400).json([{message: error.message}]);
         }
     },
@@ -89,8 +90,7 @@ const ImageController = {
     async getImage(req: Request, res: any){
         try {
             const imgData = await GestionImage.getAll();
-
-            return res.status(200).json(imgData);
+            return res.status(200).json({data:imgData});
         } catch (error: any) {
             return res.status(400).json([{message: error.message}]);
         }

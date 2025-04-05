@@ -11,7 +11,7 @@ class Image extends Model {
   public isVogue!: string;
 //=======
   //public idArticle!: number;
-  public featured!: boolean;
+  public  featured!: boolean;
 
 //>>>>>>> vf0/vf0
 }
@@ -53,7 +53,7 @@ Image.init(
 //<<<<<<< HEAD
    
 //=======
-    featured: {
+featured: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
       defaultValue: false,
