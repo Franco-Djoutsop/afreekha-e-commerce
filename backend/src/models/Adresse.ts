@@ -10,7 +10,6 @@ class Adresse extends Model {
   public etat!: string;
   public ville!: string;
   public numero_telephone!: string;
-  public quartier!: string;
   public idUser!: number;
 }
 
@@ -35,10 +34,6 @@ Adresse.init(
       allowNull: false,
     },
     ville: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    quartier: {
       type: DataTypes.STRING,
       allowNull: false,
     },

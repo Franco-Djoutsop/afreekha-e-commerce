@@ -383,9 +383,9 @@ router.get("/article-details/:id", ArticleController.getOne);
  *
  */
 
-router.delete("/adresse/:id", validateToken, AdresseController.delete);
-router.post("/adresse", validateToken, adresseValidation, AdresseController.create);
-router.put("/adresse", validateToken, updateArticleValidation, AdresseController.update);
+router.delete("/adresse/:id", AdresseController.delete);
+router.post("/adresse",  adresseValidation, AdresseController.create);
+router.put("/adresse", updateArticleValidation, AdresseController.update);
 
 router.get("/article/:offset", ArticleController.getAll);
 router.get(

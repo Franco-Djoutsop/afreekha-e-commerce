@@ -105,7 +105,6 @@ const createImgValidation = [
 const adresseValidation = [
   body("adresse").notEmpty().withMessage("Adresse non fournie !"),
   body("ville").notEmpty().withMessage("Ville non fournie !"),
-  body("quartier").notEmpty().withMessage("Quartier non fourni !"),
   body("pays").notEmpty().withMessage("Pays non fourni !"),
   body("etat").notEmpty().withMessage("Etat du pays non fourni !"),
   body("numero_telephone").notEmpty().withMessage("num de tel non fourni !"),

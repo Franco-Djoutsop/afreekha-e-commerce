@@ -1,4 +1,4 @@
-import { Op } from "sequelize";
+import { Op, where } from "sequelize";
 import Article from "../models/Article";
 import Commande from "../models/Commande";
 import User from "../models/User";
@@ -44,6 +44,40 @@ const GestionCommande = {
       );
 
       return queryRslt;
+  },
+
+  async getUserTotalCommmadePay(idUser: number){
+    //montant total d toutes les commandes payé de l'utilisateur
+   const sommeTotal = await Commande.sum("Montant_total", 
+        {
+          where: {idUser: idUser, statut: "payé"},
+
+        }
+    )
+    
+    return sommeTotal;
+  },
+  async getUserTotalCommmade(idUser: number){
+    //toutes les commandes de l'utilisateur
+    const nber = await Commande.count(
+        {
+          where: {idUser: idUser},
+
+        }
+    );
+    return nber;
+  },
+
+  async getUserTotalCommandeNotPay(idUser: number){
+    //somme de toutes les commandes de l'utilisateur en attente de paiement
+    const sommeTotal = await Commande.sum("Montant_total", 
+        {
+          where: {idUser: idUser, statut: "en cours"},
+
+        }
+    )
+    
+    return sommeTotal;
   },
 
     async getCommandOwner(idUser: number){
