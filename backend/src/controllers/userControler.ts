@@ -4,6 +4,8 @@ import User from "../models/User";
 import Role from "../models/Role";
 import UserRole from "../models/userRoles";
 import { crypt } from "../config/crypto-js";
+import bcrypt from "bcrypt";
+import Adresse from "../models/Adresse";
 
 //@desc read all users
 //@route GET /api/users
@@ -15,6 +17,10 @@ const allUSers = asyncHandler(async (req: Request, res: any) => {
       include: [
         {
           model: Role,
+          through: { attributes: [] },
+        },
+        {
+          model: Adresse,
           through: { attributes: [] },
         },
       ],
@@ -65,6 +71,7 @@ const updateUsers = asyncHandler(async (req: Request, res: Response) => {
   const { nom, prenom, date_naissance, email, tel, mot_de_passe } = req.body;
   const idRole = req.body.idRole;
   const user = await User.findByPk(id);
+  const hashpassword = await bcrypt.hashSync(mot_de_passe, 10);
   if (!user) {
     res.status(400);
     throw new Error("aucun utilisateur trouve");
@@ -76,7 +83,7 @@ const updateUsers = asyncHandler(async (req: Request, res: Response) => {
     user.date_naissance = date_naissance || user.date_naissance;
     user.email = email || user.email;
     user.tel = tel || user.tel;
-    user.mot_de_passe = mot_de_passe || user.mot_de_passe;
+    user.mot_de_passe = hashpassword || user.mot_de_passe;
 
     //mise a jour des roles(ajout d'un/des nouveau.x role.s ou suppresion de.s autre role.s)
     const existingRole = await UserRole.findAll({
@@ -294,6 +301,50 @@ const getUserRole = asyncHandler(async (req: Request, res: Response) => {
   }
 });
 
+//modify password
+//@desc modify a user's password
+//@route PUT /api/password/:id
+const modifyPassword = asyncHandler(async (req: Request, res: Response) => {
+  const id = req.params.id;
+  const { password, newPassword } = req.body;
+  const users = await User.findOne({
+    where: {
+      idUser: id,
+    },
+  });
+  if (users?.mot_de_passe) {
+    const ismatch = await bcrypt.compare(password, users?.mot_de_passe);
+    const hashNewPassword = await bcrypt.hashSync(newPassword, 10);
+    if (ismatch) {
+      const isMatch2 = await bcrypt.compare(newPassword, users.mot_de_passe);
+      isMatch2 ? console.log(true) : false;
+      try {
+        //update password
+        !isMatch2
+          ? (users.mot_de_passe = hashNewPassword)
+          : res.status(400).json({
+              message:
+                "Le nouveau mot de passe ne doit pas etre similaire a l'ancienne",
+            });
+        await users.save();
+        res.status(200).json({ reps: users });
+        console.log("Nouveau password: ", newPassword);
+      } catch (error: any) {
+        res.status(400).json({ MessageError: error.message });
+      }
+    } else {
+      res.status(400).json({
+        message: "Le mot de passe ne correspond pas !! veuillez reessayer...",
+      });
+    }
+  } else {
+    res.status(400).json({
+      message: "Le mot de passe est undefined , quelque chose ne va pas ...",
+    });
+    console.log("users : ", users);
+  }
+});
+
 export {
   allUSers,
   updateUsers,
@@ -302,4 +353,5 @@ export {
   asignRoleToUser,
   removeRoleToUser,
   getUserRole,
+  modifyPassword,
 };

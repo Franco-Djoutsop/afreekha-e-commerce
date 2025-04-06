@@ -15,6 +15,7 @@ import { ArticleController } from "../controllers/articleController";
 import {
   allUSers,
   getUserRole,
+  modifyPassword,
   oneUsersRole,
 } from "../controllers/userControler";
 import { userValidationRules } from "../middlewares/validationsRules";
@@ -262,6 +263,9 @@ router.route("/users/reset-password/:token").post(resetPassword);
 
 router.route("/users").post(userValidationRules, validate, register);
 router.route("/users/me").get(validateToken, getUserRole);
+
+//endpoint change password
+router.route("/password/:id").put(modifyPassword);
 //>>>>>>> vf1/vf1
 
 //client route
