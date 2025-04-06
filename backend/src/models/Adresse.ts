@@ -27,7 +27,7 @@ Adresse.init(
     pays: {
       type: DataTypes.STRING,
       allowNull: false,
-      defaultValue: "Cameroun",
+      defaultValue: "120",
     },
     etat: {
       type: DataTypes.STRING,
@@ -54,7 +54,7 @@ Adresse.init(
       allowNull: false,
       references: {
         model: User,
-        key: "iduSer",
+        key: "idUser",
       },
     },
   },

@@ -11,6 +11,7 @@ import Image from "./image";
 import CommandArticle from "./CommandArticle";
 import Paiement from "./Paiment";
 import ArticleImage from "./ArticleImage";
+import Adresse from "./Adresse";
 
 // One-to-Many Rel0-89+ (User, { foreignKey: "idUser" }); //each message beyongs to one user
 
@@ -35,6 +36,9 @@ Message.belongsTo(User,{foreignKey:"idUser"})
 // One User has Many Categories
 Categorie.hasMany(Article, { foreignKey: "idCategorie" });
 Article.belongsTo(Categorie, { foreignKey: "idCategorie",onDelete: "CASCADE",onUpdate:"CASCADE" });
+
+User.hasMany(Adresse, {foreignKey: "idUser", onDelete: 'CASCADE', onUpdate: "CASCADE" })
+Adresse.belongsTo(User, {foreignKey: "idUser"});
 
 // One User has Many Categories
 //Article.belongsToMany(Image, {  through: ImageArticle, foreignKey: "idArticle"});

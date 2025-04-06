@@ -40,12 +40,20 @@ Commande.init(
         model: User,
         key: "idUser",
       },
+      onDelete: "CASCADE",
+      onUpdate: "CASCADE"
     },
   },
   {
     sequelize,
     modelName: "Commande",
     tableName: "commandes",
+    indexes: [
+      {
+        name: "idx_user",
+        fields: ['idUser']
+      }
+    ]
   }
 );
 
