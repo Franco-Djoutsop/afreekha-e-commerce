@@ -16,7 +16,7 @@ const ArticleController = {
         // Si req.body.errors n'existe pas, alor la validation a réussi
         // Les données sont validées et disponibles dans req.body
         let article: any;
-        console.log("entering in the controller");
+
         article = req.body as Articles;
         const resp = await GestionArticle.save(article);
         console.log(resp.idArticle, resp);

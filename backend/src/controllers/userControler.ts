@@ -6,6 +6,7 @@ import UserRole from "../models/userRoles";
 import { crypt } from "../config/crypto-js";
 import bcrypt from "bcrypt";
 import Adresse from "../models/Adresse";
+import Commande from "../models/Commande";
 
 //@desc read all users
 //@route GET /api/users
@@ -23,13 +24,38 @@ const allUSers = asyncHandler(async (req: Request, res: any) => {
           model: Adresse,
           through: { attributes: [] },
         },
+        {
+          model: Commande,
+          as: "commandes",
+        },
       ],
     });
     if (users) {
+      const result = users.map((user: any) => {
+        const commandes = user.commandes || [];
+        const montantTotalCommande = commandes
+          .filter((cmd: any) => cmd.statut === "payé")
+          .reduce((acc: any, cmd: any) => acc + (cmd.montant_total || 0), 0);
+
+        const montantTotalCommandeImpaye = commandes
+          .filter((cmd: any) => cmd.statut === "en cours")
+          .reduce((acc: any, cmd: any) => acc + (cmd.montant_total || 0), 0);
+
+        const nbreTotalCommande = commandes.length;
+
+        return {
+          ...user.toJSON(),
+          montantTotalCommande,
+          montantTotalCommandeImpaye,
+          nbreTotalCommande,
+          adresse: user.adresses || [],
+        };
+      });
       console.log(users);
       return res.status(200).json({
         // reps: crypt.encode(users),
-        reps: users,
+        reps: result,
+
         done: true,
       });
     }

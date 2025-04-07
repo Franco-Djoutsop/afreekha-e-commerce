@@ -22,6 +22,8 @@ const ImageController = {
           contentType,
           featured
         );
+        //>>>>>>> vf0/vf0
+
         return typeof resp != "string"
           ? res.status(200).json([{ data: crypt.encode(resp.dataValues) }])
           : res.status(200).json([]);

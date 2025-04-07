@@ -3,6 +3,8 @@ import { GestionArticle } from "../repositry/gestion_articles";
 import { GestionImage } from "../repositry/gestion_images";
 import { GestionCommande } from "../repositry/gestion_commande";
 import User from "../models/User";
+import Categorie from "../models/categorie";
+import SousCategorie from "../models/SousCategorie";
 
 const HomeController = {
     //@route /api/home-data ----FrontEnd, clientSide
@@ -17,7 +19,15 @@ const HomeController = {
                 articlesFeature : await GestionArticle.getArticleOnFeatured(offset),
                 articlesBestSell: await GestionArticle.getTopArticleSeller(offset),
                 articlesTrend: await GestionArticle.getArticleOnTrend(offset),
-                imageFeatured: await GestionImage.getFeatured()
+                imageFeatured: await GestionImage.getFeatured(),
+                categories : await Categorie.findAll({
+                    include: [
+                      {
+                        model: SousCategorie,
+                      },
+                    ]
+                  })         
+                  
             };
 
             const response = {
@@ -46,10 +56,7 @@ const HomeController = {
                         description: "Article en tendance",
                         article: data.articlesTrend,
                     },
-                    /*list_categories: [{
-                      ...attributs de la categorie
-                      sous_categorie: SousCategorie[];
-                    }],*/
+                    list_categories: data.categories,
                      v_img: data.imageFeatured
                 }
             }

@@ -7,7 +7,8 @@ const AdresseController = {
         try {
             if(!req.body.errors){
                 const resp = await GestionAdresse.create(req.body);
-                return res.status(200).json([{data: crypt.encode(resp)}]);
+                console.log('response', resp);
+                return res.status(200).json([{data: crypt.encode(resp.dataValues)}]);
             }
         } catch (error: any) {
             return res.status(400).json([{message: error.message}]);
