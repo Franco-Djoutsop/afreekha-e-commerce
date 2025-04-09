@@ -159,6 +159,7 @@ const GestionArticle = {
                SELECT 
                     a.idArticle,
                     a.nom_article,
+                    a.prix,
                     SUM(ca.quantite) AS totalSold,
                     (
                     SELECT i.lien
@@ -166,7 +167,7 @@ const GestionArticle = {
                     JOIN images i ON ai.idImage = i.idImage
                     WHERE ai.idArticle = a.idArticle
                     LIMIT 1
-                    ) AS mainImageUrl
+                    ) AS lien
                 FROM articles a
                 JOIN commandes_articles ca ON a.idArticle = ca.idArticle
                 JOIN commandes c ON ca.idCommande = c.idCommande

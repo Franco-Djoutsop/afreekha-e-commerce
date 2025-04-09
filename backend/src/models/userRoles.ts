@@ -24,8 +24,6 @@ UserRole.init(
         model: User,
         key: "idUser",
       },
-      onDelete: "CASCADE",
-      onUpdate: "CASCADE"
     },
     idRole: {
       type: DataTypes.INTEGER,
@@ -34,21 +32,13 @@ UserRole.init(
         model: Role,
         key: "idRole",
       },
-      onDelete: "CASCADE",
-      onUpdate: "CASCADE"
     },
   },
   {
     sequelize,
     modelName: "UserRole",
     tableName: "users_roles",
-    timestamps: false, // Pas de `createdAt` ni `updatedAt`,
-    indexes: [
-      {
-        name: "idx_user_role",
-        fields: ["idUser", "idRole"],
-      },
-    ]
+    timestamps: false, // Pas de `createdAt` ni `updatedAt`
   }
 );
 

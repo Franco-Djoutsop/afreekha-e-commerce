@@ -24,8 +24,6 @@ ImageArticle.init(
         model: Article,
         key: "idArticle",
       },
-      onDelete: "CASCADE",
-      onUpdate: "CASCADE"
     },
     idImage: {
       type: DataTypes.INTEGER,
@@ -34,8 +32,6 @@ ImageArticle.init(
         model: Image,
         key: "idImage",
       },
-      onDelete: "CASCADE",
-      onUpdate: "CASCADE"
     },
   },
   {
@@ -43,12 +39,6 @@ ImageArticle.init(
     modelName: "ImageArticle",
     tableName: "image_article",
     timestamps: false, // Pas de `createdAt` ni `updatedAt`
-    indexes:[
-      {
-        name:"idx_image_article",
-        fields:["idImage","idArticle"]
-      }
-    ]
   }
 );
 

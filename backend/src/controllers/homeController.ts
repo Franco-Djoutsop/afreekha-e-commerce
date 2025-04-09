@@ -17,7 +17,7 @@ const HomeController = {
             const data = {
                 articlesPromo: await GestionArticle.getArticleOnPromo(offset),
                 articlesFeature : await GestionArticle.getArticleOnFeatured(offset),
-                articlesBestSell: await GestionArticle.getTopArticleSeller(offset),
+                articlesBestSell: await GestionArticle.getTopArticleSeller(12),
                 articlesTrend: await GestionArticle.getArticleOnTrend(offset),
                 imageFeatured: await GestionImage.getFeatured(),
                 categories : await Categorie.findAll({
@@ -40,7 +40,7 @@ const HomeController = {
                     },
                     secode_section: {
                         //deal de la semaine
-                        title: "Deal de la semaines",
+                        title: "Deal de la semaine",
                         description: "Ces articles à prix promo cette semaine...",
                         article: data.articlesPromo,
                     },
