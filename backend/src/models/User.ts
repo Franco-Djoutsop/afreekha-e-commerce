@@ -1,6 +1,8 @@
 import { DataTypes, Model } from "sequelize";
 import { sequelize } from "../config/database";
 import Role from "./Role";
+import Adresse from "./Adresse";
+import Commande from "./Commande";
 
 class User extends Model {
   public idUser!: number;
@@ -11,7 +13,9 @@ class User extends Model {
   public tel!: string;
   public mot_de_passe!: string;
   public Role?: Role[];
- // public resetToken?: string | null;
+  public readonly adresses?: Adresse[];
+  public readonly commandes?: Commande[];
+  // public resetToken?: string | null;
   //public resetTokenExpires?: Date | null;
 }
 
@@ -126,7 +130,7 @@ User.init(
     mot_de_passe: {
       type: DataTypes.STRING,
       allowNull: false,
-    }/*,
+    } /*,
     resetToken: {
       type: DataTypes.STRING,
       allowNull: true,
@@ -134,7 +138,7 @@ User.init(
     resetTokenExpires: {
       type: DataTypes.DATE,
       allowNull: true,
-    },*/
+    },*/,
   },
   {
     sequelize,

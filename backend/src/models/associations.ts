@@ -163,11 +163,10 @@ Commande.belongsToMany(Article, {
   through: CommandArticle,
   foreignKey: "idCommande",
   otherKey: "idArticle",
-  as: "Articles",
+  as: "articles",
 });
 Article.belongsToMany(Commande, {
   through: CommandArticle,
   foreignKey: "idArticle",
   otherKey: "idCommande",
-  //<<<<<<< HEAD
 });

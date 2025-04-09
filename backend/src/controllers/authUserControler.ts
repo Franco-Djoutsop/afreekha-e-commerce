@@ -9,6 +9,8 @@ import Role from "../models/Role";
 import { Op } from "sequelize";
 import { crypt } from "../config/crypto-js";
 import UserRole from "../models/userRoles";
+import Adresse from "../models/Adresse";
+import Commande from "../models/Commande";
 
 //@desc register a user
 //@route POST /api/users
@@ -77,6 +79,9 @@ const login = asyncHandler(async (req: Request, res: Response) => {
         attributes: ["idRole", "nom"],
         through: { attributes: [] },
       },
+      {
+        model: Adresse,
+      },
     ],
   });
   console.log("end");
@@ -112,6 +117,18 @@ const login = asyncHandler(async (req: Request, res: Response) => {
     secretToken,
     { expiresIn: "24h" }
   );
+  // others informations
+  const commandes = await Commande.findAll({ where: { idUSer: user.idUser } });
+
+  const montantTotalCommande = commandes
+    .filter((cmd) => cmd.statut === "payé")
+    .reduce((sum, cmd) => sum + cmd.Montant_total, 0);
+  const montantTotalCommandeImpaye = commandes
+    .filter((cmd) => cmd.statut === "Encours")
+    .reduce((sum, cmd) => sum + cmd.Montant_total, 0);
+
+  const nbreTotalCommande = commandes.length;
+
   const reps = {
     user: {
       id: user.idUser,
@@ -123,6 +140,10 @@ const login = asyncHandler(async (req: Request, res: Response) => {
         idRole: role.idRole,
         nomRole: role.nom,
       })),
+      montantTotalCommande,
+      montantTotalCommandeImpaye,
+      nbreTotalCommande,
+      adresses: user ? user.adresses : [],
     },
   };
   res.status(200).json({

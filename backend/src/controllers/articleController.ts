@@ -179,7 +179,7 @@ const ArticleController = {
         );
 
         return data.length != 0
-          ? res.status(200).json([{ data: crypt.encode(data) }])
+          ? res.status(200).json([{ data: data }])
           : res.status(200).json([]);
       } else {
         const data = await GestionArticle.getAll(1);

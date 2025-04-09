@@ -47,7 +47,7 @@ routerAdmin.route("/").get((req, res) => {
 
 routerAdmin.post(
   "/article",
-  crypt.decode,
+  // crypt.decode,
   createArticleValidation,
   ArticleController.create
 );

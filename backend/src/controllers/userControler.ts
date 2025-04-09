@@ -12,7 +12,7 @@ import Commande from "../models/Commande";
 //@route GET /api/users
 //@access private
 //<<<<<<< HEAD
-const allUSers = asyncHandler(async (req: Request, res: any) => {
+const allUSers = asyncHandler(async (req: Request, res: Response) => {
   try {
     const users = await User.findAll({
       include: [
@@ -20,50 +20,49 @@ const allUSers = asyncHandler(async (req: Request, res: any) => {
           model: Role,
           through: { attributes: [] },
         },
-        {
-          model: Adresse,
-          through: { attributes: [] },
-        },
-        {
-          model: Commande,
-          as: "commandes",
-        },
       ],
     });
-    if (users) {
-      const result = users.map((user: any) => {
-        const commandes = user.commandes || [];
-        const montantTotalCommande = commandes
-          .filter((cmd: any) => cmd.statut === "payé")
-          .reduce((acc: any, cmd: any) => acc + (cmd.montant_total || 0), 0);
-
-        const montantTotalCommandeImpaye = commandes
-          .filter((cmd: any) => cmd.statut === "en cours")
-          .reduce((acc: any, cmd: any) => acc + (cmd.montant_total || 0), 0);
-
-        const nbreTotalCommande = commandes.length;
-
-        return {
-          ...user.toJSON(),
-          montantTotalCommande,
-          montantTotalCommandeImpaye,
-          nbreTotalCommande,
-          adresse: user.adresses || [],
-        };
-      });
-      console.log(users);
-      return res.status(200).json({
-        // reps: crypt.encode(users),
-        reps: result,
-
-        done: true,
-      });
-    }
-    return res.status(404).json({ message: "aucun utilisateur treouve" });
+    res.status(200).json({ reps: users });
   } catch (error) {
     console.log(error);
-    return res.status(500).json({ erreur: error });
+    res.status(500).json({ erreur: error });
   }
+});
+
+//@desc read all infos of a user
+//@route GET /api/users/:id
+//@access private
+const infosUsers = asyncHandler(async (req: Request, res: Response) => {
+  const idUSer = req.user?.id;
+  if (!idUSer) res.status(401).json({ message: "Utilisation non connecte" });
+
+  const user = await User.findByPk(idUSer, {
+    include: [
+      {
+        model: Adresse,
+      },
+    ],
+  });
+
+  if (!user) res.status(404).json({ mesage: "utilisateur introuvable" });
+
+  const commandes = await Commande.findAll({ where: { idUSer: idUSer } });
+
+  const montantTotalCommande = commandes
+    .filter((cmd) => cmd.statut === "payé")
+    .reduce((sum, cmd) => sum + cmd.Montant_total, 0);
+  const montantTotalCommandeImpaye = commandes
+    .filter((cmd) => cmd.statut === "Encours")
+    .reduce((sum, cmd) => sum + cmd.Montant_total, 0);
+
+  const nbreTotalCommande = commandes.length;
+  res.status(200).json({
+    user,
+    montantTotalCommande,
+    montantTotalCommandeImpaye,
+    nbreTotalCommande,
+    adresses: user ? user.adresses : [],
+  });
 });
 
 //=======
