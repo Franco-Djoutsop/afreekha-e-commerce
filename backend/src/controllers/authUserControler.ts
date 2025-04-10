@@ -78,9 +78,11 @@ const login = asyncHandler(async (req: Request, res: Response) => {
         model: Role,
         attributes: ["idRole", "nom"],
         through: { attributes: [] },
+        as: "roles",
       },
       {
         model: Adresse,
+        as: "adresses",
       },
     ],
   });
@@ -111,7 +113,7 @@ const login = asyncHandler(async (req: Request, res: Response) => {
         id: user.idUser,
         email: user.email,
         tel: user.tel,
-        roles: user.Role?.map((role: any) => role.nom),
+        roles: user.roles?.map((role: Role) => role.nom),
       },
     },
     secretToken,
@@ -136,15 +138,15 @@ const login = asyncHandler(async (req: Request, res: Response) => {
       prenom: user.prenom,
       email: user.email,
       tel: user.tel,
-      roles: user.Role?.map((role) => ({
+      roles: user.roles?.map((role) => ({
         idRole: role.idRole,
         nomRole: role.nom,
       })),
-      montantTotalCommande,
-      montantTotalCommandeImpaye,
-      nbreTotalCommande,
-      adresses: user ? user.adresses : [],
     },
+    montantTotalCommande,
+    montantTotalCommandeImpaye,
+    nbreTotalCommande,
+    adresses: user.adresses,
   };
   res.status(200).json({
     accessToken: accessToken,

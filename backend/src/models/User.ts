@@ -12,7 +12,7 @@ class User extends Model {
   public email!: string;
   public tel!: string;
   public mot_de_passe!: string;
-  public Role?: Role[];
+  public roles?: Role[];
   public readonly adresses?: Adresse[];
   public readonly commandes?: Commande[];
   // public resetToken?: string | null;

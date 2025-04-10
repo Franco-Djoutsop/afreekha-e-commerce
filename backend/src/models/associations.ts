@@ -1,3 +1,5 @@
+//lorsque l'on veux recuperer des donnees dans des tables associees avec sequelize, on doit ajouter les alias pour bien les indexes. Et les alias sont differents des tableName et c'est tres important.
+
 import User from "./User";
 import Role from "./Role";
 import UserRole from "./userRoles";
@@ -53,8 +55,9 @@ User.hasMany(Adresse, {
   foreignKey: "idUser",
   onDelete: "CASCADE",
   onUpdate: "CASCADE",
+  as: "adresses",
 });
-Adresse.belongsTo(User, { foreignKey: "idUser" });
+Adresse.belongsTo(User, { foreignKey: "idUser", as: "user" });
 
 // One User has Many Categories
 //Article.belongsToMany(Image, {  through: ImageArticle, foreignKey: "idArticle"});
@@ -153,8 +156,16 @@ Article.belongsToMany(Image, {
 Image.belongsToMany(Article, { through: ArticleImage, foreignKey: "idImage" });
 
 //user - role
-User.belongsToMany(Role, { through: UserRole, foreignKey: "idUser" });
-Role.belongsToMany(User, { through: UserRole, foreignKey: "idRole" });
+User.belongsToMany(Role, {
+  through: UserRole,
+  foreignKey: "idUser",
+  as: "roles",
+});
+Role.belongsToMany(User, {
+  through: UserRole,
+  foreignKey: "idRole",
+  as: "users",
+});
 
 //article - commande
 // Many-to-Many: A Command has many Articles and an Article can be in many Commands
