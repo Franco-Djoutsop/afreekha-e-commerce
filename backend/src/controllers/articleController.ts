@@ -63,8 +63,8 @@ const ArticleController = {
   async destroy(req: Request, res: any) {
     try {
       if (req.params.id) {
-        const id = crypt.idOnUrlDecoder(req.params.id);
-        const resp = await GestionArticle.destroy(id);
+        const id = req.params.id;
+        const resp = await GestionArticle.destroy(Number.parseInt(id));
         const message =
           resp == 0
             ? "Aucun article supprimé"
@@ -89,7 +89,7 @@ const ArticleController = {
   async getOne(req: Request, res: any) {
     try {
       if (req.params.id) {
-        const id = crypt.idOnUrlDecoder(req.params.id);
+        const id = Number.parseInt(req.params.id);
 
         const resp = await GestionArticle.getOne(id);
 
@@ -139,12 +139,12 @@ const ArticleController = {
   async getByCategorie(req: Request, res: any) {
     try {
       if (req.params.id) {
-        const id = crypt.idOnUrlDecoder(req.params.id);
+        const id = req.params.id;
 
-        const resp = await GestionArticle.getByCategories(id);
+        const resp = await GestionArticle.getByCategories(Number.parseInt(id));
 
         return resp.length != 0
-          ? res.status(200).json([{ data: crypt.encode(resp) }])
+          ? res.status(200).json([{ data: resp }])
           : res.status(200).json([]);
       } else {
         return res
@@ -152,7 +152,7 @@ const ArticleController = {
           .send([{ message: "Id de la categorie indefini" }]);
       }
     } catch (error: any) {
-      return res.status(400).send([{ message: error.message }]);
+      return res.status(400).send([{ message: error.message, err: error }]);
     }
   },
 

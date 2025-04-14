@@ -49,6 +49,7 @@ const register = asyncHandler(async (req: Request, res: any) => {
 const login = asyncHandler(async (req: Request, res: Response) => {
   console.log("first");
   const { tel, email, mot_de_passe } = req.body;
+  console.log('data', req.body);
   if ((!tel && !email) || !mot_de_passe) {
     res.status(400);
     throw new Error(

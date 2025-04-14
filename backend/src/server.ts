@@ -28,9 +28,9 @@ app.use(
 app.use(bodyParser.text({ limit: "200mb" }));
 app.use(bodyParser.urlencoded());
 app.use(express.json());
-
 app.use("/api", router);
 app.use("/api/admin", routerAdmin);
+  
 
 app.use(errorHandler);
 

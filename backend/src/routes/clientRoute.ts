@@ -38,6 +38,7 @@ import { AdresseController } from "../controllers/adresseController";
 const router = express.Router();
 
 router.route("/").get((req, res) => {
+  console.log('log ')
   res.status(200).json({ message: "displays lists of users" });
 });
 router.get("/home-data", HomeController.getHomeData);
@@ -157,7 +158,7 @@ router.route("/roles").get(allRoles);
  *        description: Erreur serveur
  *
  */
-router.route("/auth").post(login, crypt.decode);
+router.route("/auth").post(login);
 /**
  * @openapi
  * /api/users/recovery-password:
