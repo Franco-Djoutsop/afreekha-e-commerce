@@ -4,14 +4,16 @@ import User from "../models/User";
 import Role from "../models/Role";
 import UserRole from "../models/userRoles";
 import { crypt } from "../config/crypto-js";
-
+import bcrypt from "bcrypt";
+import Adresse from "../models/Adresse";
+import Commande from "../models/Commande";
 
 //@desc read all users
 //@route GET /api/users
 //@access private
 //<<<<<<< HEAD
-const allUSers = asyncHandler(async (req: Request, res: any) => {
-  try{
+const allUSers = asyncHandler(async (req: Request, res: Response) => {
+  try {
     const users = await User.findAll({
       include: [
         {
@@ -20,18 +22,49 @@ const allUSers = asyncHandler(async (req: Request, res: any) => {
         },
       ],
     });
-    if(users){
-      console.log(users);
-     return res.status(200).json({ reps: crypt.encode(users), done: true });
-    }
-     return res.status(404).json({ message:'aucun utilisateur treouve' });
-    
-  }catch(error){
+    res.status(200).json({ reps: users });
+  } catch (error) {
     console.log(error);
-    return res.status(500).json({erreur:error});
-  }});
-  
- 
+    res.status(500).json({ erreur: error });
+  }
+});
+
+//@desc read all infos of a user
+//@route GET /api/users/:id
+//@access private
+const infosUsers = asyncHandler(async (req: Request, res: Response) => {
+  const idUSer = req.user?.id;
+  if (!idUSer) res.status(401).json({ message: "Utilisation non connecte" });
+
+  const user = await User.findByPk(idUSer, {
+    include: [
+      {
+        model: Adresse,
+      },
+    ],
+  });
+
+  if (!user) res.status(404).json({ mesage: "utilisateur introuvable" });
+
+  const commandes = await Commande.findAll({ where: { idUSer: idUSer } });
+
+  const montantTotalCommande = commandes
+    .filter((cmd) => cmd.statut === "payé")
+    .reduce((sum, cmd) => sum + cmd.Montant_total, 0);
+  const montantTotalCommandeImpaye = commandes
+    .filter((cmd) => cmd.statut === "Encours")
+    .reduce((sum, cmd) => sum + cmd.Montant_total, 0);
+
+  const nbreTotalCommande = commandes.length;
+  res.status(200).json({
+    user,
+    montantTotalCommande,
+    montantTotalCommandeImpaye,
+    nbreTotalCommande,
+    adresses: user ? user.adresses : [],
+  });
+});
+
 //=======
 /*const allUSers = asyncHandler(async (req: Request, res: Response) => {
   const users = await User.findAll({
@@ -63,6 +96,7 @@ const updateUsers = asyncHandler(async (req: Request, res: Response) => {
   const { nom, prenom, date_naissance, email, tel, mot_de_passe } = req.body;
   const idRole = req.body.idRole;
   const user = await User.findByPk(id);
+  const hashpassword = await bcrypt.hashSync(mot_de_passe, 10);
   if (!user) {
     res.status(400);
     throw new Error("aucun utilisateur trouve");
@@ -74,30 +108,36 @@ const updateUsers = asyncHandler(async (req: Request, res: Response) => {
     user.date_naissance = date_naissance || user.date_naissance;
     user.email = email || user.email;
     user.tel = tel || user.tel;
-    user.mot_de_passe = mot_de_passe || user.mot_de_passe;
-    
-   //mise a jour des roles(ajout d'un/des nouveau.x role.s ou suppresion de.s autre role.s)
-   const existingRole = await UserRole.findAll({
-    where:{
-      idUser:id
-    }
-   });
-   
-   const newROle =  idRole
-      .filter((role:any) => ! existingRole
-        .find(existingRole=>existingRole.idRole===role));
-   const roleToRemove = existingRole
-      .filter(existingRole=> ! idRole
-        .some((id:any) => id ===existingRole.idRole));
+    user.mot_de_passe = hashpassword || user.mot_de_passe;
 
-   await Promise.all([...newROle.map((role:any)=> UserRole.create({idRole:role,
-    idUser:id}
-  )),
-    ...roleToRemove.map((role:any)=> UserRole.destroy({where:{
-      idRole:role.idRole,
-      idUser:id
-    }}))
-   ]);
+    //mise a jour des roles(ajout d'un/des nouveau.x role.s ou suppresion de.s autre role.s)
+    const existingRole = await UserRole.findAll({
+      where: {
+        idUser: id,
+      },
+    });
+
+    const newROle = idRole.filter(
+      (role: any) =>
+        !existingRole.find((existingRole) => existingRole.idRole === role)
+    );
+    const roleToRemove = existingRole.filter(
+      (existingRole) => !idRole.some((id: any) => id === existingRole.idRole)
+    );
+
+    await Promise.all([
+      ...newROle.map((role: any) =>
+        UserRole.create({ idRole: role, idUser: id })
+      ),
+      ...roleToRemove.map((role: any) =>
+        UserRole.destroy({
+          where: {
+            idRole: role.idRole,
+            idUser: id,
+          },
+        })
+      ),
+    ]);
     await user.save();
     res.status(200).json({ reps: user, done: true });
   } catch (error) {
@@ -109,20 +149,18 @@ const updateUsers = asyncHandler(async (req: Request, res: Response) => {
 //@route DEL /api/admin/users/:id
 //@access public
 const deleteUsers = asyncHandler(async (req: Request, res: any) => {
-  try{
+  try {
     const id = req.params.id;
-  const user = await User.findByPk(id);
-  if (!user) {
-   return res.status(400).json({ actionDone: false });
-    
-  }
-  await user.destroy();
-   return res.status(204).json({ actionDone: true });
-  }catch(error){
+    const user = await User.findByPk(id);
+    if (!user) {
+      return res.status(400).json({ actionDone: false });
+    }
+    await user.destroy();
+    return res.status(204).json({ actionDone: true });
+  } catch (error) {
     console.log(error);
-    return res.status(500).json({message:error})
-}
-  
+    return res.status(500).json({ message: error });
+  }
 });
 
 //@desc a user with all roles
@@ -189,7 +227,7 @@ const asignRoleToUser = asyncHandler(async (req: Request, res: Response) => {
       prenom: existUser.prenom,
       tel: existUser.tel,
       email: existUser.email,
-      role: existRole.name,
+      role: existRole.nom,
     };
     res.status(200).json({
       reps: datas,
@@ -198,7 +236,7 @@ const asignRoleToUser = asyncHandler(async (req: Request, res: Response) => {
   } catch (error: any) {
     res.status(400).json({ errorMessage: error.message });
   }
-//<<<<<<< HEAD
+  //<<<<<<< HEAD
 
   //verifier si le role existe
   const existRole = await Role.findByPk(idRole);
@@ -231,8 +269,8 @@ const asignRoleToUser = asyncHandler(async (req: Request, res: Response) => {
     reps: datas,
     done: true,
   });*/
-//=======
-//>>>>>>> vf1/vf1
+  //=======
+  //>>>>>>> vf1/vf1
 });
 
 //@desc remove a role to user
@@ -268,7 +306,7 @@ const removeRoleToUser = asyncHandler(async (req: Request, res: Response) => {
 //@access private
 const getUserRole = asyncHandler(async (req: Request, res: Response) => {
   try {
-    const idUser = req.body?.id; //recuperer l'id du user depuis le token
+    const idUser = req.user?.id; //recuperer l'id du user depuis le token
     console.log("idUser : ", idUser);
 
     //rechercher le user et inclure ses roles
@@ -288,6 +326,50 @@ const getUserRole = asyncHandler(async (req: Request, res: Response) => {
   }
 });
 
+//modify password
+//@desc modify a user's password
+//@route PUT /api/password/:id
+const modifyPassword = asyncHandler(async (req: Request, res: Response) => {
+  const id = req.params.id;
+  const { password, newPassword } = req.body;
+  const users = await User.findOne({
+    where: {
+      idUser: id,
+    },
+  });
+  if (users?.mot_de_passe) {
+    const ismatch = await bcrypt.compare(password, users?.mot_de_passe);
+    const hashNewPassword = await bcrypt.hashSync(newPassword, 10);
+    if (ismatch) {
+      const isMatch2 = await bcrypt.compare(newPassword, users.mot_de_passe);
+      isMatch2 ? console.log(true) : false;
+      try {
+        //update password
+        !isMatch2
+          ? (users.mot_de_passe = hashNewPassword)
+          : res.status(400).json({
+              message:
+                "Le nouveau mot de passe ne doit pas etre similaire a l'ancienne",
+            });
+        await users.save();
+        res.status(200).json({ reps: users });
+        console.log("Nouveau password: ", newPassword);
+      } catch (error: any) {
+        res.status(400).json({ MessageError: error.message });
+      }
+    } else {
+      res.status(400).json({
+        message: "Le mot de passe ne correspond pas !! veuillez reessayer...",
+      });
+    }
+  } else {
+    res.status(400).json({
+      message: "Le mot de passe est undefined , quelque chose ne va pas ...",
+    });
+    console.log("users : ", users);
+  }
+});
+
 export {
   allUSers,
   updateUsers,
@@ -296,4 +378,5 @@ export {
   asignRoleToUser,
   removeRoleToUser,
   getUserRole,
+  modifyPassword,
 };

@@ -3,13 +3,19 @@ import express, { Express } from "express";
 import gest_message from "../controllers/messageController";
 import gest_paiement from "../controllers/paiementController";
 import gest_categorie from "../controllers/categorieController";
-import { addMessage, addpaiement, adresseValidation, updateArticleValidation } from "../middlewares/validation";
+import {
+  addMessage,
+  addpaiement,
+  adresseValidation,
+  updateArticleValidation,
+} from "../middlewares/validation";
 import { createCommandeValidation } from "../middlewares/validation";
 import { ArticleController } from "../controllers/articleController";
 //=======
 import {
   allUSers,
   getUserRole,
+  modifyPassword,
   oneUsersRole,
 } from "../controllers/userControler";
 import { userValidationRules } from "../middlewares/validationsRules";
@@ -58,6 +64,7 @@ router.get("/home-data", HomeController.getHomeData);
  *      401:
  *        description: Non autorisé
  */
+// router.route("/users").get(crypt.decode, allUSers);
 router.route("/users").get(allUSers);
 
 //<<<<<<< HEAD
@@ -254,11 +261,12 @@ router.route("/users/reset-password/:token").post(resetPassword);
  *        description: Erreur serveur
  *
  */
-//<<<<<<< HEAD
-router.route("/users").post(userValidationRules,crypt.decode, validate, register);
-//=======
+
 router.route("/users").post(userValidationRules, validate, register);
 router.route("/users/me").get(validateToken, getUserRole);
+
+//endpoint change password
+router.route("/password/:id").put(modifyPassword);
 //>>>>>>> vf1/vf1
 
 //client route
@@ -385,13 +393,13 @@ router.get("/article-details/:id", ArticleController.getOne);
  */
 
 router.delete("/adresse/:id", AdresseController.delete);
-router.post("/adresse",  adresseValidation, AdresseController.create);
+router.post("/adresse", adresseValidation, AdresseController.create);
 router.put("/adresse", updateArticleValidation, AdresseController.update);
 
 router.get("/article/:offset", ArticleController.getAll);
 router.get(
   "/commande/:idUser",
-  
+
   CommandeController.getCommad
 );
 router.delete("/commande/:id", CommandeController.delete);

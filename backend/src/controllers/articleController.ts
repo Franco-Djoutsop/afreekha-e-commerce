@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { GestionArticle } from "../repositry/gestion_articles";
-import  {crypt}  from "../config/crypto-js";
+import { crypt } from "../config/crypto-js";
 import { Articles } from "../repositry/objets/article";
 import { GestionImage } from "../repositry/gestion_images";
 
@@ -9,30 +9,35 @@ import { GestionImage } from "../repositry/gestion_images";
 //@bodyparams :true
 const ArticleController = {
   async create(req: Request, res: any) {
+    console.log("before try");
     try {
-   
-        // Vérification, si des erreurs de validation sont présentes
-        if (!req.body.errors) { // Si req.body.errors n'existe pas, alor la validation a réussi
-            // Les données sont validées et disponibles dans req.body
-            let article: any;
-             
-             article =  req.body as Articles;
-             const resp = await GestionArticle.save(article);
-             console.log(resp.idArticle, resp);
-             const imgAssigment = await GestionImage.articleImageAssigment(resp.idArticle, article.imgsID);
-            
-             const response = {
-                articleData: resp,
-                imgsID : imgAssigment
-             }
-            return res.status(200).json([{data: crypt.encode(response), done: true }]);
-    
-        } else {
-          // La validation a échoué, les erreurs sont dans req.body.errors
-          return res.status(403).json({ message: req.body.errors[0].msg });
-        }
+      // Vérification, si des erreurs de validation sont présentes
+      if (!req.body.errors) {
+        // Si req.body.errors n'existe pas, alor la validation a réussi
+        // Les données sont validées et disponibles dans req.body
+        let article: any;
+
+        article = req.body as Articles;
+        const resp = await GestionArticle.save(article);
+        console.log(resp.idArticle, resp);
+        const imgAssigment = await GestionImage.articleImageAssigment(
+          resp.idArticle,
+          article.imgsID
+        );
+
+        const response = {
+          articleData: resp,
+          imgsID: imgAssigment,
+        };
+        return res
+          .status(200)
+          .json([{ data: crypt.encode(response), done: true }]);
+      } else {
+        // La validation a échoué, les erreurs sont dans req.body.errors
+        return res.status(403).json({ message: req.body.errors[0].msg });
+      }
     } catch (err: any) {
-      return res.status(400).send([{ message: err.message }]);
+      return res.status(400).send([{ ErrorMessage: err.message }]);
     }
   },
 
@@ -46,8 +51,15 @@ const ArticleController = {
 
         article = req.body as Articles;
         const resp = await GestionArticle.update(article);
-        return resp ? res.status(200).json([{isDone: true, data: crypt.encode(resp), message:"Mise à jour effectué avec succés"}]): res.status(200).json([]);
-
+        return resp
+          ? res.status(200).json([
+              {
+                isDone: true,
+                data: crypt.encode(resp),
+                message: "Mise à jour effectué avec succés",
+              },
+            ])
+          : res.status(200).json([]);
       } else {
         return res.status(400).json({ message: req.body.errors[0].msg });
       }
@@ -167,7 +179,7 @@ const ArticleController = {
         );
 
         return data.length != 0
-          ? res.status(200).json([{ data: crypt.encode(data) }])
+          ? res.status(200).json([{ data: data }])
           : res.status(200).json([]);
       } else {
         const data = await GestionArticle.getAll(1);

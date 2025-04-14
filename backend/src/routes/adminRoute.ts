@@ -45,33 +45,67 @@ routerAdmin.route("/").get((req, res) => {
   res.status(200).json({ message: "displays lists of users" });
 });
 
-routerAdmin.post("/article", createArticleValidation, ArticleController.create);
-routerAdmin.put('/article', crypt.decode, updateArticleValidation, ArticleController.update)
-routerAdmin.delete('/article/:id', ArticleController.destroy);
-routerAdmin.put('/article-changes-categorie', crypt.decode, ArticleController.updateCategories)
-routerAdmin.post('/image', createImgValidation, ImageController.create);
-routerAdmin.put('/image', updateArticleImg, ImageController.update);
-routerAdmin.delete('/image/:id', ImageController.destroy);
-routerAdmin.get('/image', ImageController.getImage);
+routerAdmin.post(
+  "/article",
+  // crypt.decode,
+  createArticleValidation,
+  ArticleController.create
+);
+routerAdmin.put(
+  "/article",
+  // crypt.decode,
+  updateArticleValidation,
+  ArticleController.update
+);
+routerAdmin.delete("/article/:id", ArticleController.destroy);
+routerAdmin.put(
+  "/article-changes-categorie",
+  crypt.decode,
+  ArticleController.updateCategories
+);
+routerAdmin.post("/image", createImgValidation, ImageController.create);
+routerAdmin.put("/image", updateArticleImg, ImageController.update);
+routerAdmin.delete("/image/:id", ImageController.destroy);
 
 //categorie
-routerAdmin.post('/categorie', addcategorie, gest_categorie.addCategorie);
-routerAdmin.put('/categorie/:id',updatecategorie, gest_categorie.updateCategorie);
-routerAdmin.delete('/categorie/:id',gest_categorie.deleteCategorie);
+routerAdmin.post(
+  "/categorie",
+  crypt.decode,
+  addcategorie,
+  gest_categorie.addCategorie
+);
+routerAdmin.put(
+  "/categorie/:id",
+  updatecategorie,
+  gest_categorie.updateCategorie
+);
+routerAdmin.delete("/categorie/:id", gest_categorie.deleteCategorie);
 
 //sous categorie
-routerAdmin.post('/sousCategorie', createSousCategorie,gest_sous_categorie.addsousCategorie);
-routerAdmin.put('/sousCategorie/:id',crypt.decode,updatesousCategorie ,gest_sous_categorie.updateSousCategorie);
-routerAdmin.delete('/deleteSousCategorie/:id',gest_sous_categorie.deleteSousCategorie);
+routerAdmin.post(
+  "/sousCategorie",
+  createSousCategorie,
+  gest_sous_categorie.addsousCategorie
+);
+routerAdmin.put(
+  "/sousCategorie/:id",
+  crypt.decode,
+  updatesousCategorie,
+  gest_sous_categorie.updateSousCategorie
+);
+routerAdmin.delete(
+  "/deleteSousCategorie/:id",
+  gest_sous_categorie.deleteSousCategorie
+);
 
 //message
-routerAdmin.get('/detail-message/:id',gest_message.getMessage);
-routerAdmin.delete('/message/:id', gest_message.deleteMessage);
-routerAdmin.get('/message',gest_message.getAllMessage)
+routerAdmin.get("/detail-message/:id", gest_message.getMessage);
+routerAdmin.delete("/message/:id", gest_message.deleteMessage);
+routerAdmin.get("/message", gest_message.getAllMessage);
 
- //paiement
- routerAdmin.get('/allpaiement',gest_paiement.showpaiement);
-routerAdmin.get('/detail-paiement/:id',gest_paiement.showDetailUserPaiement)
+//paiement
+routerAdmin.get("/allpaiement", gest_paiement.showpaiement);
+routerAdmin.get("/detail-paiement/:id", gest_paiement.showDetailUserPaiement);
 //export default router;
 
 //client route
@@ -82,6 +116,14 @@ routerAdmin.route("/").get((req, res) => {
 });
 
 routerAdmin.get("/home/:offset", HomeController.getHomeAdminData);
+
+routerAdmin.post(
+  "/article",
+  // validateToken,
+  // crypt.decode,;
+  createArticleValidation,
+  ArticleController.create
+);
 
 routerAdmin.put(
   "/article",
@@ -100,14 +142,21 @@ routerAdmin.put("/image", updateArticleImg, ImageController.update);
 routerAdmin.delete("/image/:id", ImageController.destroy);
 
 routerAdmin.put("/facture", crypt.decode, FactureController.changeStatus);
-routerAdmin.get("/facture/:offset",FactureController.getFactureWithArticleUser);
+routerAdmin.get(
+  "/facture/:offset",
+  FactureController.getFactureWithArticleUser
+);
 routerAdmin.post("/facture", crypt.decode, FactureController.create);
 
 //users route
-routerAdmin.route("/users/roles/:id").post(crypt.decode, validateToken, asignRoleToUser);
+routerAdmin
+  .route("/users/roles/:id")
+  .post(crypt.decode, validateToken, asignRoleToUser);
 routerAdmin.route("/users/:id").patch(crypt.decode, updateUsers);
 routerAdmin.route("/users/:id").delete(deleteUsers);
-routerAdmin.route("/users/:idUser/:idRole").delete(validateToken, removeRoleToUser);
+routerAdmin
+  .route("/users/:idUser/:idRole")
+  .delete(validateToken, removeRoleToUser);
 
 //role route
 /**

@@ -4,9 +4,11 @@ import { sequelize } from "../config/database";
 class Image extends Model {
   public idImage!: number;
   public lien!: string;
+  //<<<<<<< HEAD
+  //=======
   public idArticle!: number;
-  public featured!: boolean;
-
+  public isVogue!: "vogue" | "Pas vogue";
+  //>>>>>>> vf1/vf1
 }
 
 // Initialisation du modèle
@@ -21,14 +23,24 @@ Image.init(
       type: DataTypes.STRING,
       allowNull: false,
     },
-//<<<<<<< HEAD
-//<<<<<<< HEAD
-   
-//=======
-    featured: {
-      type: DataTypes.BOOLEAN,
+    //<<<<<<< HEAD
+    //<<<<<<< HEAD
+
+    //=======
+    isVogue: {
+      type: DataTypes.STRING,
+      //=======
+      //featured: {
+      // type: DataTypes.BOOLEAN,
+      //>>>>>>> vf0/vf0
       allowNull: false,
       defaultValue: false,
+      //},
+      // inTrend: {
+      //type: DataTypes.BOOLEAN,
+      //allowNull: false,
+      //defaultValue: false,
+      // },
     },
 
     // idArticle: {
@@ -39,13 +51,13 @@ Image.init(
     //     key: "idArticle",
     //   },
     // },
-//>>>>>>> vf1/vf1
+    //>>>>>>> vf1/vf1
   },
   {
     sequelize,
     modelName: "Image",
     tableName: "images",
-  },
+  }
 );
 
 // // Association avec `Article` (Un article peut avoir plusieurs images)

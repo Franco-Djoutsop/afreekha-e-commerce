@@ -8,6 +8,7 @@ import { crypt } from "../config/crypto-js";
 //@route POST /api/admin/roles
 //@access public
 const createRole = asyncHandler(async (req: Request, res: Response) => {
+  console.log("entree");
   const { name } = req.body;
   const role = await Role.create({ name });
   res.status(201).json({ reps: crypt.encode(role), done: true });
@@ -18,17 +19,19 @@ const createRole = asyncHandler(async (req: Request, res: Response) => {
 //@access public
 //<<<<<<< HEAD
 const allRoles = asyncHandler(async (req: Request, res: any) => {
-  try{
-  const roles = await Role.findAll({
-    attributes:['idRole','name','createdAt']
-  });
-  if(roles[0]!= null){
-   return res.status(200).json({ reps:roles, done: true });
+  try {
+    const roles = await Role.findAll({
+      attributes: ["idRole", "name", "createdAt"],
+    });
+    if (roles[0] != null) {
+      return res.status(200).json({ reps: roles, done: true });
+    }
+    return res.status(404).json({ message: "aucun role trouve" });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "erreur de serveur" });
   }
-  return res.status(404).json({message:'aucun role trouve'})
- 
-}catch(error){console.log(error);return res.status(500).json({message:'erreur de serveur'})};
-})
+});
 /*
 const allRoles = asyncHandler(async (req: Request, res: Response) => {
   const roles = await Role.findAll();
@@ -45,13 +48,13 @@ const allRoles = asyncHandler(async (req: Request, res: Response) => {
 //@access public
 const updateRole = asyncHandler(async (req: Request, res: Response) => {
   const id = req.params.id;
-  const { name } = req.body;
+  const { nom } = req.body;
   const role = await Role.findByPk(id);
   if (!role) {
     res.status(400);
     throw new Error("Aucun role trouve");
   }
-  role.name = name || role.name;
+  role.nom = nom || role.nom;
   await role.save();
   res.status(200).json({ reps: role, done: true });
 });
@@ -81,4 +84,4 @@ const roleUsers = asyncHandler(async (req: Request, res: Response) => {
   res.status(200).json({ reps: roleUsers, done: true });
 });
 
-export { createRole, allRoles,  updateRole, deleteRole, roleUsers };
+export { createRole, allRoles, updateRole, deleteRole, roleUsers };

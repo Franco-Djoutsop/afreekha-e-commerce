@@ -1,3 +1,5 @@
+//lorsque l'on veux recuperer des donnees dans des tables associees avec sequelize, on doit ajouter les alias pour bien les indexes. Et les alias sont differents des tableName et c'est tres important.
+
 import User from "./User";
 import Role from "./Role";
 import UserRole from "./userRoles";
@@ -26,27 +28,48 @@ Categorie.belongsTo(User, { foreignKey: "idUser" });
 
 //<<<<<<< HEAD
 // One User has Many Paiement
-User.hasMany(Paiement,{foreignKey: "idUser", onDelete: "CASCADE", onUpdate:"CASCADE"});
-Paiement.belongsTo(User,{foreignKey:"idUser"});
+User.hasMany(Paiement, {
+  foreignKey: "idUser",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
+Paiement.belongsTo(User, { foreignKey: "idUser" });
 
 //One User has Many message
-User.hasMany(Message,{foreignKey:"idUser",onDelete:"CASCADE",onUpdate:"CASCADE"})
-Message.belongsTo(User,{foreignKey:"idUser"})
+User.hasMany(Message, {
+  foreignKey: "idUser",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
+Message.belongsTo(User, { foreignKey: "idUser" });
 
 // One User has Many Categories
 Categorie.hasMany(Article, { foreignKey: "idCategorie" });
-Article.belongsTo(Categorie, { foreignKey: "idCategorie",onDelete: "CASCADE",onUpdate:"CASCADE" });
+Article.belongsTo(Categorie, {
+  foreignKey: "idCategorie",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
 
-User.hasMany(Adresse, {foreignKey: "idUser", onDelete: 'CASCADE', onUpdate: "CASCADE" })
-Adresse.belongsTo(User, {foreignKey: "idUser"});
+User.hasMany(Adresse, {
+  foreignKey: "idUser",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+  as: "adresses",
+});
+Adresse.belongsTo(User, { foreignKey: "idUser", as: "user" });
 
 // One User has Many Categories
 //Article.belongsToMany(Image, {  through: ImageArticle, foreignKey: "idArticle"});
 //Image.belongsToMany(Article, {through:ImageArticle,foreignKey:"idImage" });
 
 // One User has Many Categories
-Categorie.hasMany(SousCategorie, {foreignKey: "idCategorie"});
-SousCategorie.belongsTo(Categorie, { foreignKey: "idCategorie",onDelete: "CASCADE",onUpdate:"CASCADE"});
+Categorie.hasMany(SousCategorie, { foreignKey: "idCategorie" });
+SousCategorie.belongsTo(Categorie, {
+  foreignKey: "idCategorie",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
 //=======
 // One User has Many Categories
 //Categorie.hasMany(Article, { foreignKey: "idCategorie"});
@@ -64,14 +87,14 @@ SousCategorie.belongsTo(Categorie, { foreignKey: "idCategorie",onDelete: "CASCAD
 // Many-to-Many: A Command has many Articles and an Article can be in many Commands
 Commande.belongsToMany(Article, {
   through: CommandArticle,
-  foreignKey: "idCommande"
-})
+  foreignKey: "idCommande",
+});
 ///=======
 User.hasMany(Categorie, {
   foreignKey: "idUser",
   onDelete: "CASCADE",
-  onUpdate: "CASCADE"
-//>>>>>>> vf1/vf1
+  onUpdate: "CASCADE",
+  //>>>>>>> vf1/vf1
 });
 Categorie.belongsTo(User, {
   foreignKey: "idUser",
@@ -101,23 +124,6 @@ Article.belongsTo(Categorie, {
   onUpdate: "CASCADE",
 });
 
-// One User has Many Categories
-// Article.hasMany(Image, {
-//   foreignKey: "idArticle",
-//   onDelete: "CASCADE",
-//   onUpdate: "CASCADE",
-// });
-// Image.belongsTo(Article, {
-//   foreignKey: "idArticle",
-//   onDelete: "CASCADE",
-//   onUpdate: "CASCADE",
-// });
-Article.belongsToMany(Image, {
-  through: ArticleImage,
-  foreignKey: "idArticle",
-});
-Image.belongsToMany(Article, { through: ArticleImage, foreignKey: "idImage" });
-
 // One categorie has Many sub-Categories
 Categorie.hasMany(SousCategorie, {
   foreignKey: "idCategorie",
@@ -142,8 +148,24 @@ Article.belongsTo(SousCategorie, {
 });
 
 // Define Many-to-Many Associations
-User.belongsToMany(Role, { through: UserRole, foreignKey: "idUser" });
-Role.belongsToMany(User, { through: UserRole, foreignKey: "idRole" });
+//Article - Image
+Article.belongsToMany(Image, {
+  through: ArticleImage,
+  foreignKey: "idArticle",
+});
+Image.belongsToMany(Article, { through: ArticleImage, foreignKey: "idImage" });
+
+//user - role
+User.belongsToMany(Role, {
+  through: UserRole,
+  foreignKey: "idUser",
+  as: "roles",
+});
+Role.belongsToMany(User, {
+  through: UserRole,
+  foreignKey: "idRole",
+  as: "users",
+});
 
 //article - commande
 // Many-to-Many: A Command has many Articles and an Article can be in many Commands
@@ -152,15 +174,10 @@ Commande.belongsToMany(Article, {
   through: CommandArticle,
   foreignKey: "idCommande",
   otherKey: "idArticle",
-  as: "Article",
-}); 
+  as: "articles",
+});
 Article.belongsToMany(Commande, {
   through: CommandArticle,
   foreignKey: "idArticle",
   otherKey: "idCommande",
-  as: "commandes",
-//<<<<<<< HEAD
-})
-//=======
-//});
-//>>>>>>> vf0/vf0
+});

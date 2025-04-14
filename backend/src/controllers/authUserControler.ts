@@ -9,39 +9,50 @@ import Role from "../models/Role";
 import { Op } from "sequelize";
 import { crypt } from "../config/crypto-js";
 import UserRole from "../models/userRoles";
-
+import Adresse from "../models/Adresse";
+import Commande from "../models/Commande";
 
 //@desc register a user
 //@route POST /api/users
 //@access public
-const register = asyncHandler(async (req: Request, res: any) => {
-  try{
-  const { nom, prenom, date_naissance, email, tel, mot_de_passe,idRole } = req.body;
-  const hashpassword = await bcrypt.hash(mot_de_passe, 10);
-  const user = await User.create({
-    nom,
-    prenom,
-    date_naissance,
-    email,
-    tel,
-    mot_de_passe: hashpassword,
-  });
-  const lastId = user.get('idUser');
- const userrole = await UserRole.create({
-  idRole,
-  idUser:lastId
- })
-  if(user!==null && userrole!==null){
-   console.log('enregistrement reuissi');
-   return res.status(201).json({ done: true ,message:console.log('enregistrement reuissi')});
+const register = asyncHandler(async (req: Request, res: Response) => {
+  try {
+    const { nom, prenom, date_naissance, email, tel, mot_de_passe, idRole } =
+      req.body;
+    const hashpassword = await bcrypt.hash(mot_de_passe, 10);
+    const existUser = await User.findOne({
+      where: { email: email },
+    });
+    if (!existUser) {
+      const user = await User.create({
+        nom,
+        prenom,
+        date_naissance,
+        email,
+        tel,
+        mot_de_passe: hashpassword,
+      });
+      const lastId = user.get("idUser");
+      const userrole = await UserRole.create({
+        idRole,
+        idUser: lastId,
+      });
+      if (user !== null && userrole !== null) {
+        console.log("enregistrement reuissi");
+        res
+          .status(201)
+          .json({ done: true, message: console.log("enregistrement reuissi") });
+      }
+    } else {
+      res.status(404).json({
+        message: "L'utilisateur existe deja , veuillez vous connecter !!",
+      });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: error });
   }
-  console.log('donnee introuvable');
-   return res.status(404).json({message: console.log('donnee introuvable')});
- 
-}catch(error){
-  console.log(error);
-  return res.status(500).json({message:error})
-}});
+});
 
 //@desc login a user
 //@route POST /api/auth
@@ -68,6 +79,11 @@ const login = asyncHandler(async (req: Request, res: Response) => {
         model: Role,
         attributes: ["idRole", "nom"],
         through: { attributes: [] },
+        as: "roles",
+      },
+      {
+        model: Adresse,
+        as: "adresses",
       },
     ],
   });
@@ -98,12 +114,24 @@ const login = asyncHandler(async (req: Request, res: Response) => {
         id: user.idUser,
         email: user.email,
         tel: user.tel,
-        roles: user.Role?.map((role: any) => role.nom),
+        roles: user.roles?.map((role: Role) => role.nom),
       },
     },
     secretToken,
     { expiresIn: "24h" }
   );
+  // others informations
+  const commandes = await Commande.findAll({ where: { idUSer: user.idUser } });
+
+  const montantTotalCommande = commandes
+    .filter((cmd) => cmd.statut === "payé")
+    .reduce((sum, cmd) => sum + cmd.Montant_total, 0);
+  const montantTotalCommandeImpaye = commandes
+    .filter((cmd) => cmd.statut === "Encours")
+    .reduce((sum, cmd) => sum + cmd.Montant_total, 0);
+
+  const nbreTotalCommande = commandes.length;
+
   const reps = {
     user: {
       id: user.idUser,
@@ -111,16 +139,20 @@ const login = asyncHandler(async (req: Request, res: Response) => {
       prenom: user.prenom,
       email: user.email,
       tel: user.tel,
-      roles: user.Role?.map((role) => ({
+      roles: user.roles?.map((role) => ({
         idRole: role.idRole,
-        nomRole: role.name,
+        nomRole: role.nom,
       })),
     },
+    montantTotalCommande,
+    montantTotalCommandeImpaye,
+    nbreTotalCommande,
+    adresses: user.adresses,
   };
   res.status(200).json({
     accessToken: accessToken,
-    reps: crypt.encode(reps),
-    // reps: reps,
+    // reps: crypt.encode(reps),
+    reps: reps,
     done: true,
   });
 });
