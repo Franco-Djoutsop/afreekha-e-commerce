@@ -49,7 +49,7 @@ const GestionFacture = {
                     attributes: ['lien'],
                   }
                 ],
-                as: 'Article',
+                as: 'articles',
               }      
             ]
           });
@@ -72,6 +72,7 @@ const GestionFacture = {
               {
                 model: Article,
                  // INNER JOIN avec Article
+              
                 through: {
                   attributes: ['quantite'],
                   as: "total_article"
@@ -82,7 +83,7 @@ const GestionFacture = {
                     attributes: ['lien']
                   },
                 ],
-                as: 'Article',
+                as: 'articles',
               }
               
             ],

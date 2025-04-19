@@ -118,6 +118,9 @@ const adresseValidation = [
 const adressUpdateValidation = [
   ...adresseValidation,
   body("idAdresse").notEmpty().withMessage("ID adresse non fourni !"),
+  (req: Request, res: Response, next: NextFunction) => {
+    handleValidationErrors(req, res, next);
+  },
 ]
 const updateArticleImg = [
   ...createImgValidation,

@@ -85,10 +85,6 @@ SousCategorie.belongsTo(Categorie, {
 //>>>>>>> vf1/vf1
 
 // Many-to-Many: A Command has many Articles and an Article can be in many Commands
-Commande.belongsToMany(Article, {
-  through: CommandArticle,
-  foreignKey: "idCommande",
-});
 ///=======
 User.hasMany(Categorie, {
   foreignKey: "idUser",

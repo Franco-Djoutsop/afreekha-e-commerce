@@ -7,6 +7,7 @@ import {
   addMessage,
   addpaiement,
   adresseValidation,
+  adressUpdateValidation,
   updateArticleValidation,
 } from "../middlewares/validation";
 import { createCommandeValidation } from "../middlewares/validation";
@@ -165,7 +166,7 @@ router.route("/roles").get(allRoles);
  *        description: Erreur serveur
  *
  */
-router.route("/auth").post(login);
+router.route("/auth").post(crypt.decode, login);
 /**
  * @openapi
  * /api/users/recovery-password:
@@ -262,11 +263,11 @@ router.route("/users/reset-password/:token").post(resetPassword);
  *
  */
 
-router.route("/users").post(userValidationRules, validate, register);
+router.route("/users").post(crypt.decode, userValidationRules, validate, register);
 router.route("/users/me").get(validateToken, getUserRole);
 
 //endpoint change password
-router.route("/password/:id").put(modifyPassword);
+router.route("/password/:id").put(validateToken, crypt.decode, modifyPassword);
 //>>>>>>> vf1/vf1
 
 //client route
@@ -394,9 +395,11 @@ router.get("/article-details/:id", ArticleController.getOne);
 
 router.delete("/adresse/:id", AdresseController.delete);
 router.post("/adresse", adresseValidation, AdresseController.create);
-router.put("/adresse", updateArticleValidation, AdresseController.update);
-
+router.put("/adresse", adressUpdateValidation, AdresseController.update);
+router.get("/adresse/:id", AdresseController.getAll);
 router.get("/article/:offset", ArticleController.getAll);
+router.get("/article-single/:id", ArticleController.getOne);
+
 router.get(
   "/commande/:idUser",
 

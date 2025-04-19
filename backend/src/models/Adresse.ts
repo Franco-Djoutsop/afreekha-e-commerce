@@ -20,6 +20,10 @@ Adresse.init(
       autoIncrement: true,
       primaryKey: true,
     },
+    titre: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
     adresse: {
       type: DataTypes.STRING,
       allowNull: false,

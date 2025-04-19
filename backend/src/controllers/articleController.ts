@@ -3,6 +3,7 @@ import { GestionArticle } from "../repositry/gestion_articles";
 import { crypt } from "../config/crypto-js";
 import { Articles } from "../repositry/objets/article";
 import { GestionImage } from "../repositry/gestion_images";
+import SousCategorie from "../models/SousCategorie";
 
 //@route /api/admin/article
 //@method POST
@@ -173,16 +174,50 @@ const ArticleController = {
   //@urlparams :offset
   async getAll(req: Request, res: any) {
     try {
-      if (req.params.offset) {
-        const data = await GestionArticle.getAll(
-          Number.parseInt(req.params.offset)
-        );
+      let data: any;
+      if (req.params.offset && req.query) {
+        
+        const params = req.query;
+        const attributesFilter = typeof params.attribute === "string" ? params.attribute.split(",") : undefined;
+        const categories = typeof params.category === "string" ? params.category.split(",") : undefined;
+
+        if(attributesFilter || categories) {
+          
+          const filter = {
+            attribute: attributesFilter,
+            categories: categories
+          }
+
+          if(params.isUniqueFilter){
+            //filtre sur les sous categories
+            const sousCategorieIDs = await SousCategorie.findAll({
+              where: {
+                nom: categories
+              },
+              attributes: ['idSousCategorie']
+            });
+            const idCategorie = sousCategorieIDs[0].idSousCategorie;
+            
+            data = await GestionArticle.getBySubCategorie(Number.parseInt(req.params.offset), idCategorie, filter);
+          }else{
+            data = await GestionArticle.getAll(Number.parseInt(req.params.offset), filter);
+  
+          }
+         
+        }else{
+          data = await GestionArticle.getAll(Number.parseInt(req.params.offset));
+
+        }
+        
+
 
         return data.length != 0
-          ? res.status(200).json([{ data: data }])
+          ? res.status(200).json([{ data: crypt.encode(data) , total: await GestionArticle.countArticle()}])
           : res.status(200).json([]);
       } else {
-        const data = await GestionArticle.getAll(1);
+        const params = req.query;
+
+        const data = await GestionArticle.getAll(0);
 
         return data.length != 0
           ? res.status(200).json([{ data: crypt.encode(data) }])

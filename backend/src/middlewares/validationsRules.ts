@@ -17,8 +17,7 @@ const userValidationRules = [
         throw new Error("cet email est deja utilise");
       }
     }),
-  body("tel")
-    .isMobilePhone("fr-CM")
+  body("tel").notEmpty()
     .withMessage("Numéro de téléphone invalide.")
     .custom(async (tel) => {
       const existingTel = await User.findOne({ where: { tel } });

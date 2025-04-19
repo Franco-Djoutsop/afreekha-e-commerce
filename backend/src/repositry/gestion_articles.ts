@@ -1,11 +1,13 @@
 import Article from "../models/Article";
 import { Articles } from "./objets/article";
 import Image from "../models/image";
-import { fn, col, literal, Sequelize, QueryTypes } from "sequelize";
+import { fn, col, literal, Sequelize, QueryTypes, Op } from "sequelize";
 import {sequelize} from "../config/database"; // Adjust the path as necessary
 import Commande from "../models/Commande";
 import CommandArticle from "../models/CommandArticle";
 import UserRole from "../models/userRoles";
+import Categorie from "../models/categorie";
+import SousCategorie from "../models/SousCategorie";
 
 const GestionArticle = {
   async save(artilce: Articles) {
@@ -70,20 +72,127 @@ const GestionArticle = {
     return data;
   },
 
-  async getAll(offset: number) {
-    const data = await Article.findAll({
-      offset: offset,
-      limit: 15,
-      include: [
-        {
-          model: Image,
-          required: true,
+  async getBySubCategorie(offset: number, idCategorie: number, filter?: {attribute?: string[], categories?: string[]}){
+    let data: any;
+    if(filter){
+        const whereClause: any = {
+            idCategorie: idCategorie
+        };
+        const includeClause : any = [
+          { model: Image, required: true }
+        ];
+
+        if (filter.attribute && filter.attribute.length > 0) {
+          whereClause[Op.or] = [
+            { taille: { [Op.in]: filter.attribute } },
+            { couleur: { [Op.in]: filter.attribute } }
+          ];
+        }
+
+        if (filter.categories && filter.categories.length > 0) {
+          includeClause.push({
+            model: Categorie,
+            attributes: ['nom'],
+            include: [
+              {
+                model: SousCategorie,
+                attributes: ['nom']
+              }
+            ],
+            required: true
+          });
+        } else {
+          // Inclure les catégories sans filtre si besoin
+          includeClause.push({
+            model: Categorie,
+            attributes: ['nom'],
+            include: [
+              {
+                model: SousCategorie,
+                attributes: ['nom']
+              }
+            ],
+            required: true
+          });
+        }
+
+        data = await Article.findAll({
+          offset: offset,
+          limit: 15,
+          where: whereClause,
+          include: includeClause
+        });
+
+    }else{
+      data = await Article.findAll({
+        offset: offset,
+        limit: 15,
+        where:{
+            idCategorie : idCategorie
         },
-      ],
-    });
+        include: [
+          {
+            model: Image,
+            required: true,
+          }
+        ],
+        
+      });
+    }
 
     return data;
   },
+
+  async getAll(offset: number, filter?: {attribute?: string[], categories?: string[]}) {
+    let data: any;
+    if(filter){
+        const whereClause: any = {};
+        const includeClause : any = [
+          { model: Image, required: true }
+        ];
+
+        if (filter.attribute && filter.attribute.length > 0) {
+          whereClause[Op.or] = [
+            { taille: { [Op.in]: filter.attribute } },
+            { couleur: { [Op.in]: filter.attribute } }
+          ];
+        }
+
+        if (filter.categories && filter.categories.length > 0) {
+          includeClause.push({
+            model: Categorie,
+            where: { nom: { [Op.in]: filter.categories } },
+            required: true
+          });
+        } else {
+          // Inclure les catégories sans filtre si besoin
+          includeClause.push({ model: Categorie, required: false });
+        }
+
+        data = await Article.findAll({
+          offset: offset,
+          limit: 15,
+          where: whereClause,
+          include: includeClause
+        });
+
+    }else{
+      data = await Article.findAll({
+        offset: offset,
+        limit: 15,
+        include: [
+          {
+            model: Image,
+            required: true,
+          }
+        ],
+        
+      });
+    }
+
+    return data;
+  },
+
 
         async getArticleOnFeatured(offset: number){
             const data = await Article.findAll(

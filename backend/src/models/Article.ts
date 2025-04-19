@@ -12,6 +12,8 @@ class Article extends Model {
   public pourcentage_promo?: number;
   public marque?: string;
   public garantie?: string;
+  public couleur?: string;
+  public taille?: string;
   public idCategorie!: number;
   public featured!: boolean;
   public inTrend!: boolean;
@@ -54,6 +56,14 @@ Article.init(
       allowNull: true,
     },
     marque: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    couleur: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    taille: {
       type: DataTypes.STRING,
       allowNull: true,
     },
