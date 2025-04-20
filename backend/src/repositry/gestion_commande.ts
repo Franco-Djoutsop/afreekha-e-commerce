@@ -13,6 +13,7 @@ const GestionCommande = {
 
   async verifyArticlesExist(ids: number[]) {
     const articles = await Article.findAll({
+       attributes: ['idArticle', 'nom_article', 'promo', 'pourcentage_promo', 'prix', 'quantite'], 
         where: {
             idArticle: {
                 [Op.in]: ids
@@ -20,7 +21,7 @@ const GestionCommande = {
         }
     });
 
-    return articles.length === ids.length;
+    return articles.length === ids.length ? {exist: true, articles: articles} : {exist: false, articles: []};
 },
 
   async supprimer(id: number) {

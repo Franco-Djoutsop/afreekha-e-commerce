@@ -23,8 +23,8 @@ const validateToken = asyncHandler(
 
     if (!secretToken) {
       res
-        .status(500)
-        .json({ errorMessage: "Erreur serveur : Token non défini" });
+        .status(400)
+        .json({ errorMessage: "Erreur serveur : SecretToken non défini, veuillez vous reconnectez, pour continuer !" });
       return;
     }
 

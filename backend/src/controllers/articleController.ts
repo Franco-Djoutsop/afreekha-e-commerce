@@ -10,7 +10,6 @@ import SousCategorie from "../models/SousCategorie";
 //@bodyparams :true
 const ArticleController = {
   async create(req: Request, res: any) {
-    console.log("before try");
     try {
       // Vérification, si des erreurs de validation sont présentes
       if (!req.body.errors) {
@@ -20,7 +19,7 @@ const ArticleController = {
 
         article = req.body as Articles;
         const resp = await GestionArticle.save(article);
-        console.log(resp.idArticle, resp);
+        
         const imgAssigment = await GestionImage.articleImageAssigment(
           resp.idArticle,
           article.imgsID

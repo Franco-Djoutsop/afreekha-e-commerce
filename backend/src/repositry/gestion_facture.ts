@@ -1,4 +1,5 @@
 import { sequelize } from "../config/database";
+import Adresse from "../models/Adresse";
 import Article from "../models/Article";
 import CommandArticle from "../models/CommandArticle";
 import Commande from "../models/Commande";
@@ -50,7 +51,14 @@ const GestionFacture = {
                   }
                 ],
                 as: 'articles',
-              }      
+              },
+              {
+                include: [
+                  {
+                    model: Adresse
+                  }
+                ]
+              }    
             ]
           });
         

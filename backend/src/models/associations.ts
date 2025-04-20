@@ -108,6 +108,17 @@ Commande.belongsTo(User, {
   onUpdate: "CASCADE",
 });
 
+Adresse.hasMany(Commande, {
+  foreignKey: "idAdresse",
+  onDelete: "SET NULL",
+  onUpdate: "CASCADE",
+});
+Commande.belongsTo(Adresse, {
+  foreignKey: "idAdresse",
+  onDelete: 'SET NULL',
+  onUpdate: "CASCADE",
+});
+
 // One categorie has Many article
 Categorie.hasMany(Article, {
   foreignKey: "idCategorie",

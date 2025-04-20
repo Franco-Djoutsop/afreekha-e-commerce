@@ -266,9 +266,7 @@ const GestionArticle = {
             
             const topArticles = await sequelize.query(`
                SELECT 
-                    a.idArticle,
-                    a.nom_article,
-                    a.prix,
+                    a.*,
                     SUM(ca.quantite) AS totalSold,
                     (
                     SELECT i.lien
@@ -299,27 +297,30 @@ const GestionArticle = {
             return count;
         },
 
-        async updateArticleQty(articleID: number, qty: number){
-            const transaction = await sequelize.transaction();
-            
-            const article = await Article.findByPk(articleID, { transaction });
-
-            if (!article) {
-                throw new Error(`Article ID ${articleID} non trouvé`);
-            }
-
-            // Vérifier que la quantité demandée ne dépasse pas le stock actuel
-            if (article.quantite < qty) {
-                throw new Error(`Stock insuffisant pour l'article ID ${articleID}`);
-            }
-
-            // Mettre à jour la quantité
-            article.quantite -= qty;
-            await article.save({ transaction });
-            await transaction.commit(); // Valider la transaction
-            
-            return { success: true, message: "Stock mis à jour avec succès" };
-        }
+        
+        async updateMultipleArticlesQty(articles: { idArticle: number, qty: number }[], dbArticles: Article[]) {
+          const transaction = await sequelize.transaction();
+      
+          try {
+             
+              // Mettre à jour les quantités
+              for (const { idArticle, qty } of articles) {
+                  const article = dbArticles.find(a => a.idArticle === idArticle);
+                 if(article){
+                  article.quantite -= qty;
+                  await article.save({ transaction });
+                 }
+              }
+      
+              await transaction.commit();
+              return { success: true, message: "Stock mis à jour avec succès" };
+      
+          } catch (error: any) {
+              await transaction.rollback();
+              return { success: false, message: error.message };
+          }
+      }
+      
 
 };
 

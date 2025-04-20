@@ -1,6 +1,7 @@
 import { DataTypes, Model } from "sequelize";
 import { sequelize } from "../config/database";
 import User from "./User";
+import Adresse from "./Adresse";
 
 class Commande extends Model {
   public idCommande!: number;
@@ -8,6 +9,7 @@ class Commande extends Model {
   public quantite_articles!: number;
   public statut!: string;
   public idUser!: number;
+  public idAdresse!: number;
   public createdAt?: string;
   public updatedAt?: string;
 }
@@ -43,6 +45,16 @@ Commande.init(
       onDelete: "CASCADE",
       onUpdate: "CASCADE"
     },
+    idAdresse: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: {
+        model: Adresse,
+        key: "idAdresse",
+      },
+      onDelete: "SET NULL",
+      onUpdate: "CASCADE"
+    }
   },
   {
     sequelize,

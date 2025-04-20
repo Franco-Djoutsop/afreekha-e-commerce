@@ -75,7 +75,9 @@ const createArticleValidation = [
   body("quantite").notEmpty().withMessage("Quantité de l'article non défini"),
   body("caracteristiques").notEmpty().withMessage("Caractéristique non défini"),
   body("pourcentage_promo").notEmpty().withMessage("Pourcentage de promotion non défini"),
-  body("garantie").notEmpty().withMessage("garantie non définie"),
+  body("garantie").notEmpty().withMessage("Veuillez definir la garantie"),
+  body("couleur").notEmpty().withMessage("Veuillez definir la couleur !"),
+  body("taille").notEmpty().withMessage("Veuillez definir la taille"),
   body("imgsID").isArray({min: 1}).withMessage("Veuillez fourni les ids des images pour cette article !"),
   body("idCategorie").notEmpty().withMessage("Veuillez choisir une categorie pour cet article"),
   (req: Request, res: Response, next: NextFunction) => {
@@ -134,19 +136,20 @@ const createCommandeValidation = [
      body('article')
         .isArray({ min: 1 }).withMessage("Le champ 'article' doit être un tableau contenant au moins un article"),
 
-    body('article.*.idArticle')
+    body('article.*.product_id')
         .isInt({ gt: 0 }).withMessage("L'ID de l'article doit être un entier positif"),
 
-    body('article.*.quantite')
+    body('article.*.quantity')
         .isInt({ gt: 0 }).withMessage("La quantité doit être un entier positif"),
-    body('article.*.prix')
-        .isInt({ gt: 0 }).withMessage("La quantité doit être un entier positif"),
-
+    
     body('idUser')
         .isInt({ gt: 0 }).withMessage("L'ID de l'utilisateur doit être un entier positif"),
+    
+    body('idAdresse')
+        .isInt({ gt: 0 }).withMessage("L'ID de l'adresse de livraisson doit être un entier positif"),
 
     body('statut')
-        .isIn(['payé', 'en attente']).withMessage("Le statut doit être 'payé' ou 'en attente'"),
+        .isIn(['payé', 'En cours']).withMessage("Le statut doit être 'payé' ou 'En cours'"),
         (req: Request, res: Response, next: NextFunction) => {
           handleValidationErrors(req, res, next);
         }

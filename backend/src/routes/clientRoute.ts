@@ -393,25 +393,26 @@ router.get("/article-details/:id", ArticleController.getOne);
  *
  */
 
-router.delete("/adresse/:id", AdresseController.delete);
-router.post("/adresse", adresseValidation, AdresseController.create);
-router.put("/adresse", adressUpdateValidation, AdresseController.update);
-router.get("/adresse/:id", AdresseController.getAll);
+router.delete("/adresse/:id",validateToken, AdresseController.delete);
+router.post("/adresse",validateToken, crypt.decode, adresseValidation, AdresseController.create);
+router.put("/adresse",validateToken, crypt.decode, adressUpdateValidation, AdresseController.update);
+router.get("/adresse/:id",validateToken, AdresseController.getAll);
 router.get("/article/:offset", ArticleController.getAll);
-router.get("/article-single/:id", ArticleController.getOne);
+router.get("/article-single/:id",validateToken, ArticleController.getOne);
 
 router.get(
   "/commande/:idUser",
-
+  validateToken,
   CommandeController.getCommad
 );
-router.delete("/commande/:id", CommandeController.delete);
+router.delete("/commande/:id",validateToken, CommandeController.delete);
 router.post(
   "/commande",
-  // validateToken,
+  validateToken,
+  crypt.decode,
   createCommandeValidation,
   CommandeController.create
 );
-router.get("/my-facture/:offset/:idUser", FactureController.getFactureOfUser);
+router.get("/my-facture/:offset/:idUser",validateToken, FactureController.getFactureOfUser);
 //>>>>>>> vf1/vf1
 export default router;

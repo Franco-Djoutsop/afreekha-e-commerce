@@ -58,7 +58,9 @@ const register = asyncHandler(async (req: Request, res: Response) => {
 //@route POST /api/auth
 //@access public
 const login = asyncHandler(async (req: Request, res: Response) => {
-  const { tel, email, mot_de_passe } = req.body;
+  console.log('entering')
+try {
+   const { tel, email, mot_de_passe } = req.body;
   if ((!tel && !email) || !mot_de_passe) {
     res.status(400);
     throw new Error(
@@ -154,6 +156,10 @@ const login = asyncHandler(async (req: Request, res: Response) => {
     done: true,
   });
   return;
+} catch (error: any) {
+  res.status(500).json({ message: `une erreur s'est produite: \n ${error.message}` });
+}
+ 
 });
 
 //@desc recovery password
@@ -172,7 +178,7 @@ const sendEmail = asyncHandler(async (req: Request, res: Response) => {
   const resetTokenExpires = new Date(Date.now() + 3600000); //1heure
 
   //souvegarder le token dans la BD
-  await existUser?.update({ resetToken, resetTokenExpires });
+ // await existUser?.update({ resetToken, resetTokenExpires });
 
   //envoyer l'email avec nodemailer
   const transporter = nodemailer.createTransport({
