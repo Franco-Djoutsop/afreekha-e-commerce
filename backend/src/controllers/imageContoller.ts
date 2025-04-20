@@ -14,13 +14,15 @@ const ImageController = {
       if (!req.body.errors) {
         const dossier = process.env.IMG_URL as string;
 
-        const { base64Encryption, contentType, featured } = req.body;
+        const { base64Encryption, contentType, featured, collection, position } = req.body;
 
         const resp = await GestionImage.createImg(
           base64Encryption,
           dossier,
           contentType,
-          featured
+          featured,
+          collection,
+          position
         );
         //>>>>>>> vf0/vf0
 
@@ -47,17 +49,14 @@ const ImageController = {
 
     try {
       if (!req.body.errors) {
-        const { idArticle, base64Encryption, idImage, contentType, old_link } =
+        const {collection, idImage, position, featured } =
           req.body;
-        const dossier = process.env.IMG_URL as string;
 
         const resp = await GestionImage.update(
-          base64Encryption,
-          crypt.idOnUrlDecoder(idArticle),
-          crypt.idOnUrlDecoder(idImage),
-          dossier,
-          contentType,
-          old_link
+          collection,
+          idImage,
+          position,
+          featured
         );
         console.log("controller verif if it work", resp);
 

@@ -67,7 +67,7 @@ const GestionFacture = {
 
     async getFactureOfUser(offset: number, idUser: number){
         const facturesOfUser = await Commande.findAll({
-            limit: 15,
+            limit: 30,
             offset: offset,
             where: {idUser: idUser},
             include: [

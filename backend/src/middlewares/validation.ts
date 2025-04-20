@@ -125,7 +125,9 @@ const adressUpdateValidation = [
   },
 ]
 const updateArticleImg = [
-  ...createImgValidation,
+  body("collection").notEmpty().withMessage("Collection obligatoire"),
+  body("postition").notEmpty().withMessage("ID non fourni !"),
+  body("featured").notEmpty().withMessage("En vedette ?"),
   body("idImage").notEmpty().withMessage("ID non fourni !"),
   (req: Request, res: Response, next: NextFunction) => {
     handleValidationErrors(req, res, next);

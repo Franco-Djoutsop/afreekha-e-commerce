@@ -51,4 +51,14 @@ const DeleteImg = async (imageLink: string) =>{
 
 }
 
-export {MoveImg, DeleteImg};
+const featuredImageFilter = (imgs: {idImage: number, lien:string, collection:string, position:string}[])=>{
+  
+          const side = imgs.filter( img => img.position == "SIDE");
+          const main_banner = imgs.filter(img => img.position == "MAIN_BANNER");
+          const main_two_pic = imgs.filter(img => img.position == "MAIN_TWO_PIC");
+          const slider = imgs.filter(img => img.position == "SLIDER");
+
+         return {main_banner: main_banner, side: side, main_two_pic: main_two_pic, slider: slider  }
+}
+
+export {MoveImg, DeleteImg, featuredImageFilter};

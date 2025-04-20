@@ -7,7 +7,9 @@ class Image extends Model {
   //<<<<<<< HEAD
   //=======
   public idArticle!: number;
-  public feateured!: boolean;
+  public featured!: boolean;
+  public collection!: string;
+  public position!: string;
   //>>>>>>> vf1/vf1
 }
 
@@ -37,7 +39,17 @@ Image.init(
       type: DataTypes.BOOLEAN,
       allowNull: false,
       defaultValue: false,
-   }
+   },
+
+    collection: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+
+    position: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
   },
 
   {

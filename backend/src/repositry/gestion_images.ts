@@ -10,32 +10,29 @@ import {sequelize} from "../config/database"; // Adjust the path as necessary
 dotenv.config();
 
 const GestionImage = {  
-//<<<<<<< HEAD
-//<<<<<<< HEAD
-   // async createImg(base64: string, dossier: string, contentType: string){
-//=======
-  //  async createImg(base64: string, idArticle: number, dossier: string, contentType: string, featured: boolean){
-//>>>>>>> vf0/vf0
-//=======
-    async createImg(base64: string, dossier: string, contentType: string, featured: boolean){
-//>>>>>>> vf0/vf0
+
+    async createImg(base64: string, dossier: string, contentType: string, featured: boolean, collection : string, position: string){
+
             const result = await this.execCreationImg(base64, dossier, contentType);
-            
+            if(position && position == "MAIN_BANNER"){
+                await Image.update({
+
+                    position: null,
+
+                }, {where:
+                     {position: "MAIN_BANNER"}
+                    }
+                );
+                //car il ne peut avoir qu'une seul banner principale dans le main
+            }
             if(result.creationDone){
-                //const img = await Image.cr
                 
                 const queryRslt = await Image.create({
-//<<<<<<< HEAD
-                   // lien: url,
-//<<<<<<< HEAD
-//=======
-                    //featured: featured,
-                    //idArticle: idArticle
-//>>>>>>> vf0/vf0
-//=======
+
+                    collection: collection ? collection: null,
+                    position: position ? position:null,
                     lien: result.link,
                     featured: featured
-//>>>>>>> vf0/vf0
                 });
 
                 return queryRslt;
@@ -92,24 +89,20 @@ const GestionImage = {
         return resp;
     },
 
-    async update(base64: string, idArticle: number, idImage: number, dossier: string, contentType: string,featured: boolean, old_link?: string){
-            let old_linkDeleted = false;
+    async update(collection: string, idImage: number, position: string, featured: boolean){
+        if(position && position == "MAIN_BANNER"){
+            await Image.update({
 
-            if(old_link){
-                //ancien lien de l'image à remplacer defini, alors supprimé son image dans le repertoire sur le serveur
-               const del_result= await DeleteImg(old_link);
-                if(del_result){
-                    old_linkDeleted =true;                 
+                position: null,
+
+            }, {where:
+                 {position: "MAIN_BANNER"}
                 }
-            }
-
-            const creationResult = await this.execCreationImg(base64, dossier, contentType);
-
-
-            if(creationResult.creationDone){
-                const url = ""+process.env.HTTPS+process.env.DB_HOST+process.env.PORT+creationResult.link;
+            );
+            //car il ne peut avoir qu'une seul banner principale dans le main
+        }
                 const queryRslt = await Image.update(
-                    {lien : url, featured: featured},
+                    { featured: featured, position: position, collection: collection},
                     {
                         where:{
                             idImage: idImage
@@ -118,10 +111,7 @@ const GestionImage = {
                    
                 );
 
-                return queryRslt;
-            }
-
-            return "";
+                return queryRslt ? queryRslt: "";
     },
 
     async getOne(id: number){
@@ -139,8 +129,8 @@ const GestionImage = {
 
     async getFeatured(){
         const data = await Image.findAll({
-            attributes: ['idImage', 'lien'],
-            limit: 8,
+            attributes: ['idImage', 'lien', 'collection', 'position'],
+            limit: 15,
             where: {
                 featured: true
             }
