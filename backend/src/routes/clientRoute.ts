@@ -70,7 +70,7 @@ router.get("/home-data", HomeController.getHomeData);
 router.route("/users").get(allUSers);
 
 //update user by user
-router.route("/profile").put(validateToken, updateUserByUser);
+router.route("/profile").put(validateToken, crypt.decode, updateUserByUser);
 
 //<<<<<<< HEAD
 //categorie
@@ -237,7 +237,7 @@ router.route("/users/recovery-password").post(sendEmail);
  *      500:
  *        description: Erreur liée au serveur
  */
-router.route("/users/reset-password").post(resetPassword);
+router.route("/users/reset-password").post(crypt.decode, resetPassword);
 /**
  * @openapi
  * /api/users:

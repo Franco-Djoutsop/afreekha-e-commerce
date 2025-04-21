@@ -125,11 +125,11 @@ const login = asyncHandler(async (req: Request, res: Response) => {
   }
 
   // Vérifier le mot de passe
-  /*const isMatch = await bcrypt.compare(mot_de_passe, user.mot_de_passe);
+  const isMatch = await bcrypt.compare(mot_de_passe, user.mot_de_passe);
   if (isMatch) {
     res.status(400);
     throw new Error("Identifiants incorrects");
-  }*/
+  }
 
   // Vérifier si le token secret est défini
   const secretToken = process.env.ACCESS_TOKEN_SECRET;
@@ -156,11 +156,11 @@ const login = asyncHandler(async (req: Request, res: Response) => {
     where: { idUSer: user.idUser },
   });
 
-  const montantTotalCommande = commandes
+  const montantTotalCommandePaye = commandes
     .filter((cmd) => cmd.statut === "payé")
     .reduce((sum, cmd) => sum + cmd.Montant_total, 0);
   const montantTotalCommandeImpaye = commandes
-    .filter((cmd) => cmd.statut === "Encours")
+    .filter((cmd) => cmd.statut === "en cours")
     .reduce((sum, cmd) => sum + cmd.Montant_total, 0);
 
   const nbreTotalCommande = commandes.length;
@@ -177,7 +177,7 @@ const login = asyncHandler(async (req: Request, res: Response) => {
         nomRole: role.nom,
       })),
     },
-    montantTotalCommande,
+    montantTotalCommandePaye,
     montantTotalCommandeImpaye,
     nbreTotalCommande,
     adresses: user.adresses,
@@ -233,7 +233,7 @@ const sendEmail = asyncHandler(async (req: Request, res: Response) => {
 
   res
     .status(200)
-    .json({ message: "Email de réinitialisation envoyé !", done: true });
+    .json({ message: "Email de réinitialisation envoyé !", done: true , code: crypt.encode(codeOtp)});
 });
 
 //@desc reset password
