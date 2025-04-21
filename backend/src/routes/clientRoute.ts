@@ -17,6 +17,7 @@ import {
   getUserRole,
   modifyPassword,
   oneUsersRole,
+  updateUserByUser,
 } from "../controllers/userControler";
 import { userValidationRules } from "../middlewares/validationsRules";
 import { validate } from "../middlewares/validate";
@@ -24,6 +25,7 @@ import { allRoles } from "../controllers/roleControler";
 import {
   login,
   register,
+  registerByUser,
   resetPassword,
   sendEmail,
 } from "../controllers/authUserControler";
@@ -65,6 +67,9 @@ router.get("/home-data", HomeController.getHomeData);
  */
 // router.route("/users").get(crypt.decode, allUSers);
 router.route("/users").get(allUSers);
+
+//update user by user
+router.route("/profile").put(validateToken, updateUserByUser);
 
 //<<<<<<< HEAD
 //categorie
@@ -231,7 +236,7 @@ router.route("/users/recovery-password").post(sendEmail);
  *      500:
  *        description: Erreur liée au serveur
  */
-router.route("/users/reset-password/:token").post(resetPassword);
+router.route("/users/reset-password").post(resetPassword);
 /**
  * @openapi
  * /api/users:
@@ -262,6 +267,8 @@ router.route("/users/reset-password/:token").post(resetPassword);
  */
 
 router.route("/users").post(userValidationRules, validate, register);
+router.route("/registerByUser").post(registerByUser);
+
 router.route("/users/me").get(validateToken, getUserRole);
 
 //endpoint change password

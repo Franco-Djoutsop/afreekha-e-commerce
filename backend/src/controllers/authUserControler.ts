@@ -23,6 +23,7 @@ const register = asyncHandler(async (req: Request, res: Response) => {
     const existUser = await User.findOne({
       where: { email: email },
     });
+
     if (!existUser) {
       const user = await User.create({
         nom,
@@ -38,11 +39,42 @@ const register = asyncHandler(async (req: Request, res: Response) => {
         idUser: lastId,
       });
       if (user !== null && userrole !== null) {
-        console.log("enregistrement reuissi");
+        console.log("enregistrement reussie");
         res
           .status(201)
           .json({ done: true, message: console.log("enregistrement reuissi") });
       }
+    } else {
+      res.status(400).json({
+        message: "L'utilisateur existe deja , veuillez vous connecter !!",
+      });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: error });
+  }
+});
+
+//@desc register a user by user
+//@route POST /api/registerByUser
+const registerByUser = asyncHandler(async (req: Request, res: Response) => {
+  const { nom, prenom, date_naissance, email, tel, mot_de_passe } = req.body;
+  const hashpassword = await bcrypt.hash(mot_de_passe, 10);
+  const exixtUSer = await User.findOne({
+    where: { email: email },
+  });
+
+  try {
+    if (!exixtUSer) {
+      const user = await User.create({
+        nom,
+        prenom,
+        date_naissance,
+        email,
+        tel,
+        mot_de_passe: hashpassword,
+      });
+      res.status(201).json({ reps: user, done: true });
     } else {
       res.status(404).json({
         message: "L'utilisateur existe deja , veuillez vous connecter !!",
@@ -167,12 +199,13 @@ const sendEmail = asyncHandler(async (req: Request, res: Response) => {
     return;
   }
 
-  //generer un token aleatoire
-  const resetToken = crypto.randomBytes(32).toString("hex");
+  //Générer un code OTP de 5 chiffres
+  const codeOtp = Math.floor(10000 + Math.random() * 90000).toString();
+  const resetToken = crypto.randomBytes(32).toString("hex"); //token
   const resetTokenExpires = new Date(Date.now() + 3600000); //1heure
 
   //souvegarder le token dans la BD
-  await existUser?.update({ resetToken, resetTokenExpires });
+  await existUser?.update({ resetToken: codeOtp, resetTokenExpires });
 
   //envoyer l'email avec nodemailer
   const transporter = nodemailer.createTransport({
@@ -184,13 +217,12 @@ const sendEmail = asyncHandler(async (req: Request, res: Response) => {
     },
   });
 
-  const resetLink = `http://localhost:3000/reset-password/${resetToken}`;
   try {
     await transporter.sendMail({
       from: process.env.EMAIL,
       to: existUser?.email,
       subject: "Renitialisation du mot de passe",
-      text: `Cliquez sur ce lien pour réinitialiser votre mot de passe : ${resetLink}`,
+      text: `Voici votre code de réinitialisation : ${codeOtp}`,
     });
   } catch (error) {
     res.status(500).json({ message: `une erreur s'est produite: \n ${error}` });
@@ -203,18 +235,22 @@ const sendEmail = asyncHandler(async (req: Request, res: Response) => {
 });
 
 //@desc reset password
-//@route POST /users/reset-password/:token
+//@route POST /users/reset-password
 //access public
 const resetPassword = asyncHandler(async (req: Request, res: Response) => {
-  const { token } = req.params;
-  const { newPassword } = req.body;
+  const { email, code, newPassword } = req.body;
 
   //verifier si le password est encore valide
   const user = await User.findOne({
-    where: { resetToken: token, resetTokenExpires: { [Op.gt]: new Date() } },
+    where: {
+      email,
+      resetToken: code,
+      resetTokenExpires: { [Op.gt]: new Date() },
+    },
   });
+  console.log("here");
   if (!user) {
-    res.status(400).json({ message: "Token invalide ou expiré" });
+    res.status(400).json({ message: "code expire ou invalide" });
     return;
   }
 
@@ -237,4 +273,4 @@ const resetPassword = asyncHandler(async (req: Request, res: Response) => {
 //@desc disconnect
 //@route POST /users/reset-password/:token
 //access public
-export { register, login, sendEmail, resetPassword };
+export { register, registerByUser, login, sendEmail, resetPassword };

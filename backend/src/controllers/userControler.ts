@@ -65,29 +65,6 @@ const infosUsers = asyncHandler(async (req: Request, res: Response) => {
   });
 });
 
-//=======
-/*const allUSers = asyncHandler(async (req: Request, res: Response) => {
-  const users = await User.findAll({
-    include: [
-      {
-        model: Role,
-        through: { attributes: [] },
-      },
-    ],
-  });
-  try {
-    res.status(200).json({
-      // reps: crypt.encode(users),
-      reps: users,
-      done: true,
-    });
-    console.log("first");
-  } catch (error: any) {
-    res.status(404).json({ messageError: error.message });
-  }
-});
->>>>>>> vf1/vf1*/
-
 //@desc Update a user
 //@route PATCH /api/admin/users/:id
 //@access public
@@ -138,6 +115,31 @@ const updateUsers = asyncHandler(async (req: Request, res: Response) => {
         })
       ),
     ]);
+    await user.save();
+    res.status(200).json({ reps: user, done: true });
+  } catch (error) {
+    res.status(400).json(`Une erreur s'est produite : \n ${error}`);
+  }
+});
+
+//@desc update infos of user by user
+//@route PUT /api/users
+//@access public
+const updateUserByUser = asyncHandler(async (req: Request, res: Response) => {
+  const id = req.user?.id; //le user doit etre loguer , et son id est get depuis le token de connexion
+  const { nom, prenom, tel, email } = req.body;
+  const user = await User.findByPk(id);
+  if (!user) {
+    res.status(400);
+    throw new Error("aucun utilisateur trouve");
+  }
+
+  try {
+    //update section
+    user.nom = nom || user.nom;
+    user.prenom = prenom || user.prenom;
+    user.email = email || user.email;
+    user.tel = tel || user.tel;
     await user.save();
     res.status(200).json({ reps: user, done: true });
   } catch (error) {
@@ -379,4 +381,5 @@ export {
   removeRoleToUser,
   getUserRole,
   modifyPassword,
+  updateUserByUser,
 };
