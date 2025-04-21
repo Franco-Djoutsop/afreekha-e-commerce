@@ -41,6 +41,15 @@ const AdresseController = {
       return res.status(400).json([{ message: error.message }]);
     }
   },
+
+  async getAll(req: Request, res: any) {
+    try {
+      const resp = await GestionAdresse.getAll(Number.parseInt(req.params.id)) ;
+      return res.status(200).json([{ data: crypt.encode(resp) }]);
+    } catch (error: any) {
+      return res.status(400).json([{ message: error.message }]);
+    }
+  }
 };
 
 export { AdresseController };

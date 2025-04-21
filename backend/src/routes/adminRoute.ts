@@ -141,9 +141,10 @@ routerAdmin.post("/image", createImgValidation, ImageController.create);
 routerAdmin.put("/image", updateArticleImg, ImageController.update);
 routerAdmin.delete("/image/:id", ImageController.destroy);
 
-routerAdmin.put("/facture", crypt.decode, FactureController.changeStatus);
+routerAdmin.put("/facture",validateToken, crypt.decode, FactureController.changeStatus);
 routerAdmin.get(
   "/facture/:offset",
+  validateToken,
   FactureController.getFactureWithArticleUser
 );
 routerAdmin.post("/facture", crypt.decode, FactureController.create);

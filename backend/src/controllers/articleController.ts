@@ -3,13 +3,13 @@ import { GestionArticle } from "../repositry/gestion_articles";
 import { crypt } from "../config/crypto-js";
 import { Articles } from "../repositry/objets/article";
 import { GestionImage } from "../repositry/gestion_images";
+import SousCategorie from "../models/SousCategorie";
 
 //@route /api/admin/article
 //@method POST
 //@bodyparams :true
 const ArticleController = {
   async create(req: Request, res: any) {
-    console.log("before try");
     try {
       // Vérification, si des erreurs de validation sont présentes
       if (!req.body.errors) {
@@ -19,7 +19,7 @@ const ArticleController = {
 
         article = req.body as Articles;
         const resp = await GestionArticle.save(article);
-        console.log(resp.idArticle, resp);
+        
         const imgAssigment = await GestionImage.articleImageAssigment(
           resp.idArticle,
           article.imgsID
@@ -75,8 +75,8 @@ const ArticleController = {
   async destroy(req: Request, res: any) {
     try {
       if (req.params.id) {
-        const id = crypt.idOnUrlDecoder(req.params.id);
-        const resp = await GestionArticle.destroy(id);
+        const id = req.params.id;
+        const resp = await GestionArticle.destroy(Number.parseInt(id));
         const message =
           resp == 0
             ? "Aucun article supprimé"
@@ -101,7 +101,7 @@ const ArticleController = {
   async getOne(req: Request, res: any) {
     try {
       if (req.params.id) {
-        const id = crypt.idOnUrlDecoder(req.params.id);
+        const id = Number.parseInt(req.params.id);
 
         const resp = await GestionArticle.getOne(id);
 
@@ -151,12 +151,12 @@ const ArticleController = {
   async getByCategorie(req: Request, res: any) {
     try {
       if (req.params.id) {
-        const id = crypt.idOnUrlDecoder(req.params.id);
+        const id = req.params.id;
 
-        const resp = await GestionArticle.getByCategories(id);
+        const resp = await GestionArticle.getByCategories(Number.parseInt(id));
 
         return resp.length != 0
-          ? res.status(200).json([{ data: crypt.encode(resp) }])
+          ? res.status(200).json([{ data: resp }])
           : res.status(200).json([]);
       } else {
         return res
@@ -164,7 +164,7 @@ const ArticleController = {
           .send([{ message: "Id de la categorie indefini" }]);
       }
     } catch (error: any) {
-      return res.status(400).send([{ message: error.message }]);
+      return res.status(400).send([{ message: error.message, err: error }]);
     }
   },
 
@@ -173,16 +173,50 @@ const ArticleController = {
   //@urlparams :offset
   async getAll(req: Request, res: any) {
     try {
-      if (req.params.offset) {
-        const data = await GestionArticle.getAll(
-          Number.parseInt(req.params.offset)
-        );
+      let data: any;
+      if (req.params.offset && req.query) {
+        
+        const params = req.query;
+        const attributesFilter = typeof params.attribute === "string" ? params.attribute.split(",") : undefined;
+        const categories = typeof params.category === "string" ? params.category.split(",") : undefined;
+
+        if(attributesFilter || categories) {
+          
+          const filter = {
+            attribute: attributesFilter,
+            categories: categories
+          }
+
+          if(params.isUniqueFilter){
+            //filtre sur les sous categories
+            const sousCategorieIDs = await SousCategorie.findAll({
+              where: {
+                nom: categories
+              },
+              attributes: ['idSousCategorie']
+            });
+            const idCategorie = sousCategorieIDs[0].idSousCategorie;
+            
+            data = await GestionArticle.getBySubCategorie(Number.parseInt(req.params.offset), idCategorie, filter);
+          }else{
+            data = await GestionArticle.getAll(Number.parseInt(req.params.offset), filter);
+  
+          }
+         
+        }else{
+          data = await GestionArticle.getAll(Number.parseInt(req.params.offset));
+
+        }
+        
+
 
         return data.length != 0
-          ? res.status(200).json([{ data: data }])
+          ? res.status(200).json([{ data: crypt.encode(data) , total: await GestionArticle.countArticle()}])
           : res.status(200).json([]);
       } else {
-        const data = await GestionArticle.getAll(1);
+        const params = req.query;
+
+        const data = await GestionArticle.getAll(0);
 
         return data.length != 0
           ? res.status(200).json([{ data: crypt.encode(data) }])

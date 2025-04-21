@@ -20,7 +20,7 @@ const gest_message = {
         });
         return res.status(201).json({
           send: true,
-          message: "message envoyez avec sucess!!",
+          message: "message envoyé avec sucèss!!",
         });
       }
       return res.status(404).json({ message: "veuillez fournir les donnees" });

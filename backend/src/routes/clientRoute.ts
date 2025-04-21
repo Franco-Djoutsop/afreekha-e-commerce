@@ -7,6 +7,7 @@ import {
   addMessage,
   addpaiement,
   adresseValidation,
+  adressUpdateValidation,
   updateArticleValidation,
 } from "../middlewares/validation";
 import { createCommandeValidation } from "../middlewares/validation";
@@ -169,7 +170,7 @@ router.route("/roles").get(allRoles);
  *        description: Erreur serveur
  *
  */
-router.route("/auth").post(login);
+router.route("/auth").post(crypt.decode, login);
 /**
  * @openapi
  * /api/users/recovery-password:
@@ -272,7 +273,7 @@ router.route("/registerByUser").post(registerByUser);
 router.route("/users/me").get(validateToken, getUserRole);
 
 //endpoint change password
-router.route("/password/:id").put(modifyPassword);
+router.route("/password/:id").put(validateToken, crypt.decode, modifyPassword);
 //>>>>>>> vf1/vf1
 
 //client route
@@ -411,7 +412,8 @@ router.get(
 router.delete("/commande/:id", CommandeController.delete);
 router.post(
   "/commande",
-  // validateToken,
+  validateToken,
+  crypt.decode,
   createCommandeValidation,
   CommandeController.create
 );

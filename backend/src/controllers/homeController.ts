@@ -5,6 +5,7 @@ import { GestionCommande } from "../repositry/gestion_commande";
 import User from "../models/User";
 import Categorie from "../models/categorie";
 import SousCategorie from "../models/SousCategorie";
+import { featuredImageFilter } from "../config/img_file";
 
 const HomeController = {
     //@route /api/home-data ----FrontEnd, clientSide
@@ -17,7 +18,7 @@ const HomeController = {
             const data = {
                 articlesPromo: await GestionArticle.getArticleOnPromo(offset),
                 articlesFeature : await GestionArticle.getArticleOnFeatured(offset),
-                articlesBestSell: await GestionArticle.getTopArticleSeller(offset),
+                articlesBestSell: await GestionArticle.getTopArticleSeller(12),
                 articlesTrend: await GestionArticle.getArticleOnTrend(offset),
                 imageFeatured: await GestionImage.getFeatured(),
                 categories : await Categorie.findAll({
@@ -30,6 +31,7 @@ const HomeController = {
                   
             };
 
+        
             const response = {
                 data: {
                     firt_section: {
@@ -40,7 +42,7 @@ const HomeController = {
                     },
                     secode_section: {
                         //deal de la semaine
-                        title: "Deal de la semaines",
+                        title: "Deal de la semaine",
                         description: "Ces articles à prix promo cette semaine...",
                         article: data.articlesPromo,
                     },
@@ -57,7 +59,8 @@ const HomeController = {
                         article: data.articlesTrend,
                     },
                     list_categories: data.categories,
-                     v_img: data.imageFeatured
+                     v_img: data.imageFeatured,
+                     temp: featuredImageFilter(data.imageFeatured) 
                 }
             }
             return res.status(200).json([{data: (response.data)}]);

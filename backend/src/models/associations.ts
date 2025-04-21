@@ -85,10 +85,6 @@ SousCategorie.belongsTo(Categorie, {
 //>>>>>>> vf1/vf1
 
 // Many-to-Many: A Command has many Articles and an Article can be in many Commands
-Commande.belongsToMany(Article, {
-  through: CommandArticle,
-  foreignKey: "idCommande",
-});
 ///=======
 User.hasMany(Categorie, {
   foreignKey: "idUser",
@@ -109,6 +105,17 @@ User.hasMany(Commande, {
 Commande.belongsTo(User, {
   foreignKey: "idUser",
   onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
+
+Adresse.hasMany(Commande, {
+  foreignKey: "idAdresse",
+  onDelete: "SET NULL",
+  onUpdate: "CASCADE",
+});
+Commande.belongsTo(Adresse, {
+  foreignKey: "idAdresse",
+  onDelete: 'SET NULL',
   onUpdate: "CASCADE",
 });
 

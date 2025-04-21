@@ -38,6 +38,15 @@ const GestionAdresse = {
 
         return resp;
 
+    },
+    async getAll(idUser: number){
+        const dataRetrieve = await Adresse.findAll({
+            where: {
+                idUser: idUser
+            }
+        });
+
+        return dataRetrieve;
     }
 }
 

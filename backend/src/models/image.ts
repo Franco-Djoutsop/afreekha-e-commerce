@@ -7,7 +7,9 @@ class Image extends Model {
   //<<<<<<< HEAD
   //=======
   public idArticle!: number;
-  public isVogue!: "vogue" | "Pas vogue";
+  public featured!: boolean;
+  public collection!: string;
+  public position!: string;
   //>>>>>>> vf1/vf1
 }
 
@@ -27,32 +29,29 @@ Image.init(
     //<<<<<<< HEAD
 
     //=======
-    isVogue: {
-      type: DataTypes.STRING,
-      //=======
-      //featured: {
-      // type: DataTypes.BOOLEAN,
-      //>>>>>>> vf0/vf0
+  featured: {
+      type: DataTypes.BOOLEAN,
       allowNull: false,
       defaultValue: false,
-      //},
-      // inTrend: {
-      //type: DataTypes.BOOLEAN,
-      //allowNull: false,
-      //defaultValue: false,
-      // },
     },
 
-    // idArticle: {
-    //   type: DataTypes.INTEGER,
-    //   allowNull: false,
-    //   references: {
-    //     model: Article,
-    //     key: "idArticle",
-    //   },
-    // },
-    //>>>>>>> vf1/vf1
+  inTrend: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
+   },
+
+    collection: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+
+    position: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
   },
+
   {
     sequelize,
     modelName: "Image",

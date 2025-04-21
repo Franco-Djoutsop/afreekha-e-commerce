@@ -26,8 +26,6 @@ CommandArticle.init(
         model: Commande,
         key: "idCommande",
       },
-      onDelete: "CASCADE",
-      onUpdate: "CASCADE",
     },
     idArticle: {
       type: DataTypes.INTEGER,
@@ -36,8 +34,6 @@ CommandArticle.init(
         model: Article,
         key: "idArticle",
       },
-      onDelete: "CASCADE",
-      onUpdate: "CASCADE",
     },
     quantite : {
       type: DataTypes.INTEGER,
@@ -48,13 +44,6 @@ CommandArticle.init(
     sequelize,
     modelName: "CommandArticle",
     tableName: "commandes_articles",
-    indexes: [
-      {
-        name: "idx_commande_article",
-        fields: ["idCommande", "idArticle"],
-      },
-    ],
-
   }
 );
 

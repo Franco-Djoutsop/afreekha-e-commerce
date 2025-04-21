@@ -152,7 +152,9 @@ const login = asyncHandler(async (req: Request, res: Response) => {
     { expiresIn: "24h" }
   );
   // others informations
-  const commandes = await Commande.findAll({ where: { idUSer: user.idUser } });
+  const commandes = await Commande.findAll({
+    where: { idUSer: user.idUser },
+  });
 
   const montantTotalCommande = commandes
     .filter((cmd) => cmd.statut === "payé")

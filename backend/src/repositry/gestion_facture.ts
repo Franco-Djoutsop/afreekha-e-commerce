@@ -1,4 +1,5 @@
 import { sequelize } from "../config/database";
+import Adresse from "../models/Adresse";
 import Article from "../models/Article";
 import CommandArticle from "../models/CommandArticle";
 import Commande from "../models/Commande";
@@ -49,8 +50,15 @@ const GestionFacture = {
                     attributes: ['lien'],
                   }
                 ],
-                as: 'Article',
-              }      
+                as: 'articles',
+              },
+              {
+                include: [
+                  {
+                    model: Adresse
+                  }
+                ]
+              }    
             ]
           });
         
@@ -59,7 +67,7 @@ const GestionFacture = {
 
     async getFactureOfUser(offset: number, idUser: number){
         const facturesOfUser = await Commande.findAll({
-            limit: 15,
+            limit: 30,
             offset: offset,
             where: {idUser: idUser},
             include: [
@@ -72,6 +80,7 @@ const GestionFacture = {
               {
                 model: Article,
                  // INNER JOIN avec Article
+              
                 through: {
                   attributes: ['quantite'],
                   as: "total_article"
@@ -82,7 +91,7 @@ const GestionFacture = {
                     attributes: ['lien']
                   },
                 ],
-                as: 'Article',
+                as: 'articles',
               }
               
             ],
