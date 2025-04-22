@@ -53,11 +53,7 @@ const GestionFacture = {
                 as: 'articles',
               },
               {
-                include: [
-                  {
-                    model: Adresse
-                  }
-                ]
+                 model: Adresse
               }    
             ]
           });

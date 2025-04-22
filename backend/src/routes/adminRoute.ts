@@ -144,7 +144,7 @@ routerAdmin.delete("/image/:id", ImageController.destroy);
 routerAdmin.put("/facture",validateToken, crypt.decode, FactureController.changeStatus);
 routerAdmin.get(
   "/facture/:offset",
-  validateToken,
+  //validateToken,
   FactureController.getFactureWithArticleUser
 );
 routerAdmin.post("/facture", crypt.decode, FactureController.create);

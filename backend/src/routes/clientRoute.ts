@@ -268,7 +268,7 @@ router.route("/users/reset-password").post(crypt.decode, resetPassword);
  */
 
 router.route("/users").post(userValidationRules, validate, register);
-router.route("/registerByUser").post(registerByUser);
+router.route("/registerByUser").post(crypt.decode, registerByUser);
 
 router.route("/users/me").get(validateToken, getUserRole);
 
@@ -400,7 +400,7 @@ router.get("/article-details/:id", ArticleController.getOne);
  */
 
 router.delete("/adresse/:id", AdresseController.delete);
-router.post("/adresse", adresseValidation, AdresseController.create);
+router.post("/adresse",validateToken, crypt.decode, adresseValidation, AdresseController.create);
 router.put("/adresse", updateArticleValidation, AdresseController.update);
 
 router.get("/article/:offset", ArticleController.getAll);

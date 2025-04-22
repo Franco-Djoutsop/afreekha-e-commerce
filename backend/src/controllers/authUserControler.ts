@@ -61,7 +61,12 @@ const registerByUser = asyncHandler(async (req: Request, res: Response) => {
   const { nom, prenom, date_naissance, email, tel, mot_de_passe } = req.body;
   const hashpassword = await bcrypt.hash(mot_de_passe, 10);
   const exixtUSer = await User.findOne({
-    where: { email: email },
+    where: {
+      [Op.or]: [
+        { email: email },
+        { tel: tel },
+      ],
+    },
   });
 
   try {
@@ -75,9 +80,13 @@ const registerByUser = asyncHandler(async (req: Request, res: Response) => {
         mot_de_passe: hashpassword,
       });
       res.status(201).json({ reps: user, done: true });
+    }else if (exixtUSer.tel == tel) {
+      res.status(404).json({
+        message: "Ce numéro est déja utilisé , veuillez le changer !!",
+      });
     } else {
       res.status(404).json({
-        message: "L'utilisateur existe deja , veuillez vous connecter !!",
+        message: "L'utilisateur existe deja avec cette adresse mail, Veuillez vous connecter !!",
       });
     }
   } catch (error) {
@@ -226,14 +235,15 @@ const sendEmail = asyncHandler(async (req: Request, res: Response) => {
       subject: "Renitialisation du mot de passe",
       text: `Voici votre code de réinitialisation : ${codeOtp}`,
     });
-  } catch (error) {
-    res.status(500).json({ message: `une erreur s'est produite: \n ${error}` });
-  }
+ 
   console.log("hello");
 
   res
     .status(200)
-    .json({ message: "Email de réinitialisation envoyé !", done: true , code: crypt.encode(codeOtp)});
+    .json({ message: "Email de réinitialisation envoyé !", done: true , code: crypt.encode({code: codeOtp})});
+  } catch (error) {
+    res.status(500).json({ message: `une erreur s'est produite: \n ${error}` });
+  }
 });
 
 //@desc reset password
