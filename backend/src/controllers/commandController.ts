@@ -36,6 +36,7 @@ const CommandeController = {
                     commande_toSave.idAdresse = data.idAdresse;
 
                     //verification de l'existence des articles
+                    
                     const verificationRslt = await GestionCommande.verifyArticlesExist(ids);
 
                      // Vérifier les stok
