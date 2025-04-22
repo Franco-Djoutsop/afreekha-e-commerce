@@ -18,6 +18,7 @@ const allUSers = asyncHandler(async (req: Request, res: Response) => {
       include: [
         {
           model: Role,
+          as: "roles",
           through: { attributes: [] },
         },
       ],
@@ -314,7 +315,7 @@ const getUserRole = asyncHandler(async (req: Request, res: Response) => {
     //rechercher le user et inclure ses roles
     const user = await User.findByPk(idUser, {
       attributes: { exclude: ["mot_de_passe"] },
-      include: [{ model: Role, as: "Roles" }],
+      include: [{ model: Role, as: "roles" }],
     });
 
     if (!user) {

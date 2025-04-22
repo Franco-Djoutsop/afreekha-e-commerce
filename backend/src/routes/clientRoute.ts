@@ -170,7 +170,7 @@ router.route("/roles").get(allRoles);
  *        description: Erreur serveur
  *
  */
-router.route("/auth").post(crypt.decode, login);
+router.route("/auth").post(login);
 /**
  * @openapi
  * /api/users/recovery-password:
@@ -403,6 +403,7 @@ router.delete("/adresse/:id", AdresseController.delete);
 router.post("/adresse", adresseValidation, AdresseController.create);
 router.put("/adresse", updateArticleValidation, AdresseController.update);
 
+// router.get("/article/:offset", crypt.decode, ArticleController.getAll);
 router.get("/article/:offset", ArticleController.getAll);
 router.get(
   "/commande/:idUser",
