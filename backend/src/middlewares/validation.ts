@@ -151,7 +151,7 @@ const createCommandeValidation = [
         .isInt({ gt: 0 }).withMessage("L'ID de l'adresse de livraisson doit être un entier positif"),
 
     body('statut')
-        .isIn(['payé', 'En cours']).withMessage("Le statut doit être 'payé' ou 'En cours'"),
+        .isIn(['payé', 'en cours']).withMessage("Le statut doit être 'payé' ou 'en cours'"),
         (req: Request, res: Response, next: NextFunction) => {
           handleValidationErrors(req, res, next);
         }

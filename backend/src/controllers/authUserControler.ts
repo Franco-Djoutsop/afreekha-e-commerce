@@ -63,7 +63,7 @@ const registerByUser = asyncHandler(async (req: Request, res: Response) => {
   const exixtUSer = await User.findOne({
     where: {
       [Op.or]: [
-        { email: email },
+        { email: email.toLowerCase() },
         { tel: tel },
       ],
     },
@@ -75,7 +75,7 @@ const registerByUser = asyncHandler(async (req: Request, res: Response) => {
         nom,
         prenom,
         date_naissance,
-        email,
+        email: email.toLowerCase(),
         tel,
         mot_de_passe: hashpassword,
       });
