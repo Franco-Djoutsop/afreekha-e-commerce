@@ -42,7 +42,7 @@ const register = asyncHandler(async (req: Request, res: Response) => {
         console.log("enregistrement reussie");
         res
           .status(201)
-          .json({ done: true, message: console.log("enregistrement reuissi") });
+          .json({ reps: user, done: true, message: "enregistrement reuissi" });
       }
     } else {
       res.status(400).json({
@@ -129,7 +129,6 @@ const login = asyncHandler(async (req: Request, res: Response) => {
   if (!isMatch) {
     res.status(400);
     throw new Error("Identifiants incorrects");
-  }
   }
 
   // Vérifier si le token secret est défini

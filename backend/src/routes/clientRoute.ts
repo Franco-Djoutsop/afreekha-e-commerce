@@ -237,7 +237,7 @@ router.route("/users/recovery-password").post(sendEmail);
  *      500:
  *        description: Erreur liée au serveur
  */
-router.route("/users/reset-password").post(crypt.decode, resetPassword);
+router.route("/users/reset-password").post(resetPassword);
 /**
  * @openapi
  * /api/users:
@@ -400,7 +400,13 @@ router.get("/article-details/:id", ArticleController.getOne);
  */
 
 router.delete("/adresse/:id", AdresseController.delete);
-router.post("/adresse",validateToken, crypt.decode, adresseValidation, AdresseController.create);
+router.post(
+  "/adresse",
+  validateToken,
+  crypt.decode,
+  adresseValidation,
+  AdresseController.create
+);
 router.put("/adresse", updateArticleValidation, AdresseController.update);
 
 // router.get("/article/:offset", crypt.decode, ArticleController.getAll);
