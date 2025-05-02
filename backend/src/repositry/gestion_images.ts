@@ -148,7 +148,7 @@ const GestionImage = {
             order: [
                 ['idImage', 'DESC']
             ],
-            attributes: ['idImage', 'lien', 'collection', 'position', "featured"],
+            attributes: ['idImage', 'lien', 'collection', 'position', "featured", "createdAt", "updatedAt"],
         }).then((data) => {
             return data;
         }).catch((error) => {
