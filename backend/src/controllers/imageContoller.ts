@@ -112,9 +112,21 @@ const ImageController = {
 
   async getImage(req: Request, res: any) {
     try {
-      const imgData = await GestionImage.getAll();
-      console.log('params', req.query);
-      return res.status(200).json([{data: imgData}]);
+      const imgNbr = await GestionImage.countImage();
+      if(req.query.paginate && req.query.page){
+            const paginate = Number.parseInt(req.query.paginate as string);
+            const page = Number.parseInt(req.query.page as string);
+            const offset = ((page - 1) * paginate);
+            const imgData = await GestionImage.getAll(offset, paginate);
+
+            return res.status(200).json([{data: imgData, total: imgNbr}]);
+      }else{
+        const imgData = await GestionImage.getAll();
+
+        return res.status(200).json([{data: imgData, total: imgNbr}]);
+
+      }
+      
     } catch (error: any) {
       return res.status(400).json([{ message: error.message }]);
     }

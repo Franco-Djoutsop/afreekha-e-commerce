@@ -141,8 +141,24 @@ const GestionImage = {
         return dataRetrieve;
      },
 
-     async getAll(){
-        return await Image.findAll();
+     async getAll(offset?: number, limit?: number){
+        return await Image.findAll({
+            offset: offset ? offset : 0,
+            limit: limit ? limit : 100,
+            order: [
+                ['idImage', 'DESC']
+            ],
+            attributes: ['idImage', 'lien', 'collection', 'position'],
+        }).then((data) => {
+            return data;
+        }).catch((error) => {
+            return error.message;
+        });
+     },
+
+     async countImage(){
+        const data = await Image.count();
+        return data;
      },
 
     async getFeatured(){
