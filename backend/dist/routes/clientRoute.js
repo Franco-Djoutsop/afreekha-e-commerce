@@ -1,56 +1,39 @@
-import express, { Express } from "express";
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = __importDefault(require("express"));
 //<<<<<<< HEAD
-import gest_message from "../controllers/messageController";
-import gest_paiement from "../controllers/paiementController";
-import gest_categorie from "../controllers/categorieController";
-import {
-  addMessage,
-  addpaiement,
-  adresseValidation,
-  adressUpdateValidation,
-  updateArticleValidation,
-} from "../middlewares/validation";
-import { createCommandeValidation } from "../middlewares/validation";
-import { ArticleController } from "../controllers/articleController";
+const messageController_1 = __importDefault(require("../controllers/messageController"));
+const paiementController_1 = __importDefault(require("../controllers/paiementController"));
+const categorieController_1 = __importDefault(require("../controllers/categorieController"));
+const validation_1 = require("../middlewares/validation");
+const validation_2 = require("../middlewares/validation");
+const articleController_1 = require("../controllers/articleController");
 //=======
-import {
-  allUSers,
-  getUserRole,
-  modifyPassword,
-  oneUsersRole,
-  updateUserByUser,
-} from "../controllers/userControler";
-import { userValidationRules } from "../middlewares/validationsRules";
-import { validate } from "../middlewares/validate";
-import { allRoles } from "../controllers/roleControler";
-import {
-  login,
-  register,
-  registerByUser,
-  resetPassword,
-  sendEmail,
-} from "../controllers/authUserControler";
-import { validateToken } from "../middlewares/validateTokenHandler";
+const userControler_1 = require("../controllers/userControler");
+const validationsRules_1 = require("../middlewares/validationsRules");
+const validate_1 = require("../middlewares/validate");
+const roleControler_1 = require("../controllers/roleControler");
+const authUserControler_1 = require("../controllers/authUserControler");
+const validateTokenHandler_1 = require("../middlewares/validateTokenHandler");
 //import { ArticleController } from "../controllers/articleController";
 //>>>>>>> vf1/vf1
-import { CommandeController } from "../controllers/commandController";
-import gest_sous_categorie from "../controllers/sousCategorieController";
-
-import { crypt } from "../config/crypto-js";
+const commandController_1 = require("../controllers/commandController");
+const sousCategorieController_1 = __importDefault(require("../controllers/sousCategorieController"));
+const crypto_js_1 = require("../config/crypto-js");
 //<<<<<<< HEAD
 //=======
 //import { createCommandeValidation } from "../middlewares/validation";
-import { FactureController } from "../controllers/factureController";
-import { HomeController } from "../controllers/homeController";
-import { AdresseController } from "../controllers/adresseController";
-
-const router = express.Router();
-
+const factureController_1 = require("../controllers/factureController");
+const homeController_1 = require("../controllers/homeController");
+const adresseController_1 = require("../controllers/adresseController");
+const router = express_1.default.Router();
 router.route("/").get((req, res) => {
-  res.status(200).json({ message: "displays lists of users" });
+    res.status(200).json({ message: "displays lists of users" });
 });
-router.get("/home-data", HomeController.getHomeData);
-
+router.get("/home-data", homeController_1.HomeController.getHomeData);
 /**
  * @openapi
  * /api/users:
@@ -67,33 +50,22 @@ router.get("/home-data", HomeController.getHomeData);
  *        description: Non autorisé
  */
 // router.route("/users").get(crypt.decode, allUSers);
-router.route("/users").get(allUSers);
-
+router.route("/users").get(userControler_1.allUSers);
 //update user by user
-router.route("/profile").put(validateToken, crypt.decode, updateUserByUser);
-
+router.route("/profile").put(validateTokenHandler_1.validateToken, crypto_js_1.crypt.decode, userControler_1.updateUserByUser);
 //<<<<<<< HEAD
 //categorie
-router.get("/allCategorie", gest_categorie.getCategorie);
-router.get("/sousCategorieOfCategorie/:id", gest_categorie.sousCategorie);
-router.get("/articleOfCategorie/:id", gest_categorie.ArticleOfCategorie);
-
+router.get("/allCategorie", categorieController_1.default.getCategorie);
+router.get("/sousCategorieOfCategorie/:id", categorieController_1.default.sousCategorie);
+router.get("/articleOfCategorie/:id", categorieController_1.default.ArticleOfCategorie);
 //sous categorie
-router.get("/allSousCategorie", gest_sous_categorie.allSousCategorie);
-router.get(
-  "/articleOfSousCategorie/:id",
-  gest_sous_categorie.articleOfSousCategorie
-);
-router.get(
-  "/categorieAndSousCategorie",
-  gest_sous_categorie.categorieAndSousCategorie
-);
-
+router.get("/allSousCategorie", sousCategorieController_1.default.allSousCategorie);
+router.get("/articleOfSousCategorie/:id", sousCategorieController_1.default.articleOfSousCategorie);
+router.get("/categorieAndSousCategorie", sousCategorieController_1.default.categorieAndSousCategorie);
 //message
-router.post("/message", crypt.decode, addMessage, gest_message.createMessage);
-
+router.post("/message", crypto_js_1.crypt.decode, validation_1.addMessage, messageController_1.default.createMessage);
 //paiement
-router.post("/paiement", crypt.decode, addpaiement, gest_paiement.addPaiement);
+router.post("/paiement", crypto_js_1.crypt.decode, validation_1.addpaiement, paiementController_1.default.addPaiement);
 //=======
 /**
  * @openapi
@@ -119,8 +91,7 @@ router.post("/paiement", crypt.decode, addpaiement, gest_paiement.addPaiement);
  *      404:
  *        description: l'utilisateur n'existe pas
  */
-router.route("/usersRoles/:id").get(validateToken, oneUsersRole);
-
+router.route("/usersRoles/:id").get(validateTokenHandler_1.validateToken, userControler_1.oneUsersRole);
 //role route
 /**
  * @openapi
@@ -137,8 +108,7 @@ router.route("/usersRoles/:id").get(validateToken, oneUsersRole);
  *      404:
  *        description: une erreur est survenue
  */
-router.route("/roles").get(allRoles);
-
+router.route("/roles").get(roleControler_1.allRoles);
 //authentification
 /**
  * @openapi
@@ -170,7 +140,7 @@ router.route("/roles").get(allRoles);
  *        description: Erreur serveur
  *
  */
-router.route("/auth").post(login);
+router.route("/auth").post(crypto_js_1.crypt.decode, authUserControler_1.login);
 /**
  * @openapi
  * /api/users/recovery-password:
@@ -198,7 +168,7 @@ router.route("/auth").post(login);
  *      404:
  *        description: Not found
  */
-router.route("/users/recovery-password").post(sendEmail);
+router.route("/users/recovery-password").post(authUserControler_1.sendEmail);
 /**
  * @openapi
  * /api/users/reset-password/{token}:
@@ -237,7 +207,7 @@ router.route("/users/recovery-password").post(sendEmail);
  *      500:
  *        description: Erreur liée au serveur
  */
-router.route("/users/reset-password").post(crypt.decode, resetPassword);
+router.route("/users/reset-password").post(crypto_js_1.crypt.decode, authUserControler_1.resetPassword);
 /**
  * @openapi
  * /api/users:
@@ -266,18 +236,13 @@ router.route("/users/reset-password").post(crypt.decode, resetPassword);
  *        description: Erreur serveur
  *
  */
-
-router.route("/users").post(crypt.decode, userValidationRules, validate, register);
-router.route("/registerByUser").post(crypt.decode, registerByUser);
-
-router.route("/users/me").get(validateToken, getUserRole);
-
+router.route("/users").post(validationsRules_1.userValidationRules, validate_1.validate, authUserControler_1.register);
+router.route("/registerByUser").post(crypto_js_1.crypt.decode, authUserControler_1.registerByUser);
+router.route("/users/me").get(validateTokenHandler_1.validateToken, userControler_1.getUserRole);
 //endpoint change password
-router.route("/password/:id").put(validateToken, crypt.decode, modifyPassword);
+router.route("/password/:id").put(validateTokenHandler_1.validateToken, crypto_js_1.crypt.decode, userControler_1.modifyPassword);
 //>>>>>>> vf1/vf1
-
 //client route
-
 /**
  * @openapi
  * /article-categorie/{id}:
@@ -293,8 +258,7 @@ router.route("/password/:id").put(validateToken, crypt.decode, modifyPassword);
  *      400:
  *        description: id de la categorie indefini
  */
-router.get("/article-categorie/:id", ArticleController.getByCategorie);
-
+router.get("/article-categorie/:id", articleController_1.ArticleController.getByCategorie);
 /**
  * @openapi
  * /article-promo/{offset}:
@@ -324,13 +288,12 @@ router.get("/article-categorie/:id", ArticleController.getByCategorie);
  *              $ref: '#/components/schemas/UsersInputResponse'
  *      400:
  *        description: Données invalides
- *  
+ *
  *      500:
  *        description: Erreur serveur
  *
  */
-router.get("/article-promo/:offset", ArticleController.getArticlesOnPromo);
-
+router.get("/article-promo/:offset", articleController_1.ArticleController.getArticlesOnPromo);
 /**
  * @openapi
  * /article-details/{id}:
@@ -369,8 +332,7 @@ router.get("/article-promo/:offset", ArticleController.getArticlesOnPromo);
  *        description: Erreur serveur
  *
  */
-router.get("/article-details/:id", ArticleController.getOne);
-
+router.get("/article-details/:id", articleController_1.ArticleController.getOne);
 /**
  * @openapi
  * /article/{offset}:
@@ -398,25 +360,13 @@ router.get("/article-details/:id", ArticleController.getOne);
  *        description: Erreur serveur
  *
  */
-
-router.delete("/adresse/:id", AdresseController.delete);
-router.post("/adresse",validateToken, crypt.decode, adresseValidation, AdresseController.create);
-router.put("/adresse", updateArticleValidation, AdresseController.update);
-
-router.get("/article/:offset", ArticleController.getAll);
-router.get(
-  "/commande/:idUser",
-
-  CommandeController.getCommad
-);
-router.delete("/commande/:id", CommandeController.delete);
-router.post(
-  "/commande",
-  validateToken,
-  crypt.decode,
-  createCommandeValidation,
-  CommandeController.create
-);
-router.get("/my-facture/:offset/:idUser", FactureController.getFactureOfUser);
+router.delete("/adresse/:id", adresseController_1.AdresseController.delete);
+router.post("/adresse", validateTokenHandler_1.validateToken, crypto_js_1.crypt.decode, validation_1.adresseValidation, adresseController_1.AdresseController.create);
+router.put("/adresse", validation_1.updateArticleValidation, adresseController_1.AdresseController.update);
+router.get("/article/:offset", articleController_1.ArticleController.getAll);
+router.get("/commande/:idUser", commandController_1.CommandeController.getCommad);
+router.delete("/commande/:id", commandController_1.CommandeController.delete);
+router.post("/commande", validateTokenHandler_1.validateToken, crypto_js_1.crypt.decode, validation_2.createCommandeValidation, commandController_1.CommandeController.create);
+router.get("/my-facture/:offset/:idUser", factureController_1.FactureController.getFactureOfUser);
 //>>>>>>> vf1/vf1
-export default router;
+exports.default = router;

@@ -41,23 +41,41 @@ const GestionImage = {
             return "";
     },
 
-    async destroy(id: number){
-        const getImage = await Image.findByPk(id);
-        if(getImage){
-
-            const resp = await Image.destroy({
-                where: {
-                    idImage : id
-                }
-            });
-            if(resp){
-                if(await DeleteImg(getImage.lien)){
-                    return resp;
-                }
-            }
-            return null;
+    async destroyMultiple(ids: number[]) {
+        // Récupérer toutes les images correspondant aux IDs
+        const images = await Image.findAll({
+            where: {
+                idImage: ids,
+            },
+        });
+    
+        if (images.length === 0) {
+            throw new Error("Aucune image trouvée pour les IDs fournis.");
         }
-      return null;  
+    
+        // Supprimer les fichiers associés aux images
+        for (const image of images) {
+            await DeleteImg(image.lien); // Supprime physiquement l'image
+        }
+    
+        // Supprimer les enregistrements dans la base de données
+        const resp = await Image.destroy({
+            where: {
+                idImage: ids,
+            },
+        });
+    
+        return {
+            deletedCount: resp,
+            deletedImages: images,
+        };
+    },
+
+    async destroyOne(id: number){
+        const resp = await Image.destroy({
+            where: {idImage: id}
+        });
+        return resp;
     },
 
     async articleImageAssigment(idArticle: number, idImage: number[]){

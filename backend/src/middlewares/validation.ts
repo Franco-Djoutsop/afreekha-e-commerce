@@ -94,11 +94,21 @@ const updateArticleValidation = [
 ];
 
 const createImgValidation = [
-  body("featured").notEmpty().withMessage(" article en vedette pas fourni !"),
+  body("featured").notEmpty().withMessage(" article en vedette pas fourni !").custom((value, { req }) => {
+    if (value === true) {
+      if (!req.body.collection || !req.body.position) {
+        throw new Error(
+          "Si l'image est définie en vedette, la position et la collection doivent également être définies !"
+        );
+      }
+    }
+    return true;
+  }),
   body("base64Encryption")
     .notEmpty()
     .withMessage("Données de l'image non défini"),
     body("contentType").notEmpty().withMessage(" Format du fichier non defini !"),
+
     (req: Request, res: Response, next: NextFunction) => {
       handleValidationErrors(req, res, next);
     },
@@ -127,7 +137,16 @@ const adressUpdateValidation = [
 const updateArticleImg = [
   body("collection").notEmpty().withMessage("Collection obligatoire"),
   body("postition").notEmpty().withMessage("ID non fourni !"),
-  body("featured").notEmpty().withMessage("En vedette ?"),
+  body("featured").notEmpty().withMessage(" article en vedette pas fourni !").custom((value, { req }) => {
+    if (value === true) {
+      if (!req.body.collection || !req.body.position) {
+        throw new Error(
+          "Si l'image est définie en vedette, la position et la collection doivent également être définies !"
+        );
+      }
+    }
+    return true;
+  }),
   body("idImage").notEmpty().withMessage("ID non fourni !"),
   (req: Request, res: Response, next: NextFunction) => {
     handleValidationErrors(req, res, next);

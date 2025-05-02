@@ -65,7 +65,9 @@ routerAdmin.put(
 );
 routerAdmin.post("/image", createImgValidation, ImageController.create);
 routerAdmin.put("/image", updateArticleImg, ImageController.update);
-routerAdmin.delete("/image/:id", ImageController.destroy);
+routerAdmin.post("/image-delete-collection", ImageController.destroy);
+routerAdmin.delete("/image/:id", ImageController.destroyOne);
+routerAdmin.get("/image", ImageController.getImage);
 
 //categorie
 routerAdmin.post(
@@ -141,7 +143,7 @@ routerAdmin.post("/image", createImgValidation, ImageController.create);
 routerAdmin.put("/image", updateArticleImg, ImageController.update);
 routerAdmin.delete("/image/:id", ImageController.destroy);
 
-routerAdmin.put("/facture",validateToken, crypt.decode, FactureController.changeStatus);
+routerAdmin.put("/facture", crypt.decode, FactureController.changeStatus);
 routerAdmin.get(
   "/facture/:offset",
   //validateToken,

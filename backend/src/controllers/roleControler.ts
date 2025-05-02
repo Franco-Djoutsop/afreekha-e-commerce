@@ -21,15 +21,15 @@ const createRole = asyncHandler(async (req: Request, res: Response) => {
 const allRoles = asyncHandler(async (req: Request, res: any) => {
   try {
     const roles = await Role.findAll({
-      attributes: ["idRole", "name", "createdAt"],
+      attributes: ["idRole", "nom", "createdAt"],
     });
     if (roles[0] != null) {
       return res.status(200).json({ reps: roles, done: true });
     }
-    return res.status(404).json({ message: "aucun role trouve" });
+    return res.status(404).json({ message: "Aucun role trouve" });
   } catch (error) {
     console.log(error);
-    return res.status(500).json({ message: "erreur de serveur" });
+    return res.status(500).json({ message: "Erreur de serveur" });
   }
 });
 /*
@@ -70,7 +70,8 @@ const deleteRole = asyncHandler(async (req: Request, res: Response) => {
     throw new Error("aucun role trouve");
   }
   await role.destroy();
-  res.status(204).json({ actionDone: true });
+  res.status(200).json({ actionDone: true });
+  return;
 });
 
 //@desc read a role with all users

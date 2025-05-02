@@ -1,11 +1,8 @@
 import Article from "../models/Article";
 import { Articles } from "./objets/article";
 import Image from "../models/image";
-import { fn, col, literal, Sequelize, QueryTypes, Op } from "sequelize";
+import { QueryTypes, Op } from "sequelize";
 import {sequelize} from "../config/database"; // Adjust the path as necessary
-import Commande from "../models/Commande";
-import CommandArticle from "../models/CommandArticle";
-import UserRole from "../models/userRoles";
 import Categorie from "../models/categorie";
 import SousCategorie from "../models/SousCategorie";
 
@@ -318,9 +315,31 @@ const GestionArticle = {
           } catch (error: any) {
               await transaction.rollback();
               return { success: false, message: error.message };
-          }
-      }
+          }          
+      },
       
+          async updateMultipleArticlesQtyAdd(articles: { idArticle: number, qty: number }[], dbArticles: Article[]) {
+            const transaction = await sequelize.transaction();
+        
+            try {
+               
+                // Mettre à jour les quantités
+                for (const { idArticle, qty } of articles) {
+                    const article = dbArticles.find(a => a.idArticle === idArticle);
+                   if(article){
+                    article.quantite += qty;
+                    await article.save({ transaction });
+                   }
+                }
+        
+                await transaction.commit();
+                return { success: true, message: "Stock mis à jour avec succès" };
+        
+            } catch (error: any) {
+                await transaction.rollback();
+                return { success: false, message: error.message };
+            }
+          }
 
 };
 

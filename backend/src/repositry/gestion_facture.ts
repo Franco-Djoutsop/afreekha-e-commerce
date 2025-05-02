@@ -26,9 +26,7 @@ const GestionFacture = {
 
     async getFactureCommandUser(offset: number){
         const articlesWithFacturesAndUsers = await Commande.findAll({
-            offset: offset,
-            limit: 15,
-            
+            offset: offset,            
             order: [
                 ['idCommande', 'DESC']
             ],
@@ -41,7 +39,7 @@ const GestionFacture = {
                 model: Article,
                 attributes: ["idArticle", "nom_article", "prix"],
                 through: {
-                  attributes: ['quantite'],
+                  attributes: ['quantite', 'prix_achat', 'prix_total'],
                   as: "total_article" // Récupérer la quantité de chaque article commandé
                 },
                 include: [

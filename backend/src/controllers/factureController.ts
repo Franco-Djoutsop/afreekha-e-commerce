@@ -2,6 +2,8 @@ import { Request } from "express";
 import { GestionFacture } from "../repositry/gestion_facture";
 import { crypt } from "../config/crypto-js";
 import { GestionCommande } from "../repositry/gestion_commande";
+import { GestionCommandeArticle } from "../repositry/gestion_commandeArticle";
+import { GestionArticle } from "../repositry/gestion_articles";
 
 const FactureController = {
   //@route /api/admin/facture
@@ -29,11 +31,31 @@ const FactureController = {
             if(!req.body.errors){
                 const { status, commandeId } = req.body;
 
-                const resp = await GestionCommande.changeStatus(status, commandeId);
                 if(status == "payé"){
-                    
+                    const resp = await GestionCommande.changeStatus(status, commandeId);
+                    return resp[0] != 0 ? res.status(200).json([{message: "Statut de la facture changé en : " + status}]): res.status(200).json([]);
+
+                }else{
+
+                   const commandeArticle = await GestionCommandeArticle.getCommandArticle(commandeId);
+                   let article : {idArticle: number, qty: number}[]=[];
+                    let ids: number[] = [];
+
+                   commandeArticle.forEach((ca: any) => {
+                          article.push({idArticle: ca.idArticle, qty: ca.quantite});
+                          ids.push(ca.idArticle);
+                   });
+                   const verificationRslt = await GestionCommande.verifyArticlesExist(ids);
+
+                   const updateStock = await GestionArticle.updateMultipleArticlesQtyAdd(article, verificationRslt.articles);
+
+                     if(updateStock.success){
+                          await GestionCommande.supprimer(commandeId);
+                     }
+
+                   res.status(200).json([{message: "Statut de la facture changé en : " + status}]);
+                   return;
                 }
-                return resp[0] != 0 ? res.status(200).json([{message: "Statut de la facture changé en : " + status}]): res.status(200).json([]);
             }
         } catch (error: any) {
             return res.status(400).json([{message: error.message}]);

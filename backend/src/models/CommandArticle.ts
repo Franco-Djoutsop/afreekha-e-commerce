@@ -8,6 +8,8 @@ class CommandArticle extends Model {
   public idCommande!: number;
   public idArticle!: number;
   public quantite!: string;
+  public prix_achat!: number;
+  public prix_total!: number;
   public date!: Date;
 }
 
@@ -34,6 +36,14 @@ CommandArticle.init(
         model: Article,
         key: "idArticle",
       },
+    },
+    prix_achat: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    prix_total: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
     },
     quantite : {
       type: DataTypes.INTEGER,

@@ -40,9 +40,13 @@ const register = asyncHandler(async (req: Request, res: Response) => {
       });
       if (user !== null && userrole !== null) {
         console.log("enregistrement reussie");
+        let role = await Role.findAll({
+          where: { idRole: idRole },
+          attributes: ["idRole", "nom"],
+        });
         res
           .status(201)
-          .json({ done: true, message: console.log("enregistrement reuissi") });
+          .json({ done: true, user: user, role: role, message: console.log("enregistrement reuissi") });
       }
     } else {
       res.status(400).json({
@@ -135,7 +139,7 @@ const login = asyncHandler(async (req: Request, res: Response) => {
 
   // Vérifier le mot de passe
   const isMatch = await bcrypt.compare(mot_de_passe, user.mot_de_passe);
-  if (isMatch) {
+  if (!isMatch) {
     res.status(400);
     throw new Error("Identifiants incorrects");
   }
@@ -271,14 +275,18 @@ const resetPassword = asyncHandler(async (req: Request, res: Response) => {
 
   // Mettre à jour le mot de passe et supprimer le token
   try {
+    console.log('data', newPassword)
+
     await user.update({
       mot_de_passe: hashedPassword,
       resetToken: null,
       resetTokenExpires: null,
     });
     res.json({ message: "Mot de passe réinitialisé avec succès", done: true });
+    return;
   } catch (error) {
     res.status(400).json({ message: `Une Erreur s'est produite : ${error}` });
+    return;
   }
 });
 

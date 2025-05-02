@@ -19,6 +19,7 @@ const allUSers = asyncHandler(async (req: Request, res: Response) => {
         {
           model: Role,
           through: { attributes: [] },
+          as: "roles"
         },
       ],
     });
@@ -71,7 +72,7 @@ const infosUsers = asyncHandler(async (req: Request, res: Response) => {
 const updateUsers = asyncHandler(async (req: Request, res: Response) => {
   const id = req.params.id;
   const { nom, prenom, date_naissance, email, tel, mot_de_passe } = req.body;
-  const idRole = req.body.idRole;
+  const idRole = req.body.role_update;
   const user = await User.findByPk(id);
   const hashpassword = await bcrypt.hashSync(mot_de_passe, 10);
   if (!user) {
@@ -158,7 +159,7 @@ const deleteUsers = asyncHandler(async (req: Request, res: any) => {
       return res.status(400).json({ actionDone: false });
     }
     await user.destroy();
-    return res.status(204).json({ actionDone: true });
+    return res.status(200).json({ actionDone: true });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: error });
@@ -314,7 +315,7 @@ const getUserRole = asyncHandler(async (req: Request, res: Response) => {
     //rechercher le user et inclure ses roles
     const user = await User.findByPk(idUser, {
       attributes: { exclude: ["mot_de_passe"] },
-      include: [{ model: Role, as: "Roles" }],
+      include: [{ model: Role, as: "roles" }],
     });
 
     if (!user) {

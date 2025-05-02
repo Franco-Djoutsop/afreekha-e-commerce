@@ -20,7 +20,7 @@ const CommandeController = {
                 let commande_toSave : Commande = new Commande();
                 let articlesID: {idArticle: number, qty: number}[] = [];
                 let ids: number[] = [];
-                let commande_article: {idArticle: number, idCommande: number, quantite: number}[] = [];
+                let commande_article: {idArticle: number, idCommande: number, quantite: number, prix_achat: number, prix_total: number}[] = [];
 
                 if(data.article.length != 0){
                     let quantite_articles = data.article.length;
@@ -71,9 +71,26 @@ const CommandeController = {
                             const resp = await GestionCommande.create(commande_toSave.dataValues);
 
                             if(resp){
-                                data.article.forEach((art: {product_id: number,quantity: number }) => {
+                                data.article.forEach((art: {product_id: number,quantity: number}) => {
+                                    
                                     articlesID.push({idArticle: art.product_id, qty: art.quantity});
-                                    commande_article.push({idArticle: art.product_id, idCommande: resp.idCommande, quantite: art.quantity})
+                                    
+                                    const db_article = verificationRslt.articles.filter((article: any) => article.idArticle === art.product_id)[0];
+                                    let price_promo: number = db_article.prix;
+
+                                    if(db_article.promo && db_article.pourcentage_promo){
+                                        price_promo = db_article.promo ? db_article.prix - ((db_article.prix* db_article.pourcentage_promo)/100) : db_article.prix;
+
+                                    }
+                                    
+                                    commande_article.push(
+                                        {
+                                            idArticle: art.product_id,
+                                            idCommande: resp.idCommande,
+                                            quantite: art.quantity,
+                                            prix_achat: price_promo,
+                                            prix_total: (price_promo * art.quantity)
+                                        })
                                 });
     
                             const commandPivotInsertion = await GestionCommandeArticle.create(commande_article as any[]);

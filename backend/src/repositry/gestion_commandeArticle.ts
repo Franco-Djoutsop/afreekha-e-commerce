@@ -13,6 +13,14 @@ const GestionCommandeArticle = {
         });
 
         return commandArticles;
+    },
+
+    async deleteCommandeArticle(idCommande: number){
+        const commandArticle = await CommandArticle.destroy({
+            where: {idCommande: idCommande}
+        });
+
+        return commandArticle;
     }
 }
 

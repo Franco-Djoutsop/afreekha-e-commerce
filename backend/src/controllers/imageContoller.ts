@@ -27,13 +27,13 @@ const ImageController = {
         //>>>>>>> vf0/vf0
 
         return typeof resp != "string"
-          ? res.status(200).json([{ data: crypt.encode(resp.dataValues) }])
+          ? res.status(200).json([{ data: (resp.dataValues) }])
           : res.status(200).json([]);
       } else {
         return res
           .status(400)
           .json([
-            { message: "Informations manquantes pour continuer l'opération !" },
+            { message: "Informations manquantes pour continuer l'opération ! ", msg: req.body.errors},
           ]);
       }
     } catch (error: any) {
@@ -80,32 +80,41 @@ const ImageController = {
   //@urlparams :true
   async destroy(req: Request, res: any) {
     try {
-      if (req.params.id) {
-        const resp = await GestionImage.destroy(Number(req.params.id));
-
+      const ids = req.body.ids; 
+      
+      if (Array.isArray(ids) && ids.length > 0) {
+        const resp = await GestionImage.destroyMultiple(ids);
+  
         const message =
-          resp == 0 || !resp
+          resp.deletedCount == 0 || !resp
             ? "Aucune Image supprimée"
-            : "Suppréssion éffectuer avec succés !";
-
+            : `${resp.deletedCount} image(s) supprimée(s) avec succès !`;
+  
         return res
           .status(200)
-          .json([{ done: resp != 0, affectedRows: resp, message: message }]);
+          .json([{ done: resp.deletedCount != 0, affectedRows: resp, message: message }]);
       } else {
-        return res
-          .status(400)
-          .json([{ message: "ID d'article introuvable !" }]);
+        res.status(400).json([{message: "Aucun ID fourni pour la suppression."}]);
+        return;
       }
     } catch (error: any) {
       return res.status(400).json([{ message: error.message }]);
     }
   },
 
+  async destroyOne(req : Request, res: any){
+      try {
+        return res.status(200).json([{done: GestionImage.destroyOne(Number.parseInt(req.params.id)) }])
+      } catch (error: any) {
+        return res.status(400).json([{ message: error.message }]);    
+      }
+  },
+
   async getImage(req: Request, res: any) {
     try {
       const imgData = await GestionImage.getAll();
-
-      return res.status(200).json(imgData);
+      console.log('params', req.query);
+      return res.status(200).json([{data: imgData}]);
     } catch (error: any) {
       return res.status(400).json([{ message: error.message }]);
     }
