@@ -179,16 +179,23 @@ const ArticleController = {
         const params = req.query;
         const attributesFilter = typeof params.attribute === "string" ? params.attribute.split(",") : undefined;
         const categories = typeof params.category === "string" ? params.category.split(",") : undefined;
+        const limit = typeof params.paginate === "string" ? Number.parseInt(params.paginate) : undefined;
+        const search = typeof params.search === "string" ? params.search : undefined;
 
         if(attributesFilter || categories) {
+          console.log('load params cat and attr', params);
           
           const filter = {
             attribute: attributesFilter,
-            categories: categories
+            categories: categories,
+            limit: limit
           }
 
           if(params.isUniqueFilter){
             //filtre sur les sous categories
+            if(!categories){
+              return res.status(400).json([{ message: "Aucune catégorie sélectionnée !" }]);
+            }
             const sousCategorieIDs = await SousCategorie.findAll({
               where: {
                 nom: categories
@@ -204,8 +211,9 @@ const ArticleController = {
           }
          
         }else{
-          data = await GestionArticle.getAll(Number.parseInt(req.params.offset));
+          console.log('load params else search', params);
 
+          data = await GestionArticle.getByName((search as string));
         }
         
 
@@ -217,7 +225,7 @@ const ArticleController = {
         const params = req.query;
 
         const data = await GestionArticle.getAll(0);
-
+        console.log('load params', params);
         return data.length != 0
           ? res.status(200).json([{ data: crypt.encode(data) }])
           : res.status(200).json([]);

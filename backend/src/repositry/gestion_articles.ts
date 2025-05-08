@@ -190,6 +190,24 @@ const GestionArticle = {
     return data;
   },
 
+  async getByName(nom_article: string){
+    const data = await Article.findAll({
+      where: {
+        nom_article: {
+          [Op.like]: `%${nom_article}%`,
+        },
+      },
+      include: [
+        {
+          model: Image,
+          required: true,
+        },
+      ],
+    });
+
+    return data;
+  },
+
 
         async getArticleOnFeatured(offset: number){
             const data = await Article.findAll(
@@ -323,7 +341,7 @@ const GestionArticle = {
         
             try {
                
-                // Mettre à jour les quantités
+                // Mettre à jou les quantite
                 for (const { idArticle, qty } of articles) {
                     const article = dbArticles.find(a => a.idArticle === idArticle);
                    if(article){
