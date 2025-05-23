@@ -55,7 +55,7 @@ const GestionAdresse = {
         attributes: { exclude: ["mot_de_passe"] },
         include: [{ model: Role, as: "roles" }],
       });
-      console.log("idUser dans quel infos:", idUser);
+      console.log("idUser dans getUserInfos:", idUser);
       if (!user) {
         throw new Error("Utilisateur non trouvé");
       }
