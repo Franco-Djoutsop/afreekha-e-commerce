@@ -113,6 +113,9 @@ const login = asyncHandler(async (req: Request, res: Response) => {
   }
 
   console.log("first");
+  try {
+    
+  
   const user = await User.findOne({
     where: {
       ...(email ? { email } : {}),
@@ -136,6 +139,7 @@ const login = asyncHandler(async (req: Request, res: Response) => {
     res.status(400);
     throw new Error("Utilisateur non trouvé");
   }
+  
 
   // Vérifier le mot de passe
   const isMatch = await bcrypt.compare(mot_de_passe, user.mot_de_passe);
@@ -201,6 +205,10 @@ const login = asyncHandler(async (req: Request, res: Response) => {
     reps: reps,
     done: true,
   });
+} catch (error: any) {
+    console.log('error', error.message);
+    throw new Error(error);
+}
 });
 
 //@desc recovery password
