@@ -74,12 +74,18 @@ const createArticleValidation = [
   body("featured").notEmpty().withMessage("Article en vedette ? Non defini"),
   body("quantite").notEmpty().withMessage("Quantité de l'article non défini"),
   body("caracteristiques").notEmpty().withMessage("Caractéristique non défini"),
-  body("pourcentage_promo").notEmpty().withMessage("Pourcentage de promotion non défini"),
+  body("pourcentage_promo")
+    .notEmpty()
+    .withMessage("Pourcentage de promotion non défini"),
   body("garantie").notEmpty().withMessage("Veuillez definir la garantie"),
-  body("couleur").notEmpty().withMessage("Veuillez definir la couleur !"),
-  body("taille").notEmpty().withMessage("Veuillez definir la taille"),
-  body("imgsID").isArray({min: 1}).withMessage("Veuillez fourni les ids des images pour cette article !"),
-  body("idCategorie").notEmpty().withMessage("Veuillez choisir une categorie pour cet article"),
+  // body("couleur").notEmpty().withMessage("Veuillez definir la couleur !"),
+  // body("taille").notEmpty().withMessage("Veuillez definir la taille"),
+  body("imgsID")
+    .isArray({ min: 1 })
+    .withMessage("Veuillez fourni les ids des images pour cette article !"),
+  body("idCategorie")
+    .notEmpty()
+    .withMessage("Veuillez choisir une categorie pour cet article"),
   (req: Request, res: Response, next: NextFunction) => {
     handleValidationErrors(req, res, next);
   },
@@ -98,10 +104,10 @@ const createImgValidation = [
   body("base64Encryption")
     .notEmpty()
     .withMessage("Données de l'image non défini"),
-    body("contentType").notEmpty().withMessage(" Format du fichier non defini !"),
-    (req: Request, res: Response, next: NextFunction) => {
-      handleValidationErrors(req, res, next);
-    },
+  body("contentType").notEmpty().withMessage(" Format du fichier non defini !"),
+  (req: Request, res: Response, next: NextFunction) => {
+    handleValidationErrors(req, res, next);
+  },
 ];
 
 const adresseValidation = [
@@ -115,7 +121,7 @@ const adresseValidation = [
   (req: Request, res: Response, next: NextFunction) => {
     handleValidationErrors(req, res, next);
   },
-]
+];
 
 const adressUpdateValidation = [
   ...adresseValidation,
@@ -123,7 +129,7 @@ const adressUpdateValidation = [
   (req: Request, res: Response, next: NextFunction) => {
     handleValidationErrors(req, res, next);
   },
-]
+];
 const updateArticleImg = [
   body("collection").notEmpty().withMessage("Collection obligatoire"),
   body("postition").notEmpty().withMessage("ID non fourni !"),
@@ -135,36 +141,47 @@ const updateArticleImg = [
 ];
 
 const createCommandeValidation = [
-     body('article')
-        .isArray({ min: 1 }).withMessage("Le champ 'article' doit être un tableau contenant au moins un article"),
+  body("article")
+    .isArray({ min: 1 })
+    .withMessage(
+      "Le champ 'article' doit être un tableau contenant au moins un article"
+    ),
 
-    body('article.*.product_id')
-        .isInt({ gt: 0 }).withMessage("L'ID de l'article doit être un entier positif"),
+  body("article.*.product_id")
+    .isInt({ gt: 0 })
+    .withMessage("L'ID de l'article doit être un entier positif"),
 
-    body('article.*.quantity')
-        .isInt({ gt: 0 }).withMessage("La quantité doit être un entier positif"),
-    
-    body('idUser')
-        .isInt({ gt: 0 }).withMessage("L'ID de l'utilisateur doit être un entier positif"),
-    
-    body('idAdresse')
-        .isInt({ gt: 0 }).withMessage("L'ID de l'adresse de livraisson doit être un entier positif"),
+  body("article.*.quantity")
+    .isInt({ gt: 0 })
+    .withMessage("La quantité doit être un entier positif"),
 
-    body('statut')
-        .isIn(['payé', 'En cours']).withMessage("Le statut doit être 'payé' ou 'En cours'"),
-        (req: Request, res: Response, next: NextFunction) => {
-          handleValidationErrors(req, res, next);
-        }
-      
-]
+  body("idUser")
+    .isInt({ gt: 0 })
+    .withMessage("L'ID de l'utilisateur doit être un entier positif"),
 
-const createInvoiceValidation = [
-  body("idCommande").notEmpty().withMessage("ID de la commande est obligatoire !"),
-  body('idArticles').notEmpty().withMessage("tableau d'id d'article est obligatoire"),
+  body("idAdresse")
+    .isInt({ gt: 0 })
+    .withMessage("L'ID de l'adresse de livraisson doit être un entier positif"),
+
+  body("statut")
+    .isIn(["payé", "En cours"])
+    .withMessage("Le statut doit être 'payé' ou 'En cours'"),
   (req: Request, res: Response, next: NextFunction) => {
     handleValidationErrors(req, res, next);
   },
-]
+];
+
+const createInvoiceValidation = [
+  body("idCommande")
+    .notEmpty()
+    .withMessage("ID de la commande est obligatoire !"),
+  body("idArticles")
+    .notEmpty()
+    .withMessage("tableau d'id d'article est obligatoire"),
+  (req: Request, res: Response, next: NextFunction) => {
+    handleValidationErrors(req, res, next);
+  },
+];
 
 const changeInvoiceStatus = [
   body("status").notEmpty().withMessage("Nouveau status non fourni !"),
@@ -172,7 +189,7 @@ const changeInvoiceStatus = [
   (req: Request, res: Response, next: NextFunction) => {
     handleValidationErrors(req, res, next);
   },
-]
+];
 
 export {
   createArticleValidation,
@@ -180,17 +197,14 @@ export {
   updateArticleImg,
   createImgValidation,
   createCommandeValidation,
-
   addcategorie,
   updatecategorie,
   createSousCategorie,
   updatesousCategorie,
   addMessage,
   addpaiement,
- 
   changeInvoiceStatus,
   createInvoiceValidation,
-
   adresseValidation,
-  adressUpdateValidation
+  adressUpdateValidation,
 };

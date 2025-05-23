@@ -69,57 +69,98 @@ const infosUsers = asyncHandler(async (req: Request, res: Response) => {
 //@desc Update a user
 //@route PATCH /api/admin/users/:id
 //@access public
+// const updateUsers = asyncHandler(async (req: Request, res: Response) => {
+//   const id = req.params.id;
+//   console.log("enter first");
+//   const { nom, prenom, date_naissance, email, tel, mot_de_passe } = req.body;
+//   const idRole = req.body.idRole;
+//   const user = await User.findByPk(id);
+//   const hashpassword = await bcrypt.hash(mot_de_passe, 10);
+//   if (!user) {
+//     res.status(400);
+//     throw new Error("aucun utilisateur trouve");
+//   }
+
+//   try {
+//     console.log("enter second");
+//     //update section
+//     user.nom = nom || user.nom;
+//     user.prenom = prenom || user.prenom;
+//     user.date_naissance = date_naissance || user.date_naissance;
+//     user.email = email || user.email;
+//     user.tel = tel || user.tel;
+//     user.mot_de_passe = hashpassword || user.mot_de_passe;
+
+//     //mise a jour des roles(ajout d'un/des nouveau.x role.s ou suppresion de.s autre role.s)
+//     const existingRole = await UserRole.findAll({
+//       where: {
+//         idUser: id,
+//       },
+//     });
+
+//     const newROle = idRole.filter(
+//       (role: any) =>
+//         !existingRole.find((existingRole) => existingRole.idRole === role)
+//     );
+//     const roleToRemove = existingRole.filter(
+//       (existingRole) => !idRole.some((id: any) => id === existingRole.idRole)
+//     );
+
+//     await Promise.all([
+//       ...newROle.map((role: any) =>
+//         UserRole.create({ idRole: role, idUser: id })
+//       ),
+//       ...roleToRemove.map((role: any) =>
+//         UserRole.destroy({
+//           where: {
+//             idRole: role.idRole,
+//             idUser: id,
+//           },
+//         })
+//       ),
+//     ]);
+//     await user.save();
+//     res.status(200).json({ reps: user, done: true });
+//   } catch (error) {
+//     res.status(400).json(`Une erreur s'est produite : \n ${error}`);
+//   }
+// });
 const updateUsers = asyncHandler(async (req: Request, res: Response) => {
-  const id = req.params.id;
-  const { nom, prenom, date_naissance, email, tel, mot_de_passe } = req.body;
-  const idRole = req.body.idRole;
-  const user = await User.findByPk(id);
-  const hashpassword = await bcrypt.hashSync(mot_de_passe, 10);
-  if (!user) {
-    res.status(400);
-    throw new Error("aucun utilisateur trouve");
-  }
   try {
-    //update section
-    user.nom = nom || user.nom;
-    user.prenom = prenom || user.prenom;
-    user.date_naissance = date_naissance || user.date_naissance;
-    user.email = email || user.email;
-    user.tel = tel || user.tel;
-    user.mot_de_passe = hashpassword || user.mot_de_passe;
+    const id = req.params.id;
+    console.log("Début de la mise à jour pour l'utilisateur:", id);
 
-    //mise a jour des roles(ajout d'un/des nouveau.x role.s ou suppresion de.s autre role.s)
-    const existingRole = await UserRole.findAll({
-      where: {
-        idUser: id,
-      },
-    });
+    const { nom, prenom, date_naissance, email, tel, mot_de_passe } = req.body;
 
-    const newROle = idRole.filter(
-      (role: any) =>
-        !existingRole.find((existingRole) => existingRole.idRole === role)
-    );
-    const roleToRemove = existingRole.filter(
-      (existingRole) => !idRole.some((id: any) => id === existingRole.idRole)
-    );
+    const user = await User.findByPk(id);
+    if (!user) {
+      res.status(404);
+      throw new Error("Aucun utilisateur trouvé");
+    }
 
-    await Promise.all([
-      ...newROle.map((role: any) =>
-        UserRole.create({ idRole: role, idUser: id })
-      ),
-      ...roleToRemove.map((role: any) =>
-        UserRole.destroy({
-          where: {
-            idRole: role.idRole,
-            idUser: id,
-          },
-        })
-      ),
-    ]);
-    await user.save();
+    // Hash du mot de passe seulement si fourni
+    if (mot_de_passe) {
+      user.mot_de_passe = await bcrypt.hash(mot_de_passe, 10);
+    }
+
+    // Mise à jour des champs
+    const updates = {
+      nom: nom || user.nom,
+      prenom: prenom || user.prenom,
+      date_naissance: date_naissance || user.date_naissance,
+      email: email || user.email,
+      tel: tel || user.tel,
+    };
+
+    await user.update(updates);
+
+    console.log("Mise à jour réussie pour l'utilisateur:", id);
     res.status(200).json({ reps: user, done: true });
   } catch (error) {
-    res.status(400).json(`Une erreur s'est produite : \n ${error}`);
+    console.error("Erreur lors de la mise à jour:", error);
+    res.status(400).json({
+      done: false,
+    });
   }
 });
 

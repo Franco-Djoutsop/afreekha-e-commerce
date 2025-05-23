@@ -156,14 +156,14 @@ const login = asyncHandler(async (req: Request, res: Response) => {
     where: { idUSer: user.idUser },
   });
 
-  const montantTotalCommandePaye = commandes
-    .filter((cmd) => cmd.statut === "payé")
-    .reduce((sum, cmd) => sum + cmd.Montant_total, 0);
-  const montantTotalCommandeImpaye = commandes
-    .filter((cmd) => cmd.statut === "en cours")
-    .reduce((sum, cmd) => sum + cmd.Montant_total, 0);
+  // const montantTotalCommandePaye = commandes
+  //   .filter((cmd) => cmd.statut === "payé")
+  //   .reduce((sum, cmd) => sum + cmd.Montant_total, 0);
+  // const montantTotalCommandeImpaye = commandes
+  //   .filter((cmd) => cmd.statut === "en cours")
+  //   .reduce((sum, cmd) => sum + cmd.Montant_total, 0);
 
-  const nbreTotalCommande = commandes.length;
+  // const nbreTotalCommande = commandes.length;
 
   const reps = {
     user: {
@@ -177,9 +177,9 @@ const login = asyncHandler(async (req: Request, res: Response) => {
         nomRole: role.nom,
       })),
     },
-    montantTotalCommandePaye,
-    montantTotalCommandeImpaye,
-    nbreTotalCommande,
+    // montantTotalCommandePaye,
+    // montantTotalCommandeImpaye,
+    // nbreTotalCommande,
     adresses: user.adresses,
   };
   res.status(200).json({

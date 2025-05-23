@@ -273,7 +273,7 @@ router.route("/registerByUser").post(crypt.decode, registerByUser);
 router.route("/users/me").get(validateToken, getUserRole);
 
 //endpoint change password
-router.route("/password/:id").put(validateToken, crypt.decode, modifyPassword);
+router.route("/password/:id").put(modifyPassword);
 //>>>>>>> vf1/vf1
 
 //client route
@@ -419,8 +419,8 @@ router.get(
 router.delete("/commande/:id", CommandeController.delete);
 router.post(
   "/commande",
-  validateToken,
-  crypt.decode,
+  // validateToken,
+  // crypt.decode,
   createCommandeValidation,
   CommandeController.create
 );
