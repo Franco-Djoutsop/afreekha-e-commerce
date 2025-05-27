@@ -7,16 +7,21 @@ import { GestionCommandeArticle } from "../repositry/gestion_commandeArticle";
 import { GestionArticle } from "../repositry/gestion_articles";
 
 const CommandeController = {
+  //@route /api/commande
+  //@method POST
+  //@bodyparam :true
+  async create(req: Request, res: any) {
+    try {
+      if (!req.body.errors) {
+        console.log("enter");
+        const data = req.body as {
+          article: { product_id: number; quantity: number }[];
+          idUser: number;
+          statut: string;
+          idAdresse: number;
+        };
 
-    //@route /api/commande
-    //@method POST
-    //@bodyparam :true
-    async create(req: Request, res: any){
-        try {
-            if(!req.body.errors){
-                
-                const data = req.body as  {article: {product_id: number,quantity: number }[], idUser: number, statut: string, idAdresse: number};
-
+        
                 let commande_toSave : Commande = new Commande();
                 let articlesID: {idArticle: number, qty: number}[] = [];
                 let ids: number[] = [];
@@ -113,46 +118,48 @@ const CommandeController = {
             }else{
                 return res.status(400).json([{message: "Erreurs sur les données de traitement!"}]);
             }
-        } catch (error: any) {
-            return res.status(400).json([{message: error.message}]);
-            
-        }
-    },
-    //@route /api/commande
-    //@method DELETE
-    //@urlparam :true
-    async delete(req: Request, res: any){
-        try{
-            if(req.params.id){
-                const rslt = await GestionCommande.supprimer(Number(req.params.id));
-
-                return rslt!= 0 ? res.status(200).json([{done: true}]): res.status(200).json([]);
-            }
-        }catch(error:any){
-            res.status(400).json([{message: error.message}]);
-        }
-    },
-
-    //@route /api/commande
-    //@method GET
-    //@bodyparams :true
-    async getCommad(req: Request, res: any){
-        try {
-            if(req.params.idUser){
-                
-                const result = await GestionCommande.getCommandOwner(
-                    Number.parseInt(req.params.idUser)
-                );
-
-                return result.length != 0 ? res.status(200).json([{data: (result)}]):res.status(200).json([]);
-                
-            }else{
-                res.status(400).json([{message: "Informations manquantes"}]);
-            }
-        } catch (error: any) {
-            res.status(400).json([{message: error.message}]);
-        }
+          
+    } catch (error: any) {
+      return res.status(400).json([{ message: error.message }]);
     }
-}
+  },
+  //@route /api/commande
+  //@method DELETE
+  //@urlparam :true
+  async delete(req: Request, res: any) {
+    try {
+      if (req.params.id) {
+        const rslt = await GestionCommande.supprimer(Number(req.params.id));
+
+        return rslt != 0
+          ? res.status(200).json([{ done: true }])
+          : res.status(200).json([]);
+      }
+    } catch (error: any) {
+      res.status(400).json([{ message: error.message }]);
+    }
+  },
+
+  //@route /api/commande
+  //@method GET
+  //@bodyparams :true
+  async getCommad(req: Request, res: any) {
+    try {
+      if (req.params.idUser) {
+        const result = await GestionCommande.getCommandOwner(
+          Number.parseInt(req.params.idUser)
+        );
+
+        return result.length != 0
+          ? res.status(200).json([{ data: result }])
+          : res.status(200).json([]);
+      } else {
+        res.status(400).json([{ message: "Informations manquantes" }]);
+      }
+    } catch (error: any) {
+      res.status(400).json([{ message: error.message }]);
+    }
+  },
+};
 
 export { CommandeController };

@@ -155,7 +155,7 @@ routerAdmin.post("/facture", crypt.decode, FactureController.create);
 routerAdmin
   .route("/users/roles/:id")
   .post(crypt.decode, validateToken, asignRoleToUser);
-routerAdmin.route("/users/:id").patch(crypt.decode, updateUsers);
+routerAdmin.route("/users/:id").put(updateUsers);
 routerAdmin.route("/users/:id").delete(deleteUsers);
 routerAdmin
   .route("/users/:idUser/:idRole")

@@ -19,7 +19,7 @@ const ArticleController = {
 
         article = req.body as Articles;
         const resp = await GestionArticle.save(article);
-        
+
         const imgAssigment = await GestionImage.articleImageAssigment(
           resp.idArticle,
           article.imgsID
@@ -175,7 +175,6 @@ const ArticleController = {
     try {
       let data: any;
       if (req.params.offset && req.query) {
-        
         const params = req.query;
         const attributesFilter = typeof params.attribute === "string" ? params.attribute.split(",") : undefined;
         const categories = typeof params.category === "string" ? params.category.split(",") : undefined;
@@ -191,23 +190,29 @@ const ArticleController = {
             limit: limit
           }
 
-          if(params.isUniqueFilter){
+          if (params.isUniqueFilter) {
             //filtre sur les sous categories
             if(!categories){
               return res.status(400).json([{ message: "Aucune catégorie sélectionnée !" }]);
             }
             const sousCategorieIDs = await SousCategorie.findAll({
               where: {
-                nom: categories
+                nom: categories,
               },
-              attributes: ['idSousCategorie']
+              attributes: ["idSousCategorie"],
             });
             const idCategorie = sousCategorieIDs[0].idSousCategorie;
-            
-            data = await GestionArticle.getBySubCategorie(Number.parseInt(req.params.offset), idCategorie, filter);
-          }else{
-            data = await GestionArticle.getAll(Number.parseInt(req.params.offset), filter);
-  
+
+            data = await GestionArticle.getBySubCategorie(
+              Number.parseInt(req.params.offset),
+              idCategorie,
+              filter
+            );
+          } else {
+            data = await GestionArticle.getAll(
+              Number.parseInt(req.params.offset),
+              filter
+            );
           }
          
         }else{
@@ -215,11 +220,13 @@ const ArticleController = {
 
           data = await GestionArticle.getByName((search as string));
         }
-        
-
 
         return data.length != 0
-          ? res.status(200).json([{ data: crypt.encode(data) , total: await GestionArticle.countArticle()}])
+          ? res
+              .status(200)
+              .json([
+                { data: data, total: await GestionArticle.countArticle() },
+              ])
           : res.status(200).json([]);
       } else {
         const params = req.query;

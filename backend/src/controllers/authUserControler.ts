@@ -46,7 +46,7 @@ const register = asyncHandler(async (req: Request, res: Response) => {
         });
         res
           .status(201)
-          .json({ done: true, user: user, role: role, message: console.log("enregistrement reuissi") });
+          .json({ reps: user, done: true, message: "enregistrement reussi" });
       }
     } else {
       res.status(400).json({
@@ -84,13 +84,9 @@ const registerByUser = asyncHandler(async (req: Request, res: Response) => {
         mot_de_passe: hashpassword,
       });
       res.status(201).json({ reps: user, done: true });
-    }else if (exixtUSer.tel == tel) {
-      res.status(404).json({
-        message: "Ce numéro est déja utilisé , veuillez le changer !!",
-      });
     } else {
       res.status(404).json({
-        message: "L'utilisateur existe deja avec cette adresse mail, Veuillez vous connecter !!",
+        message: "L'utilisateur existe deja , veuillez vous connecter !!",
       });
     }
   } catch (error) {
@@ -173,14 +169,14 @@ const login = asyncHandler(async (req: Request, res: Response) => {
     where: { idUSer: user.idUser },
   });
 
-  const montantTotalCommandePaye = commandes
-    .filter((cmd) => cmd.statut === "payé")
-    .reduce((sum, cmd) => sum + cmd.Montant_total, 0);
-  const montantTotalCommandeImpaye = commandes
-    .filter((cmd) => cmd.statut === "en cours")
-    .reduce((sum, cmd) => sum + cmd.Montant_total, 0);
+  // const montantTotalCommandePaye = commandes
+  //   .filter((cmd) => cmd.statut === "payé")
+  //   .reduce((sum, cmd) => sum + cmd.Montant_total, 0);
+  // const montantTotalCommandeImpaye = commandes
+  //   .filter((cmd) => cmd.statut === "en cours")
+  //   .reduce((sum, cmd) => sum + cmd.Montant_total, 0);
 
-  const nbreTotalCommande = commandes.length;
+  // const nbreTotalCommande = commandes.length;
 
   const reps = {
     user: {
@@ -194,9 +190,9 @@ const login = asyncHandler(async (req: Request, res: Response) => {
         nomRole: role.nom,
       })),
     },
-    montantTotalCommandePaye,
-    montantTotalCommandeImpaye,
-    nbreTotalCommande,
+    // montantTotalCommandePaye,
+    // montantTotalCommandeImpaye,
+    // nbreTotalCommande,
     adresses: user.adresses,
   };
   res.status(200).json({
@@ -247,15 +243,14 @@ const sendEmail = asyncHandler(async (req: Request, res: Response) => {
       subject: "Renitialisation du mot de passe",
       text: `Voici votre code de réinitialisation : ${codeOtp}`,
     });
- 
+  } catch (error) {
+    res.status(500).json({ message: `une erreur s'est produite: \n ${error}` });
+  }
   console.log("hello");
 
   res
     .status(200)
-    .json({ message: "Email de réinitialisation envoyé !", done: true , code: crypt.encode({code: codeOtp})});
-  } catch (error) {
-    res.status(500).json({ message: `une erreur s'est produite: \n ${error}` });
-  }
+    .json({ message: "Email de réinitialisation envoyé !", done: true });
 });
 
 //@desc reset password
