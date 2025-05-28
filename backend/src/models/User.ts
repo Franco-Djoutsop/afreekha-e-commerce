@@ -12,6 +12,7 @@ class User extends Model {
   public email!: string;
   public tel!: string;
   public mot_de_passe!: string;
+  public country_code!: string;
   public roles?: Role[];
   public readonly adresses?: Adresse[];
   public readonly commandes?: Commande[];
@@ -126,6 +127,11 @@ User.init(
       type: DataTypes.STRING,
       allowNull: false,
       unique: true,
+    },
+    country_code: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      defaultValue: "237",
     },
     mot_de_passe: {
       type: DataTypes.STRING,

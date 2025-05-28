@@ -9,8 +9,8 @@ import { crypt } from "../config/crypto-js";
 //@access public
 const createRole = asyncHandler(async (req: Request, res: Response) => {
   console.log("entree");
-  const { name } = req.body;
-  const role = await Role.create({ name });
+  const { nom } = req.body;
+  const role = await Role.create({ nom });
   res.status(201).json({ reps: crypt.encode(role), done: true });
 });
 
@@ -20,9 +20,7 @@ const createRole = asyncHandler(async (req: Request, res: Response) => {
 //<<<<<<< HEAD
 const allRoles = asyncHandler(async (req: Request, res: any) => {
   try {
-    const roles = await Role.findAll({
-      attributes: ["idRole", "nom", "createdAt"],
-    });
+    const roles = await Role.findAll();
     if (roles[0] != null) {
       return res.status(200).json({ reps: roles, done: true });
     }

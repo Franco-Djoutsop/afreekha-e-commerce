@@ -143,7 +143,12 @@ routerAdmin.post("/image", createImgValidation, ImageController.create);
 routerAdmin.put("/image", updateArticleImg, ImageController.update);
 routerAdmin.delete("/image/:id", ImageController.destroy);
 
-routerAdmin.put("/facture", crypt.decode, FactureController.changeStatus);
+routerAdmin.put(
+  "/facture",
+  validateToken,
+  crypt.decode,
+  FactureController.changeStatus
+);
 routerAdmin.get(
   "/facture/:offset",
   //validateToken,
@@ -155,7 +160,7 @@ routerAdmin.post("/facture", crypt.decode, FactureController.create);
 routerAdmin
   .route("/users/roles/:id")
   .post(crypt.decode, validateToken, asignRoleToUser);
-routerAdmin.route("/users/:id").patch(crypt.decode, updateUsers);
+routerAdmin.route("/users/:id").put(updateUsers);
 routerAdmin.route("/users/:id").delete(deleteUsers);
 routerAdmin
   .route("/users/:idUser/:idRole")

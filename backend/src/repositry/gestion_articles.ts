@@ -1,14 +1,16 @@
 import Article from "../models/Article";
 import { Articles } from "./objets/article";
 import Image from "../models/image";
-import { QueryTypes, Op } from "sequelize";
-import {sequelize} from "../config/database"; // Adjust the path as necessary
+import { fn, col, literal, Sequelize, QueryTypes, Op } from "sequelize";
+import { sequelize } from "../config/database"; // Adjust the path as necessary
+import Commande from "../models/Commande";
+import CommandArticle from "../models/CommandArticle";
+import UserRole from "../models/userRoles";
 import Categorie from "../models/categorie";
 import SousCategorie from "../models/SousCategorie";
 
 const GestionArticle = {
   async save(artilce: Articles) {
-    
     const dataRetrieves = await Article.create(artilce);
 
     return dataRetrieves.dataValues;
@@ -69,111 +71,111 @@ const GestionArticle = {
     return data;
   },
 
-  async getBySubCategorie(offset: number, idCategorie: number, filter?: {attribute?: string[], categories?: string[]}){
+  async getBySubCategorie(
+    offset: number,
+    idCategorie: number,
+    filter?: { attribute?: string[]; categories?: string[] }
+  ) {
     let data: any;
-    if(filter){
-        const whereClause: any = {
-            idCategorie: idCategorie
-        };
-        const includeClause : any = [
-          { model: Image, required: true }
+    if (filter) {
+      const whereClause: any = {
+        idCategorie: idCategorie,
+      };
+      const includeClause: any = [{ model: Image, required: true }];
+
+      if (filter.attribute && filter.attribute.length > 0) {
+        whereClause[Op.or] = [
+          { taille: { [Op.in]: filter.attribute } },
+          { couleur: { [Op.in]: filter.attribute } },
         ];
+      }
 
-        if (filter.attribute && filter.attribute.length > 0) {
-          whereClause[Op.or] = [
-            { taille: { [Op.in]: filter.attribute } },
-            { couleur: { [Op.in]: filter.attribute } }
-          ];
-        }
-
-        if (filter.categories && filter.categories.length > 0) {
-          includeClause.push({
-            model: Categorie,
-            attributes: ['nom'],
-            include: [
-              {
-                model: SousCategorie,
-                attributes: ['nom']
-              }
-            ],
-            required: true
-          });
-        } else {
-          // Inclure les catégories sans filtre si besoin
-          includeClause.push({
-            model: Categorie,
-            attributes: ['nom'],
-            include: [
-              {
-                model: SousCategorie,
-                attributes: ['nom']
-              }
-            ],
-            required: true
-          });
-        }
-
-        data = await Article.findAll({
-          offset: offset,
-          limit: 15,
-          where: whereClause,
-          include: includeClause
+      if (filter.categories && filter.categories.length > 0) {
+        includeClause.push({
+          model: Categorie,
+          attributes: ["nom"],
+          include: [
+            {
+              model: SousCategorie,
+              attributes: ["nom"],
+            },
+          ],
+          required: true,
         });
+      } else {
+        // Inclure les catégories sans filtre si besoin
+        includeClause.push({
+          model: Categorie,
+          attributes: ["nom"],
+          include: [
+            {
+              model: SousCategorie,
+              attributes: ["nom"],
+            },
+          ],
+          required: true,
+        });
+      }
 
-    }else{
       data = await Article.findAll({
         offset: offset,
         limit: 15,
-        where:{
-            idCategorie : idCategorie
+        where: whereClause,
+        include: includeClause,
+      });
+    } else {
+      data = await Article.findAll({
+        offset: offset,
+        limit: 15,
+        where: {
+          idCategorie: idCategorie,
         },
         include: [
           {
             model: Image,
             required: true,
-          }
+          },
         ],
-        
       });
     }
 
     return data;
   },
 
-  async getAll(offset: number, filter?: {attribute?: string[], categories?: string[]}) {
+  async getAll(
+    offset: number,
+    filter?: { attribute?: string[]; categories?: string[] }
+  ) {
     let data: any;
-    if(filter){
-        const whereClause: any = {};
-        const includeClause : any = [
-          { model: Image, required: true }
+    if (filter) {
+      const whereClause: any = {};
+      const includeClause: any = [{ model: Image, required: true }];
+
+      if (filter.attribute && filter.attribute.length > 0) {
+        whereClause[Op.or] = [
+          { taille: { [Op.in]: filter.attribute } },
+          { couleur: { [Op.in]: filter.attribute } },
         ];
+      }
 
-        if (filter.attribute && filter.attribute.length > 0) {
-          whereClause[Op.or] = [
-            { taille: { [Op.in]: filter.attribute } },
-            { couleur: { [Op.in]: filter.attribute } }
-          ];
-        }
-
-        if (filter.categories && filter.categories.length > 0) {
-          includeClause.push({
-            model: Categorie,
-            where: { nom: { [Op.in]: filter.categories } },
-            required: true
-          });
-        } else {
-          // Inclure les catégories sans filtre si besoin
-          includeClause.push({ model: Categorie, required: false });
-        }
-
-        data = await Article.findAll({
-          offset: offset,
-          limit: 15,
-          where: whereClause,
-          include: includeClause
+      if (filter.categories && filter.categories.length > 0) {
+        includeClause.push({
+          model: Categorie,
+          where: { nom: { [Op.in]: filter.categories } },
+          required: true,
         });
+      } else {
+        // Inclure les catégories sans filtre si besoin
+        includeClause.push({ model: Categorie, required: false });
+      }
 
-    }else{
+      data = await Article.findAll({
+        offset: offset,
+        limit: 15,
+        where: whereClause,
+        include: includeClause,
+      });
+    } else {
       data = await Article.findAll({
         offset: offset,
         limit: 15,
@@ -181,22 +183,52 @@ const GestionArticle = {
           {
             model: Image,
             required: true,
-          }
+          },
         ],
-        
       });
     }
 
     return data;
   },
 
-  async getByName(nom_article: string){
+  async getArticleOnFeatured(offset: number) {
     const data = await Article.findAll({
       where: {
-        nom_article: {
-          [Op.like]: `%${nom_article}%`,
-        },
+        featured: 1,
       },
+      offset: offset,
+      limit: 15,
+      include: [
+        {
+          model: Image,
+          required: true,
+        },
+      ],
+    });
+    return data;
+  },
+
+  async getArticleOnTrend(offset: number) {
+    const data = await Article.findAll({
+      where: {
+        inTrend: 1,
+      },
+      offset: offset,
+      limit: 15,
+      include: [
+        {
+          model: Image,
+          required: true,
+        },
+      ],
+    });
+    return data;
+  },
+
+  async getByCategories(categorieID: number) {
+    const data = await Article.findAll({
+      where: { idCategorie: categorieID },
+
       include: [
         {
           model: Image,
@@ -208,78 +240,24 @@ const GestionArticle = {
     return data;
   },
 
-
-        async getArticleOnFeatured(offset: number){
-            const data = await Article.findAll(
-                {
-                    where: {
-                        featured : 1
-                    },
-                    offset: offset,
-                    limit: 15,
-                    include: [{
-                        model: Image,
-                        required: true
-                    }]
-                }
-            )
-            return data;
+  async updateCategories(articleID: number, new_categorieId: number) {
+    const queryResp = await Article.update(
+      { idCategorie: new_categorieId },
+      {
+        where: {
+          idArticle: articleID,
         },
 
-        async getArticleOnTrend(offset: number){
-            const data = await Article.findAll(
-                {
-                    where: {
-                        inTrend : 1
-                    },
-                    offset: offset,
-                    limit: 15,
-                    include: [{
-                        model: Image,
-                        required: true
-                    }]
-                }
-            )
-            return data;
-        },
+        returning: true,
+      }
+    );
 
-        async getByCategories(categorieID: number){
-          
-            const data = await Article.findAll({
+    return queryResp;
+  },
 
-                where: {idCategorie : categorieID},
-
-                include: [
-                    {
-                        model: Image,
-                        required : true,
-                    }
-                ]
-            }); 
-
-            return data;
-        },
-
-        
-
-        async updateCategories(articleID: number, new_categorieId: number){
-            const queryResp = await Article.update(
-                {idCategorie : new_categorieId},
-                {
-                    where: {
-                         idArticle : articleID
-                    },
-
-                    returning: true
-                }
-            )
-            
-            return queryResp;
-        },
-
-        async getTopArticleSeller(limit: number){
-            
-            const topArticles = await sequelize.query(`
+  async getTopArticleSeller(limit: number) {
+    const topArticles = await sequelize.query(
+      `
                SELECT 
                     a.*,
                     SUM(ca.quantite) AS totalSold,
@@ -298,67 +276,137 @@ const GestionArticle = {
                 HAVING SUM(ca.quantite) > 0
                 ORDER BY totalSold DESC
                 LIMIT ${limit}
-                `, {
-                type: QueryTypes.SELECT,
-                model: Article,
-                mapToModel: true
-              });
-    
-            return topArticles;
-        },
+                `,
+      {
+        type: QueryTypes.SELECT,
+        model: Article,
+        mapToModel: true,
+      }
+    );
 
-        async countArticle(){
-            const count = await Article.count();
-            return count;
-        },
+    return topArticles;
+  },
 
-        
-        async updateMultipleArticlesQty(articles: { idArticle: number, qty: number }[], dbArticles: Article[]) {
-          const transaction = await sequelize.transaction();
-      
-          try {
-             
-              // Mettre à jour les quantités
-              for (const { idArticle, qty } of articles) {
-                  const article = dbArticles.find(a => a.idArticle === idArticle);
-                 if(article){
-                  article.quantite -= qty;
-                  await article.save({ transaction });
-                 }
-              }
-      
-              await transaction.commit();
-              return { success: true, message: "Stock mis à jour avec succès" };
-      
-          } catch (error: any) {
-              await transaction.rollback();
-              return { success: false, message: error.message };
-          }          
-      },
-      
-          async updateMultipleArticlesQtyAdd(articles: { idArticle: number, qty: number }[], dbArticles: Article[]) {
-            const transaction = await sequelize.transaction();
-        
-            try {
-               
-                // Mettre à jou les quantite
-                for (const { idArticle, qty } of articles) {
-                    const article = dbArticles.find(a => a.idArticle === idArticle);
-                   if(article){
-                    article.quantite += qty;
-                    await article.save({ transaction });
-                   }
-                }
-        
-                await transaction.commit();
-                return { success: true, message: "Stock mis à jour avec succès" };
-        
-            } catch (error: any) {
-                await transaction.rollback();
-                return { success: false, message: error.message };
-            }
+  async countArticle() {
+    const count = await Article.count();
+    return count;
+  },
+
+  async updateMultipleArticlesQty(
+    articles: { idArticle: number; qty: number }[],
+    dbArticles: Article[]
+  ) {
+    const transaction = await sequelize.transaction();
+
+    try {
+      // Mettre à jour les quantités
+      for (const { idArticle, qty } of articles) {
+        const article = dbArticles.find((a) => a.idArticle === idArticle);
+        if (article) {
+          article.quantite -= qty;
+          await article.save({ transaction });
+        }
+      }
+
+      await transaction.commit();
+      return { success: true, message: "Stock mis à jour avec succès" };
+    } catch (error: any) {
+      await transaction.rollback();
+      return { success: false, message: error.message };
+    }
+  },
+  async getAllArticles(options: {
+    offset?: number;
+    attribute?: string | string[];
+    idCategorie?: string | string[];
+    isUniqueFilter?: boolean;
+  }) {
+    try {
+      const offset = options.offset || 0;
+
+      // Gestion des filtres
+      const attributesFilter =
+        typeof options.attribute === "string"
+          ? options.attribute.split(",")
+          : Array.isArray(options.attribute)
+          ? options.attribute
+          : undefined;
+
+      const categories =
+        typeof options.idCategorie === "string"
+          ? options.idCategorie.split(",")
+          : Array.isArray(options.idCategorie)
+          ? options.idCategorie
+          : undefined;
+
+      let data: any;
+      let total: number | undefined;
+
+      // Application des filtres si présents
+      if (attributesFilter || categories) {
+        const filter = {
+          attribute: attributesFilter,
+          categories: categories,
+        };
+
+        if (options.isUniqueFilter) {
+          // Filtre sur les sous-catégories
+          const sousCategorieIDs = await SousCategorie.findAll({
+            where: { nom: categories },
+            attributes: ["idSousCategorie"],
+          });
+
+          if (sousCategorieIDs.length === 0) {
+            return { data: [], total: 0 };
           }
 
+          const idCategorie = sousCategorieIDs[0].idSousCategorie;
+          data = await GestionArticle.getBySubCategorie(
+            offset,
+            idCategorie,
+            filter
+          );
+        } else {
+          data = await GestionArticle.getAll(offset, filter);
+        }
+      } else {
+        data = await GestionArticle.getAll(offset);
+      }
+
+      // Calcul du total si nécessaire
+      if (data.length > 0 && offset === 0) {
+        total = await GestionArticle.countArticle();
+      }
+
+      return {
+        data: data.length > 0 ? data : [],
+        total: total || data.length,
+      };
+    } catch (error) {
+      console.error("Error in getAllArticles:", error);
+      return { data: [], total: 0 };
+    }
+  },
+  async getCategoriesAndSub() {
+    try {
+      const result = await Categorie.findAll({
+        include: [{ model: SousCategorie }],
+      });
+      if (result[0] === null) {
+        return;
+      }
+      return {
+        data: result,
+        isDone: true,
+      };
+    } catch (error) {
+      console.log(error);
+      return error;
+    }
+  },
+  async getAllDefaultArticles() {
+    return this.getAllArticles({ offset: 0 });
+  },
 };
 
 export { GestionArticle };
