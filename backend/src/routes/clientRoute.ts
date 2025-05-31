@@ -170,7 +170,7 @@ router.route("/roles").get(allRoles);
  *        description: Erreur serveur
  *
  */
-router.route("/auth").post(login);
+router.route("/auth").post(crypt.decode, login);
 /**
  * @openapi
  * /api/users/recovery-password:
