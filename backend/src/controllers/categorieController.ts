@@ -23,20 +23,23 @@ const gest_categorie = {
   },
   async addCategorie(req: Request, res: any) {
     try {
-      const data = req.body;
-      const{base64,contentType,featured} = req.body;
-      const result = await gest_categorie.log(base64,contentType,featured);
+
+      let{idUser,urlLogo,nom} = req.body;
+      
       const exitOrnotExist = await Categorie.findOne({
-        where:{nom:data.nom}
+        where:{nom:nom}
       });
       if(exitOrnotExist){
           return res.status(400).json({'message':'cette categorie exite deja'})
       }else{
-      if (data && result) {
+      if (nom) {
+        if(!urlLogo){
+          urlLogo = null
+        }
         const categorie = await Categorie.create({
-          idUser: data.idUser,
-          nom: data.nom,
-          urlLogo: result
+          idUser:idUser,
+          nom: nom,
+          urlLogo: urlLogo
         });
         return res.status(201).json({
           create: true,

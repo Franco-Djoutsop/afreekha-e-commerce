@@ -93,12 +93,12 @@ async getAllMessage(req:Request, res:any){
             }
         )
         
-        if(getMessage[0]==null){
-            return res.status(404).json({
-                'data':[],
-                'message':'aucun message trouve'
-            });
-        }
+        // if(getMessage[0]==null){
+        //     return res.status(404).json({
+        //         'data':[],
+        //         'message':'aucun message trouve'
+        //     });
+        // }
             return res.status(200).json({
                 'data': (getMessage)
              })

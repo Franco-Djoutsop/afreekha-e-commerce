@@ -11,22 +11,26 @@ const gest_sous_categorie = {
   //@data = objet, response true ? false
 
   //creation d'une sous categorie
-  async   addsousCategorie(req: Request, res: any) {
+  async addsousCategorie(req: Request, res: any) {
     try {
-      const data = req.body;
-
-      if (data != null) {
-        await SousCategorie.create({
-          idCategorie: data.idCategorie,
-          nom: data.nom,
-        });
-        return res.status(201).json({
-          data: data,
-          isCreate: true,
-          message: "sous categorie cree avec success",
-        });
+      const { nom, id } = req.body;
+      const idCat = await Categorie.findByPk(id);
+      if (idCat) {
+        if (nom != null) {
+          const datas = await SousCategorie.create({
+            idCategorie: id,
+            nom: nom,
+          });
+          return res.status(201).json({
+            nom: nom,
+            idCategorie: idCat,
+            idSousCategorie: datas.idSousCategorie,
+            isCreate: true,
+            message: "sous categorie cree avec success",
+          });
+        }
+        return res.status(404).json({ message: "veillez fournir les donnees" });
       }
-      return res.status(404).json({ message: "veillez fournir les donnees" });
     } catch (error) {
       console.log(error);
       return res.status(500).json({ message: "erreur du serveur" });

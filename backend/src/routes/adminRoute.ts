@@ -72,7 +72,7 @@ routerAdmin.get("/image", ImageController.getImage);
 //categorie
 routerAdmin.post(
   "/categorie",
-  crypt.decode,
+  // crypt.decode,
   addcategorie,
   gest_categorie.addCategorie
 );
