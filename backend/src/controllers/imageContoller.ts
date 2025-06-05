@@ -49,8 +49,7 @@ const ImageController = {
 
     try {
       if (!req.body.errors) {
-        const {collection, idImage, position, featured } =
-          req.body;
+        const {collection, idImage, position, featured } = req.body;
 
         const resp = await GestionImage.update(
           collection,
@@ -67,7 +66,7 @@ const ImageController = {
         return res
           .status(400)
           .json([
-            { message: "Informations manquantes pour continuer l'opération !" },
+            { message: "Informations manquantes pour continuer l'opération !", error: req.body.errors },
           ]);
       }
     } catch (error: any) {

@@ -13,23 +13,25 @@ const gest_sous_categorie = {
   //creation d'une sous categorie
   async addsousCategorie(req: Request, res: any) {
     try {
-      const { nom, id } = req.body;
-      const idCat = await Categorie.findByPk(id);
+      const { nom, idCategorie } = req.body;
+      const idCat = await Categorie.findByPk(idCategorie);
       if (idCat) {
         if (nom != null) {
           const datas = await SousCategorie.create({
-            idCategorie: id,
+            idCategorie: idCategorie,
             nom: nom,
           });
           return res.status(201).json({
             nom: nom,
-            idCategorie: idCat,
+            idCategorie: idCat.idCategorie,
             idSousCategorie: datas.idSousCategorie,
             isCreate: true,
             message: "sous categorie cree avec success",
           });
         }
-        return res.status(404).json({ message: "veillez fournir les donnees" });
+        return res.status(401).json({ message: "veuillez fournir les donnees" });
+      }else{
+        return res.status(401).json({ message: "veuillez fournir les donnees" });
       }
     } catch (error) {
       console.log(error);

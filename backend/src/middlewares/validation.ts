@@ -141,7 +141,7 @@ const adressUpdateValidation = [
 ];
 const updateArticleImg = [
   body("collection").notEmpty().withMessage("Collection obligatoire"),
-  body("postition").notEmpty().withMessage("ID non fourni !"),
+  body("position").notEmpty().withMessage("Position non défini"),
   body("featured").notEmpty().withMessage(" article en vedette pas fourni !").custom((value, { req }) => {
     if (value === true) {
       if (!req.body.collection || !req.body.position) {

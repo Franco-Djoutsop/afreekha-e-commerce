@@ -117,7 +117,7 @@ routerAdmin.route("/").get((req, res) => {
   res.status(200).json({ message: "displays lists of users" });
 });
 
-routerAdmin.get("/home/:offset", HomeController.getHomeAdminData);
+routerAdmin.get("/home/:offset",validateToken, HomeController.getHomeAdminData);
 
 routerAdmin.post(
   "/article",

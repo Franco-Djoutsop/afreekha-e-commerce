@@ -25,13 +25,10 @@ const ArticleController = {
           article.imgsID
         );
 
-        const response = {
-          articleData: resp,
-          imgsID: imgAssigment,
-        };
+        const recentlyArticleAdded = await GestionArticle.getOne(resp.idArticle);  
         return res
           .status(200)
-          .json([{ data: crypt.encode(response), done: true }]);
+          .json([{ data: crypt.encode(recentlyArticleAdded), done: true }]);
       } else {
         // La validation a échoué, les erreurs sont dans req.body.errors
         return res.status(403).json({ message: req.body.errors[0].msg });

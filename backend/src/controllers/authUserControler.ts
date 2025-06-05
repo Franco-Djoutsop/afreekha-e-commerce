@@ -46,7 +46,7 @@ const register = asyncHandler(async (req: Request, res: Response) => {
         });
         res
           .status(201)
-          .json({ reps: user, done: true, message: "enregistrement reuissi" });
+          .json({ reps: user, done: true, role: role, message: "enregistrement reuissi" });
       }
     } else {
       res.status(400).json({
@@ -160,14 +160,14 @@ const login = asyncHandler(async (req: Request, res: Response) => {
     where: { idUSer: user.idUser },
   });
 
-  // const montantTotalCommandePaye = commandes
-  //   .filter((cmd) => cmd.statut === "payé")
-  //   .reduce((sum, cmd) => sum + cmd.Montant_total, 0);
-  // const montantTotalCommandeImpaye = commandes
-  //   .filter((cmd) => cmd.statut === "en cours")
-  //   .reduce((sum, cmd) => sum + cmd.Montant_total, 0);
+    const montantTotalCommandePaye = commandes
+      .filter((cmd) => cmd.statut === "payé")
+      .reduce((sum, cmd) => sum + cmd.Montant_total, 0);
+    const montantTotalCommandeImpaye = commandes
+      .filter((cmd) => cmd.statut === "en cours")
+    .reduce((sum, cmd) => sum + cmd.Montant_total, 0);
 
-  // const nbreTotalCommande = commandes.length;
+  const nbreTotalCommande = commandes.length;
 
   const reps = {
     user: {
@@ -181,9 +181,9 @@ const login = asyncHandler(async (req: Request, res: Response) => {
         nomRole: role.nom,
       })),
     },
-    // montantTotalCommandePaye,
-    // montantTotalCommandeImpaye,
-    // nbreTotalCommande,
+    montantTotalCommandePaye,
+    montantTotalCommandeImpaye,
+    nbreTotalCommande,
     adresses: user.adresses,
   };
   res.status(200).json({
@@ -215,8 +215,8 @@ const sendEmail = asyncHandler(async (req: Request, res: Response) => {
 
   //envoyer l'email avec nodemailer
   const transporter = nodemailer.createTransport({
-    service: "gmail",
-    secure: false,
+    host: "smtp.ionos.fr",
+    secure: true,
     auth: {
       user: process.env.EMAIL,
       pass: process.env.MAIL_PASSWORD,
