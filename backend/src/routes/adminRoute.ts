@@ -91,7 +91,7 @@ routerAdmin.post(
 );
 routerAdmin.put(
   "/sousCategorie/:id",
-  crypt.decode,
+  //crypt.decode,
   updatesousCategorie,
   gest_sous_categorie.updateSousCategorie
 );

@@ -68,17 +68,15 @@ const gest_categorie = {
     try {
       let id = req.params.id;
       const data = req.body;
-      const {base64,contentType,featured} = req.body;
-      const result = await gest_categorie.log(base64,contentType,featured);
-      console.log('le result',result);
+  
       const updateData = await Categorie.findByPk(id);
-      if (!updateData && !result && !id) {
+      if (!updateData && !id) {
         return res.status(404).json({
-          message: "aucun utilisateur trouve",
+          message: "Aucune Categorie trouvée !",
         });
       }
       await Categorie.update(
-        { idUser:data.idUser,nom: data.nom,urlLogo:result },
+        { nom: data.nom },
         {
 //<<<<<<< HEAD
             where:
@@ -88,7 +86,8 @@ const gest_categorie = {
             }});
              return res.status(200).json({
             'update':true,
-            'message':'mise a jour reussi'
+            'message':'Mise à jour reussi',
+             data: req.body
         });
     }catch(error){
         console.log(error);

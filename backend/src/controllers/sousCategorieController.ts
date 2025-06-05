@@ -55,13 +55,16 @@ const gest_sous_categorie = {
           .json({ message: "echec de le modification", update: false });
       }
       await SousCategorie.update(
-        { nom: data.nom },
+        { nom: data.nom , idCategorie: data.idCategorie},
         {
           where: {
             idSousCategorie: id,
           },
         }
       );
+      return res
+        .status(200)
+        .json({ update: true, message: "mise a jour reussi", data: data });
     } catch (error) {
       console.log(error);
       return res.status(500).json({ messade: "erreur sur le server" });
