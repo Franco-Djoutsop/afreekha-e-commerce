@@ -77,7 +77,41 @@ const GestionImage = {
         });
         return resp;
     },
+    async updateImageAssigment(idArticle: number, idImage: number[]){
+        const transaction = await sequelize.transaction(); // Gérer la transaction
 
+        const article = await Article.findByPk(idArticle);
+        if (!article) {
+            throw new Error('Article introuvable');
+        }
+    
+        // Vérifier si les images existent
+        const images = await Image.findAll({
+          where: { idImage: idImage }, 
+        });
+    
+        if (images.length !== idImage.length) {
+          throw new Error("Une ou plusieurs images sont introuvables");
+        }
+        
+        // Supprimer les associations existantes pour l'article
+        await ArticleImage.destroy({
+            where: { idArticle: idArticle },
+            transaction,
+        });
+
+        // Créer de nouvelles associations
+        const articleImagesData = idImage.map((imageId) => ({
+            idArticle: idArticle,
+            idImage: imageId,
+          }));
+    
+        const resp = await ArticleImage.bulkCreate(articleImagesData, { transaction });
+
+        await transaction.commit();
+
+        return resp;
+    },
     async articleImageAssigment(idArticle: number, idImage: number[]){
         const transaction = await sequelize.transaction(); // Gérer la transaction
 

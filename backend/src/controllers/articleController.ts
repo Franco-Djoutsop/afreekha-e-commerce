@@ -48,11 +48,24 @@ const ArticleController = {
 
         article = req.body as Articles;
         const resp = await GestionArticle.update(article);
+
+        const imgAssigment = await GestionImage.updateImageAssigment(
+          article.idArticle,
+          article.imgsID
+        );
+
+        let productAdded;
+
+        if( imgAssigment instanceof Error) {
+          return res.status(400).json({ message: imgAssigment.message, of: imgAssigment });
+        }else{
+          productAdded = await GestionArticle.getOne(article.idArticle);
+        }
         return resp
           ? res.status(200).json([
               {
                 isDone: true,
-                data: crypt.encode(resp),
+                data: crypt.encode(productAdded),
                 message: "Mise à jour effectué avec succés",
               },
             ])
@@ -190,9 +203,6 @@ const ArticleController = {
 
           if (params.isUniqueFilter) {
             //filtre sur les sous categories
-            if(!categories){
-              return res.status(400).json([{ message: "Aucune catégorie sélectionnée !" }]);
-            }
             const sousCategorieIDs = await SousCategorie.findAll({
               where: {
                 nom: categories,
@@ -229,7 +239,7 @@ const ArticleController = {
         const params = req.query;
 
         const data = await GestionArticle.getAll(0);
-        console.log('load params', params);
+
         return data.length != 0
           ? res.status(200).json([{ data: crypt.encode(data) }])
           : res.status(200).json([]);

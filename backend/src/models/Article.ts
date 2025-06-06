@@ -1,6 +1,7 @@
 import { DataTypes, Model } from "sequelize";
 import { sequelize } from "../config/database";
 import Categorie from "./categorie"; // Import du modèle Categorie
+import SousCategorie from "./SousCategorie";
 
 class Article extends Model {
   public idArticle!: number;
@@ -15,6 +16,7 @@ class Article extends Model {
   public couleur?: string;
   public taille?: string;
   public idCategorie!: number;
+  public idSousCategorie!: number;
   public featured!: boolean;
   public inTrend!: boolean;
   public statut!: "En stock" | "Hors Stock";
@@ -99,6 +101,14 @@ Article.init(
         key: "idCategorie",
       },
     },
+    idSousCategorie: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: {
+        model: SousCategorie, // Assurez-vous que le modèle SousCategorie est correctement importé
+        key: "idSousCategorie",
+      },
+    }
   },
 
   {
