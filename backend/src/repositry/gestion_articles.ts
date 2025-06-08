@@ -73,16 +73,19 @@ const GestionArticle = {
 
   async getBySubCategorie(
     offset: number,
-    idCategorie: number,
-    filter?: { attribute?: string[]; categories?: string[] }
+    idSousCategorie: number,
+    filter?: { attribute?: string[]; categories?: string[] } | null
   ) {
     let data: any;
+    console.log('offset', offset);
+    console.log('filter', filter);
+    console.log('idSousCategorie', idSousCategorie);
     if (filter) {
       const whereClause: any = {
-        idCategorie: idCategorie,
+        idSousCategorie: idSousCategorie,
       };
       const includeClause: any = [{ model: Image, required: true }];
-
+     
       if (filter.attribute && filter.attribute.length > 0) {
         whereClause[Op.or] = [
           { taille: { [Op.in]: filter.attribute } },
@@ -105,7 +108,7 @@ const GestionArticle = {
       } else {
         // Inclure les catégories sans filtre si besoin
         includeClause.push({
-          model: Categorie,
+          model: SousCategorie,
           attributes: ["nom"],
           include: [
             {
@@ -128,7 +131,7 @@ const GestionArticle = {
         offset: offset,
         limit: 15,
         where: {
-          idCategorie: idCategorie,
+          idSousCategorie: idSousCategorie,
         },
         include: [
           {

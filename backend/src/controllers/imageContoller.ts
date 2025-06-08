@@ -54,7 +54,7 @@ const ImageController = {
         const resp = await GestionImage.update(
           collection,
           idImage,
-          position,
+          (featured ? position: null),
           featured
         );
         console.log("controller verif if it work", resp);

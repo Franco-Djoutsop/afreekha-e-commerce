@@ -6,6 +6,7 @@ import { Commande as Commande_model } from "./objets/commande";
 import Categorie from "../models/categorie";
 import { GestionFacture } from "./gestion_facture";
 import { crypt } from "../config/crypto-js";
+import Role from "../models/Role";
 
 const GestionCommande = {
   async create(commande: Commande_model) {
@@ -165,6 +166,23 @@ const GestionCommande = {
       console.log("erreur lors du calcul", error.message);
     }
   },
+  async getAllUser(){
+    try {
+      const users = await User.findAll({
+        attributes: ["idUser", "nom", "prenom", "email", "createdAt",  "tel"],
+        include: [
+          {
+            model: Role,
+            as: "roles",
+            attributes: ["idRole", "nom"],
+          }
+        ]
+      });
+      return users;
+    } catch (error: any) {
+      console.log("erreur lors de la recuperation des utilisateurs", error.message);
+    }
+  }
 };
 
 export { GestionCommande };

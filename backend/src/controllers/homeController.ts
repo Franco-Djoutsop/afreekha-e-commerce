@@ -9,6 +9,7 @@ import { featuredImageFilter } from "../config/img_file";
 import gest_categorie from "./categorieController";
 import { ArticleController } from "./articleController";
 import { GestionAdresse } from "../repositry/gestion_adresse";
+import { crypt } from "../config/crypto-js";
 
 const HomeController = {
   //@route /api/home-data ----FrontEnd, clientSide
@@ -89,8 +90,9 @@ const HomeController = {
           totalCategorie: await GestionCommande.getTotalCategorie(),
           totalCommande: await GestionCommande.getTotalCommande(),
           allCommands: await GestionCommande.getAllCommande(),
-          allArticles: await GestionArticle.getAllDefaultArticles(),
+          allArticles: crypt.encode(await GestionArticle.getAllDefaultArticles()),
           allCategories: await GestionArticle.getCategoriesAndSub(),
+          allUsers: crypt.encode(await GestionCommande.getAllUser())
           // allUserInfos: await GestionAdresse.getUserDetails(req.user?.id ?? 3),
         },
       };

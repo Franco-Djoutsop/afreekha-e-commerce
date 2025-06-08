@@ -191,31 +191,37 @@ const ArticleController = {
             ? params.attribute.split(",")
             : undefined;
         const categories =
-          typeof params.idCategorie === "string"
-            ? params.idCategorie.split(",")
+          typeof params.category === "string"
+            ? params.category.split(",")
             : undefined;
 
-        if (attributesFilter || categories) {
           const filter = {
             attribute: attributesFilter,
             categories: categories,
           };
-
-          if (params.isUniqueFilter) {
-            //filtre sur les sous categories
+          console.log('categorie get', params)
+          const subCategoryLoader = async (optionalFilter?: {attribute: any, categories: any})=>{
             const sousCategorieIDs = await SousCategorie.findAll({
               where: {
-                nom: categories,
+                nom: params.category,
               },
               attributes: ["idSousCategorie"],
             });
-            const idCategorie = sousCategorieIDs[0].idSousCategorie;
+            const idSousCategorie = sousCategorieIDs[0].idSousCategorie ? sousCategorieIDs[0].idSousCategorie : null ;
 
-            data = await GestionArticle.getBySubCategorie(
+            return idSousCategorie ? await GestionArticle.getBySubCategorie(
               Number.parseInt(req.params.offset),
-              idCategorie,
-              filter
-            );
+              idSousCategorie,
+              optionalFilter ? optionalFilter: null
+            ) : []; 
+          }
+
+        if (attributesFilter || categories) {
+        
+          if (params.isUniqueFilter && params.category) {
+            //filtre sur les sous categories en excluant les categorie
+            data = await subCategoryLoader(filter);
+            
           } else {
             data = await GestionArticle.getAll(
               Number.parseInt(req.params.offset),
@@ -223,6 +229,11 @@ const ArticleController = {
             );
           }
         } else {
+          //pas de parametre de filtre alors test s'il s'agit d'une sous categorie
+
+          if(params.isUniqueFilter && params.category){
+            data = await subCategoryLoader();
+          }
           data = await GestionArticle.getAll(
             Number.parseInt(req.params.offset)
           );
