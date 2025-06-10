@@ -28,6 +28,8 @@ const CommandeController = {
           idArticle: number;
           idCommande: number;
           quantite: number;
+          prix_achat: number,
+          prix_total: number
         }[] = [];
 
         if (data.article.length != 0) {
@@ -95,10 +97,17 @@ const CommandeController = {
                     idArticle: art.product_id,
                     qty: art.quantity,
                   });
+
+                  const index = verificationRslt.articles.findIndex(
+                    (val) => val.idArticle === art.product_id
+                  );
+                  const prix = (verificationRslt.articles[index].promo && verificationRslt.articles[index].pourcentage_promo) ? verificationRslt.articles[index].prix - (verificationRslt.articles[index].prix * verificationRslt.articles[index].pourcentage_promo) /100 : verificationRslt.articles[index].prix; 
                   commande_article.push({
                     idArticle: art.product_id,
                     idCommande: resp.idCommande,
                     quantite: art.quantity,
+                    prix_achat: prix,
+                    prix_total: (prix * art.quantity)
                   });
                 }
               );
@@ -132,7 +141,7 @@ const CommandeController = {
       } else {
         return res
           .status(400)
-          .json([{ message: "Erreurs sur les données de traitement!" }]);
+          .json([{ message: "Erreurs sur les données de traitement!", error: req.body }]);
       }
     } catch (error: any) {
       return res.status(400).json([{ message: error.message }]);
