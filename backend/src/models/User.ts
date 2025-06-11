@@ -13,6 +13,7 @@ class User extends Model {
   public tel!: string;
   public mot_de_passe!: string;
   public country_code!: string;
+  public express_adresse!: string;
   public roles?: Role[];
   public readonly adresses?: Adresse[];
   public readonly commandes?: Commande[];
@@ -120,22 +121,27 @@ User.init(
     },
     email: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
       unique: true,
     },
     tel: {
       type: DataTypes.STRING,
       allowNull: false,
-      unique: true,
+      unique: false,
     },
     country_code: {
       type: DataTypes.STRING,
       allowNull: false,
       defaultValue: "237",
     },
+    express_adresse: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      unique: true,
+    },
     mot_de_passe: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     resetToken: {
       type: DataTypes.STRING,

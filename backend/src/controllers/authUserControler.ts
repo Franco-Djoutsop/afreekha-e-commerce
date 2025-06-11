@@ -104,7 +104,8 @@ const login = asyncHandler(async (req: Request, res: Response) => {
   }
 
   console.log("first");
-  const user = await User.findOne({
+  try {
+     const user = await User.findOne({
     where: {
       ...(email ? { email } : {}),
       ...(tel ? { tel } : {}),
@@ -122,6 +123,7 @@ const login = asyncHandler(async (req: Request, res: Response) => {
       },
     ],
   });
+
   console.log("end");
   if (!user) {
     res.status(400);
@@ -192,6 +194,12 @@ const login = asyncHandler(async (req: Request, res: Response) => {
     reps: reps,
     done: true,
   });
+  } catch (error) {
+    console.error("Erreur lors de la recherche de l'utilisateur :", error);
+    res.status(500).json({ errorMessage: "Erreur serveur" });
+    return;
+  }
+ 
 });
 
 //@desc recovery password

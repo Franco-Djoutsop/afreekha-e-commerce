@@ -33,7 +33,7 @@ const GestionFacture = {
             include: [
               {
                 model: User,
-                attributes: ["idUser", "nom", "prenom", "email", "tel"], // Sélectionne uniquement ces colonnes
+                attributes: ["idUser", "nom", "prenom", "email", "tel", "express_adresse"], // Sélectionne uniquement ces colonnes
               },
               {
                 model: Article,

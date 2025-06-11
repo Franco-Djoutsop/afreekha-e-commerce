@@ -419,7 +419,7 @@ router.get(
 router.delete("/commande/:id", CommandeController.delete);
 router.post(
   "/commande",
-  validateToken,
+  //validateToken,
   crypt.decode,
   createCommandeValidation,
   CommandeController.create

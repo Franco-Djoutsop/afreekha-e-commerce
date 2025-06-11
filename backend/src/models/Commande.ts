@@ -9,7 +9,7 @@ class Commande extends Model {
   public quantite_articles!: number;
   public statut!: string;
   public idUser!: number;
-  public idAdresse!: number;
+  public idAdresse!: number | null;
   public createdAt?: string;
   public updatedAt?: string;
 }

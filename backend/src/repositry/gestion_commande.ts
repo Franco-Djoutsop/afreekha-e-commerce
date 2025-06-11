@@ -47,9 +47,12 @@ const GestionCommande = {
     return queryRslt;
   },
 
-  async changeStatus(status: string, id: number) {
+  async changeStatus(status: string, id: number, reportDate: string) {
     const queryRslt = await Commande.update(
-      { statut: status },
+      { 
+        statut: status, 
+        createdAt: reportDate
+      },
       {
         where: {
           idCommande: id,

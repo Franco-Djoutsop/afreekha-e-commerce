@@ -173,13 +173,8 @@ const createCommandeValidation = [
     .isInt({ gt: 0 })
     .withMessage("La quantité doit être un entier positif"),
 
-  body("idUser")
-    .isInt({ gt: 0 })
-    .withMessage("L'ID de l'utilisateur doit être un entier positif"),
-
-  body("idAdresse")
-    .isInt({ gt: 0 })
-    .withMessage("L'ID de l'adresse de livraisson doit être un entier positif"),
+  body("isExpressOrder").notEmpty()
+    .withMessage("Parametre important manquant"),
 
   body("statut")
     .isIn(["payé", "en cours"])

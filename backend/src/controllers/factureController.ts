@@ -34,11 +34,10 @@ const FactureController = {
   async changeStatus(req: Request, res: any) {
     try {
       if (!req.body.errors) {
-        const { status, commandeId } = req.body;
+        const { status, commandeId, reportDate} = req.body;
 
-        const resp = await GestionCommande.changeStatus(status, commandeId);
-        if (status == "payé") {
-        }
+        const resp = await GestionCommande.changeStatus(status, commandeId, reportDate);
+        
         return resp[0] != 0
           ? res
               .status(200)

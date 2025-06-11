@@ -5,6 +5,7 @@ import Article from "../models/Article";
 import Commande from "../models/Commande";
 import { GestionCommandeArticle } from "../repositry/gestion_commandeArticle";
 import { GestionArticle } from "../repositry/gestion_articles";
+import { GestionExpressUser } from "../repositry/gestion_express_user";
 
 const CommandeController = {
   //@route /api/commande
@@ -17,8 +18,10 @@ const CommandeController = {
         const data = req.body as {
           article: { product_id: number; quantity: number }[];
           idUser: number;
+          isExpressOrder: boolean;
           statut: string;
-          idAdresse: number;
+          idAdresse: number | null;
+          userData: {nom: string, prenom: string, tel: string, express_adresse: string} | null
         };
 
         let commande_toSave: Commande = new Commande();
@@ -32,6 +35,12 @@ const CommandeController = {
           prix_total: number
         }[] = [];
 
+        if(!data.isExpressOrder){
+          if(!data.idUser){
+              throw new Error("Veuillez vous connecter ou créer un compte")
+          }
+        }
+
         if (data.article.length != 0) {
           let quantite_articles = data.article.length;
           let total = 0;
@@ -41,11 +50,12 @@ const CommandeController = {
               ids.push(art.product_id);
             }
           );
+          const addedUser =  await GestionExpressUser.create(data.userData) as any;
 
           commande_toSave.quantite_articles = quantite_articles;
-          commande_toSave.idUser = data.idUser;
+          commande_toSave.idUser = data.isExpressOrder ? addedUser.idUser : data.idUser;
           commande_toSave.statut = data.statut;
-          commande_toSave.idAdresse = data.idAdresse;
+          commande_toSave.idAdresse = data.idAdresse ? data.idAdresse : null;
 
           //verification de l'existence des articles
           const verificationRslt = await GestionCommande.verifyArticlesExist(
