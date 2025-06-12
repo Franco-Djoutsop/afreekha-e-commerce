@@ -1,6 +1,8 @@
 import { v4 as uuidv4 } from 'uuid';
-import { promises as fs } from 'fs'; 
+import { promises as fs } from 'fs';
+import * as fsSync from 'fs';
 import dotenv from "dotenv";
+import path from 'path';
 
 dotenv.config()
 interface ImageData {
@@ -14,7 +16,12 @@ const MoveImg = async (image: ImageData, dossier: string) => {
     if (!image.data || !image.contentType) {
       throw new Error("Données d'image ou type de contenu manquants.");
     }
+    const folderPath = path.resolve(__dirname, '..', dossier);
 
+    if (!fsSync.existsSync(folderPath)) {
+      fsSync.mkdirSync(folderPath, { recursive: true });
+    }
+    
     const host = process.env.HTTPS || 'http://localhost:3000/';
     // Décoder l'image base64 en utilisant le type de contenu pour plus de sécurité
     const base64Data = image.data.trim();
@@ -22,7 +29,8 @@ const MoveImg = async (image: ImageData, dossier: string) => {
 
     // Générer un nom de fichier unique
     const nomFichier = `${uuidv4()}.jpg`;
-    const cheminFichier = `${dossier}/${nomFichier}`;
+    
+    const cheminFichier = path.join(folderPath, nomFichier);
 
     // Enregistrer l'image dans le dossier avec gestion asynchrone des erreur
     await fs.writeFile(cheminFichier, imgBuffer);
