@@ -50,7 +50,7 @@ const CommandeController = {
               ids.push(art.product_id);
             }
           );
-          const addedUser =  await GestionExpressUser.create(data.userData) as any;
+          const addedUser = data.isExpressOrder ? (await GestionExpressUser.create(data.userData) as any) : null;
 
           commande_toSave.quantite_articles = quantite_articles;
           commande_toSave.idUser = data.isExpressOrder ? addedUser.idUser : data.idUser;
