@@ -245,7 +245,7 @@ const sendEmail = asyncHandler(async (req: Request, res: Response) => {
 
   res
     .status(200)
-    .json({ message: "Email de réinitialisation envoyé !", done: true });
+    .json({ message: "Email de réinitialisation envoyé !", done: true, code: crypt.encode(codeOtp) });
 });
 
 //@desc reset password
