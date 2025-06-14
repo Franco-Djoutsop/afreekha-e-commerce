@@ -20,9 +20,14 @@ const register = asyncHandler(async (req: Request, res: Response) => {
     const { nom, prenom, date_naissance, email, tel, mot_de_passe, idRole } =
       req.body;
     const hashpassword = await bcrypt.hash(mot_de_passe, 10);
+    //check if email and tel already exist
     const existUser = await User.findOne({
-      where: { email: email },
+      where: {
+        [Op.or]: [{ email: email }, { tel: tel }],
+      },
     });
+
+
 
     if (!existUser) {
       const user = await User.create({
