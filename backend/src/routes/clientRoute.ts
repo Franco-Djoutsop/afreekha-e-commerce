@@ -416,6 +416,7 @@ router.get(
 
   CommandeController.getCommad
 );
+router.get('/article-search/:article', ArticleController.search)
 router.delete("/commande/:id", CommandeController.delete);
 router.post(
   "/commande",

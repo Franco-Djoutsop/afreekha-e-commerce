@@ -142,17 +142,17 @@ const GestionImage = {
     },
 
     async update(collection: string, idImage: number, position: string, featured: boolean){
-        if(position && position == "MAIN_BANNER"){
-            await Image.update({
+        // if(position && position == "MAIN_BANNER"){
+        //     await Image.update({
 
-                position: null,
+        //         position: null,
 
-            }, {where:
-                 {position: "MAIN_BANNER"}
-                }
-            );
-            //car il ne peut avoir qu'une seul banner principale dans le main
-        }
+        //     }, {where:
+        //          {position: "MAIN_BANNER"}
+        //         }
+        //     );
+        //     //car il ne peut avoir qu'une seul banner principale dans le main
+        // }
                 const queryRslt = await Image.update(
                     { featured: featured, position: position, collection: collection},
                     {

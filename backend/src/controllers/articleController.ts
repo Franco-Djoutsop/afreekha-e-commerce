@@ -288,6 +288,27 @@ const ArticleController = {
       return res.status(400).json([{ message: error.message }]);
     }
   },
+
+  //@route /api/search
+  //@method GET
+  //@queryparams :article
+  async search(req: Request, res: any) {
+    try {
+      if (req.params.article) {
+        const query = req.params.article as string;
+
+        const resp = await GestionArticle.search(query);
+
+        return resp.length != 0 ? res.status(200).json([{ data: resp }]) : res.status(200).json([]);
+
+      } else {
+        return res.status(400).json([{ message: "Requête de recherche vide" }]);
+      }
+    } catch (error: any) {
+      return res.status(400).send([{ message: error.message }]);
+    }
+  },
+
 };
 
 export { ArticleController };

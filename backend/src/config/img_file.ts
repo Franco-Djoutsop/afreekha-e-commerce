@@ -30,8 +30,9 @@ const MoveImg = async (image: ImageData, dossier: string) => {
     // Générer un nom de fichier unique
     const nomFichier = `${uuidv4()}.jpg`;
     
-    const cheminFichier = path.join(folderPath, nomFichier);
-
+    const cheminFichier = path.join(dossier, nomFichier); //local side
+    //const cheminFichier = path.join(folderPath, nomFichier); //server side
+    
     // Enregistrer l'image dans le dossier avec gestion asynchrone des erreur
     await fs.writeFile(cheminFichier, imgBuffer);
 
@@ -44,30 +45,20 @@ const MoveImg = async (image: ImageData, dossier: string) => {
     throw error; 
   }
 }
-const DeleteImg = async (imageLink: string) => {
-  // 1. Chemin absolu sécurisé vers le dossier "public/imgs"
-  const folderPath = path.resolve(__dirname, '..', "public/imgs");
-  const img_name = imageLink.split('/').pop() || ''; // Nom du fichier
 
-  // 2. Chemin complet sécurisé
-  const filePath = path.join(folderPath, img_name);
+const DeleteImg = async (imageLink: string) =>{
+        const img_split = imageLink.split('/');
+        const img_name = img_split[(img_split.length - 1)];
+        try {
+            await fs.unlink("public/imgs/"+img_name);
+            
+            return true;
+        } catch (error: any) {
+            console.log(error.message);
+            return false;
+        }
 
-  try {
-      // 3. Vérification que le fichier est bien dans le dossier autorisé
-      if (!filePath.startsWith(folderPath)) {
-          throw new Error("Accès refusé : chemin hors du dossier autorisé.");
-      }
-
-      // 4. Suppression
-      await fs.access(filePath); 
-      await fs.unlink(filePath);
-      console.log(`Fichier supprimé : ${filePath}`);
-      return true;
-  } catch (error: any) {
-      console.error(`Erreur lors de la suppression de ${filePath} :`, error.message);
-      return false;
-  }
-};
+}
 
 const featuredImageFilter = (imgs: {idImage: number, lien:string, collection:string, position:string}[])=>{
   

@@ -1,7 +1,7 @@
 import Article from "../models/Article";
 import { Articles } from "./objets/article";
 import Image from "../models/image";
-import { fn, col, literal, Sequelize, QueryTypes, Op } from "sequelize";
+import { fn, where, col, literal, Sequelize, QueryTypes, Op } from "sequelize";
 import { sequelize } from "../config/database"; // Adjust the path as necessary
 import Commande from "../models/Commande";
 import CommandArticle from "../models/CommandArticle";
@@ -36,6 +36,32 @@ const GestionArticle = {
     });
 
     return dataRetrieve;
+  },
+
+  async search(query: string): Promise<any[]> {
+    if (!query || query.trim() === "") {
+      return [];
+    }
+  
+    return await Article.findAll({
+      where: {
+        [Op.or]: [
+          {
+            nom_article: {
+              [Op.like]: `%${query}%`,
+            },
+          },
+          // Utilisation de SOUNDEX
+          where(fn('SOUNDEX', col('nom_article')), fn('SOUNDEX', query)),
+        ],
+      },
+      include: [
+        {
+          model: Image,
+          required: true,
+        },
+      ],
+    });
   },
 
   async getOne(id: number) {
