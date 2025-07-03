@@ -16,7 +16,8 @@ const MoveImg = async (image: ImageData, dossier: string) => {
     if (!image.data || !image.contentType) {
       throw new Error("Données d'image ou type de contenu manquants.");
     }
-    const folderPath = path.resolve(process.cwd(), 'dist/public/imgs');
+    const folderPath = path.resolve(process.cwd(), 'dist/public/imgs');// server side
+    //const folderPath = path.resolve(__dirname, '..', dossier); // local side
     console.log("Chemin absolu dossier cible:", folderPath);
    
     if (!fsSync.existsSync(folderPath)) {
@@ -33,6 +34,7 @@ const MoveImg = async (image: ImageData, dossier: string) => {
     
     // const cheminFichier = path.join(dossier, nomFichier);
     const cheminFichier = path.join(folderPath, nomFichier); //server side
+    //const cheminFichier = path.join(dossier, nomFichier); //local side
     
     console.log("Chemin fichier final:", cheminFichier);
     // Enregistrer l'image dans le dossier avec gestion asynchrone des erreur
