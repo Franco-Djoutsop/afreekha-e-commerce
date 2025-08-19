@@ -29,8 +29,13 @@ const updateTimer = asyncHandler(async(req:Request, res:Response)=>{
         res.status(400);
         throw new Error("Aucune categorie choisie");
     }
-    timer.status = status || timer.status
-    timer.collection = collection || timer.collection
+    if (status !== undefined) {
+  timer.status = status;
+}
+
+if (collection !== undefined) {
+  timer.collection = collection;
+}
     await timer.save();
     res.status(200).json({reps:timer, done: true})
 })
