@@ -35,6 +35,7 @@ import {
   updateRole,
 } from "../controllers/roleControler";
 import { HomeController } from "../controllers/homeController";
+import { createTimer, getTimer, updateTimer } from "../controllers/timerController";
 
 const routerAdmin = express.Router();
 
@@ -45,6 +46,10 @@ routerAdmin.route("/").get((req, res) => {
   res.status(200).json({ message: "displays lists of users" });
 });
 
+//timer
+routerAdmin.route("/timer").post(createTimer)
+routerAdmin.route('/timer/:id').put(updateTimer)
+routerAdmin.route("/timer").get(getTimer)
 routerAdmin.post(
   "/article",
   // crypt.decode,
