@@ -72,6 +72,13 @@ const GestionImage = {
     },
 
     async destroyOne(id: number){
+        //chercher l'image par son ID
+        const image = await Image.findByPk(id);
+        if (!image) {
+            throw new Error('Image introuvable');
+        }
+        await DeleteImg(image.lien); // Supprimer le fichier associé à l'image
+        // Supprimer le fichier associé à l'image
         const resp = await Image.destroy({
             where: {idImage: id}
         });

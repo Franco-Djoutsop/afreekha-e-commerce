@@ -16,8 +16,10 @@ const MoveImg = async (image: ImageData, dossier: string) => {
     if (!image.data || !image.contentType) {
       throw new Error("Données d'image ou type de contenu manquants.");
     }
-    const folderPath = path.resolve(__dirname, '..', dossier);
-
+    const folderPath = path.resolve(process.cwd(), 'dist/public/imgs');// server side
+    //const folderPath = path.resolve(__dirname, '..', dossier); // local side
+    console.log("Chemin absolu dossier cible:", folderPath);
+   
     if (!fsSync.existsSync(folderPath)) {
       fsSync.mkdirSync(folderPath, { recursive: true });
     }
@@ -30,12 +32,23 @@ const MoveImg = async (image: ImageData, dossier: string) => {
     // Générer un nom de fichier unique
     const nomFichier = `${uuidv4()}.jpg`;
     
-    const cheminFichier = path.join(dossier, nomFichier); //local side
-    //const cheminFichier = path.join(folderPath, nomFichier); //server side
+    // const cheminFichier = path.join(dossier, nomFichier);
+    const cheminFichier = path.join(folderPath, nomFichier); //server side
+    //const cheminFichier = path.join(dossier, nomFichier); //local side
     
+    console.log("Chemin fichier final:", cheminFichier);
     // Enregistrer l'image dans le dossier avec gestion asynchrone des erreur
-    await fs.writeFile(cheminFichier, imgBuffer);
-
+   console.log("Buffer length:", imgBuffer.length);
+   if (imgBuffer.length === 0) {
+       throw new Error("Image vide — buffer invalide.");
+   }
+ 
+   try {
+       await fs.writeFile(cheminFichier, imgBuffer);
+       console.log("✅ Image enregistrée :", cheminFichier);
+   } catch (err) {
+       console.error("❌ Erreur lors de l’écriture :", err);
+   }
     const lienBaseDeDonnees = host+`imgs/${nomFichier}`; 
 
     return lienBaseDeDonnees;
@@ -50,8 +63,9 @@ const DeleteImg = async (imageLink: string) =>{
         const img_split = imageLink.split('/');
         const img_name = img_split[(img_split.length - 1)];
         try {
-            await fs.unlink("public/imgs/"+img_name);
-            
+	    const chemin = path.join(path.resolve(process.cwd(), 'dist/public/imgs'), img_name);
+            await fs.unlink(chemin); //server side
+            //await fs.unlink("public/imgs/"+img_name); local side
             return true;
         } catch (error: any) {
             console.log(error.message);
