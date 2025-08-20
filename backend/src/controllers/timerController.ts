@@ -26,8 +26,8 @@ const updateTimer = asyncHandler(async(req:Request, res:Response)=>{
     const {status, collection} = req.body
     const timer = await Timer.findByPk(id)
     if(!timer){
-        res.status(400);
-        throw new Error("Aucune categorie choisie");
+        res.status(400).json({message:"pas de timer dispo"})
+        return
     }
     if (status !== undefined) {
   timer.status = status;
@@ -44,7 +44,7 @@ if (collection !== undefined) {
 //@access public
 const getTimer = asyncHandler(async(req:Request, res:Response)=>{
         const timer = await Timer.findOne()
-    timer ?res.status(200).json({reps: timer, done:true}):res.status(404).json({reps: "aucune donnee", done:false})
+    timer ?res.status(200).json({reps: timer, done:true}):res.status(200).json({reps: null, done:false})
 })
 
 export {createTimer, updateTimer, getTimer}
