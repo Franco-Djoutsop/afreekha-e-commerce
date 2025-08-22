@@ -6,6 +6,7 @@ class Categorie extends Model {
   public idCategorie!: number;
   public nom!: string;
   public urlLogo!: string;
+  public featured!: boolean;
   public idUser!: number;
 }
 
@@ -25,6 +26,11 @@ Categorie.init(
     urlLogo: {
       type: DataTypes.STRING,
       allowNull: true,
+    },
+    featured: {
+      type: DataTypes.BOOLEAN,
+      allowNull: true,
+      defaultValue: false, // Valeur par défaut pour featured
     },
     idUser: {
       type: DataTypes.INTEGER,

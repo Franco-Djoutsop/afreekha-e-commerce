@@ -205,7 +205,7 @@ const GestionImage = {
     async getFeatured(){
         const data = await Image.findAll({
             attributes: ['idImage', 'lien', 'collection', 'position'],
-            limit: 15,
+            limit: 100,
             where: {
                 featured: true
             }

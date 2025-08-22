@@ -24,7 +24,7 @@ const gest_categorie = {
   async addCategorie(req: Request, res: any) {
     try {
 
-      let{idUser,urlLogo,nom} = req.body;
+      let{idUser,urlLogo,nom, featured} = req.body;
       
       const exitOrnotExist = await Categorie.findOne({
         where:{nom:nom}
@@ -39,6 +39,7 @@ const gest_categorie = {
         const categorie = await Categorie.create({
           idUser:idUser,
           nom: nom,
+          featured: featured,
           urlLogo: urlLogo
         });
         return res.status(201).json({
@@ -76,7 +77,10 @@ const gest_categorie = {
         });
       }
       await Categorie.update(
-        { nom: data.nom },
+        { nom: data.nom, 
+        featured: data.featured, 
+        urlLogo: data.urlLogo 
+        },
         {
 //<<<<<<< HEAD
             where:
@@ -222,7 +226,7 @@ async sousCategorie(req:Request,res:any){
   async getCategorie(req: Request, res: any) {
     try {
       const allCategorie = await Categorie.findAll({
-        attributes: ['idCategorie',"nom",'urlLogo'],
+        attributes: ['idCategorie',"nom",'urlLogo', "featured"],
       });
 
       if (allCategorie[0] == null) {

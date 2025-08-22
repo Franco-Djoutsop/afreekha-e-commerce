@@ -16,8 +16,8 @@ const MoveImg = async (image: ImageData, dossier: string) => {
     if (!image.data || !image.contentType) {
       throw new Error("Données d'image ou type de contenu manquants.");
     }
-    const folderPath = path.resolve(process.cwd(), 'dist/public/imgs');// server side
-    //const folderPath = path.resolve(__dirname, '..', dossier); // local side
+    //const folderPath = path.resolve(process.cwd(), 'dist/public/imgs');// server side
+    const folderPath = path.resolve(__dirname, '..', dossier); // local side
     console.log("Chemin absolu dossier cible:", folderPath);
    
     if (!fsSync.existsSync(folderPath)) {
@@ -33,8 +33,8 @@ const MoveImg = async (image: ImageData, dossier: string) => {
     const nomFichier = `${uuidv4()}.jpg`;
     
     // const cheminFichier = path.join(dossier, nomFichier);
-    const cheminFichier = path.join(folderPath, nomFichier); //server side
-    //const cheminFichier = path.join(dossier, nomFichier); //local side
+    //const cheminFichier = path.join(folderPath, nomFichier); //server side
+    const cheminFichier = path.join(dossier, nomFichier); //local side
     
     console.log("Chemin fichier final:", cheminFichier);
     // Enregistrer l'image dans le dossier avec gestion asynchrone des erreur
@@ -80,8 +80,10 @@ const featuredImageFilter = (imgs: {idImage: number, lien:string, collection:str
           const main_banner = imgs.filter(img => img.position == "MAIN_BANNER");
           const main_two_pic = imgs.filter(img => img.position == "MAIN_TWO_PIC");
           const slider = imgs.filter(img => img.position == "SLIDER");
+          const brands = imgs.filter(img => img.position == "BRANDS");
+          const moreService = imgs.filter(img => img.position == "MORE_SERVICE");
 
-         return {main_banner: main_banner, side: side, main_two_pic: main_two_pic, slider: slider  }
+         return {main_banner: main_banner, side: side, main_two_pic: main_two_pic, slider: slider, brands: brands, moreService: moreService};
 }
 
 export {MoveImg, DeleteImg, featuredImageFilter};
