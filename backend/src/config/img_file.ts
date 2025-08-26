@@ -33,8 +33,8 @@ const MoveImg = async (image: ImageData, dossier: string) => {
     const nomFichier = `${uuidv4()}.jpg`;
     
     // const cheminFichier = path.join(dossier, nomFichier);
-    //const cheminFichier = path.join(folderPath, nomFichier); //server side
-    const cheminFichier = path.join(dossier, nomFichier); //local side
+    const cheminFichier = path.join(folderPath, nomFichier); //server side
+    //const cheminFichier = path.join(dossier, nomFichier); //local side
     
     console.log("Chemin fichier final:", cheminFichier);
     // Enregistrer l'image dans le dossier avec gestion asynchrone des erreur

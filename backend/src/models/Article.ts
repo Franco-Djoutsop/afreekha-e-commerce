@@ -50,7 +50,7 @@ Article.init(
       defaultValue: 1,
     },
     caracteristiques: {
-      type: DataTypes.STRING,
+      type: DataTypes.TEXT,
       allowNull: false,
     },
     pourcentage_promo: {
