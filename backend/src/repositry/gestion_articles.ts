@@ -200,14 +200,12 @@ const GestionArticle = {
 
       data = await Article.findAll({
         offset: offset,
-        limit: 15,
         where: whereClause,
         include: includeClause,
       });
     } else {
       data = await Article.findAll({
         offset: offset,
-        limit: 15,
         include: [
           {
             model: Image,
