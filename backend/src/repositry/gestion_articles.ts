@@ -178,7 +178,7 @@ const GestionArticle = {
     let data: any;
     if (filter) {
       const whereClause: any = {};
-      const includeClause: any = [{ model: Image, required: true }];
+      const includeClause: any = [{ model: Image }];
 
       if (filter.attribute && filter.attribute.length > 0) {
         whereClause[Op.or] = [
@@ -191,11 +191,10 @@ const GestionArticle = {
         includeClause.push({
           model: Categorie,
           where: { nom: { [Op.in]: filter.categories } },
-          required: true,
         });
       } else {
         // Inclure les catégories sans filtre si besoin
-        includeClause.push({ model: Categorie, required: false });
+        includeClause.push({ model: Categorie });
       }
 
       data = await Article.findAll({
@@ -227,7 +226,6 @@ const GestionArticle = {
       include: [
         {
           model: Image,
-          required: true,
         },
       ],
     });
@@ -244,7 +242,6 @@ const GestionArticle = {
       include: [
         {
           model: Image,
-          required: true,
         },
       ],
     });
@@ -258,7 +255,6 @@ const GestionArticle = {
       include: [
         {
           model: Image,
-          required: true,
         },
       ],
     });
