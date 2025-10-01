@@ -15,8 +15,8 @@ const app: Express = express();
 const port = process.env.PORT || 3001;
 
 //middleware
-app.use(express.static(path.join(__dirname, "../public")));
-//app.use(express.static(path.join(__dirname, "/public"))); //for server side
+//app.use(express.static(path.join(__dirname, "../public")));
+app.use(express.static(path.join(__dirname, "/public"))); //for server side
 
 app.use(cors());
 app.use(bodyParser.json({ limit: "50mb" }));
@@ -40,7 +40,7 @@ app.use(errorHandler);
 connectDB();
 
 //lancer le swagger
-swaggerDocs(app, port as number);
+//swaggerDocs(app, port as number);
 //start server
 app.listen(port, () => {
   console.log(`server running on http://localhost:${port}`);

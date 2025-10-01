@@ -16,8 +16,8 @@ const MoveImg = async (image: ImageData, dossier: string) => {
     if (!image.data || !image.contentType) {
       throw new Error("Données d'image ou type de contenu manquants.");
     }
-    //const folderPath = path.resolve(process.cwd(), 'dist/public/imgs');// server side
-    const folderPath = path.resolve(__dirname, '..', dossier); // local side
+    const folderPath = path.resolve(process.cwd(), 'dist/public/imgs');// server side
+    //const folderPath = path.resolve(__dirname, '..', dossier); // local side
     console.log("Chemin absolu dossier cible:", folderPath);
    
     if (!fsSync.existsSync(folderPath)) {
