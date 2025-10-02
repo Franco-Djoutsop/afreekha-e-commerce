@@ -173,12 +173,15 @@ const GestionArticle = {
 
   async getAll(
     offset: number,
-    filter?: { attribute?: string[]; categories?: string[] }
+    filter?: { attribute?: string[]; categories?: string[]
+     },
+    imgRequired?: boolean
+
   ) {
     let data: any;
     if (filter) {
       const whereClause: any = {};
-      const includeClause: any = [{ model: Image }];
+      const includeClause: any = [{ model: Image, required: imgRequired || false }];
 
       if (filter.attribute && filter.attribute.length > 0) {
         whereClause[Op.or] = [
@@ -208,6 +211,7 @@ const GestionArticle = {
         include: [
           {
             model: Image,
+            required: imgRequired || false,
           },
         ],
       });

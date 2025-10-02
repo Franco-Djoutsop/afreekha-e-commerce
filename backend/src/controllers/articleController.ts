@@ -225,7 +225,8 @@ const ArticleController = {
           } else {
             data = await GestionArticle.getAll(
               Number.parseInt(req.params.offset),
-              filter
+              filter,
+              true
             );
           }
         } else {
@@ -235,7 +236,7 @@ const ArticleController = {
             data = await subCategoryLoader();
           }
           data = await GestionArticle.getAll(
-            Number.parseInt(req.params.offset)
+            Number.parseInt(req.params.offset), undefined, true
           );
         }
 
@@ -249,7 +250,7 @@ const ArticleController = {
       } else {
         const params = req.query;
 
-        const data = await GestionArticle.getAll(0);
+        const data = await GestionArticle.getAll(0, undefined, true);
 
         return data.length != 0
           ? res.status(200).json([{ data: crypt.encode(data) }])

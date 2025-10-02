@@ -176,12 +176,12 @@ const GestionArticle = {
             return data;
         });
     },
-    getAll(offset, filter) {
+    getAll(offset, filter, imgRequired) {
         return __awaiter(this, void 0, void 0, function* () {
             let data;
             if (filter) {
                 const whereClause = {};
-                const includeClause = [{ model: image_1.default }];
+                const includeClause = [{ model: image_1.default, required: imgRequired || false }];
                 if (filter.attribute && filter.attribute.length > 0) {
                     whereClause[sequelize_1.Op.or] = [
                         { taille: { [sequelize_1.Op.in]: filter.attribute } },
@@ -210,6 +210,7 @@ const GestionArticle = {
                     include: [
                         {
                             model: image_1.default,
+                            required: imgRequired || false,
                         },
                     ],
                 });

@@ -219,7 +219,7 @@ const ArticleController = {
                             data = yield subCategoryLoader(filter);
                         }
                         else {
-                            data = yield gestion_articles_1.GestionArticle.getAll(Number.parseInt(req.params.offset), filter);
+                            data = yield gestion_articles_1.GestionArticle.getAll(Number.parseInt(req.params.offset), filter, true);
                         }
                     }
                     else {
@@ -227,7 +227,7 @@ const ArticleController = {
                         if (params.isUniqueFilter && params.category) {
                             data = yield subCategoryLoader();
                         }
-                        data = yield gestion_articles_1.GestionArticle.getAll(Number.parseInt(req.params.offset));
+                        data = yield gestion_articles_1.GestionArticle.getAll(Number.parseInt(req.params.offset), undefined, true);
                     }
                     return data.length != 0
                         ? res
@@ -239,7 +239,7 @@ const ArticleController = {
                 }
                 else {
                     const params = req.query;
-                    const data = yield gestion_articles_1.GestionArticle.getAll(0);
+                    const data = yield gestion_articles_1.GestionArticle.getAll(0, undefined, true);
                     return data.length != 0
                         ? res.status(200).json([{ data: crypto_js_1.crypt.encode(data) }])
                         : res.status(200).json([]);
