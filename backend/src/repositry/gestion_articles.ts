@@ -226,6 +226,7 @@ const GestionArticle = {
       include: [
         {
           model: Image,
+          required: true
         },
       ],
     });
@@ -242,6 +243,7 @@ const GestionArticle = {
       include: [
         {
           model: Image,
+          required: true
         },
       ],
     });
